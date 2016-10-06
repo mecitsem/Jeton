@@ -35,8 +35,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
@@ -45,22 +54,29 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IJetonService.cs" />
+    <Compile Include="AppService\AppService.cs" />
+    <Compile Include="AppService\IAppService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="JetonService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Jeton.Common\Jeton.Common.csproj">
-      <Project>{D9A85DC0-310D-40CA-8936-5394B71B982E}</Project>
-      <Name>Jeton.Common</Name>
+    <ProjectReference Include="..\Jeton.Core\Jeton.Core.csproj">
+      <Project>{4A51FFA9-30B4-4F53-9434-CB0005985AC4}</Project>
+      <Name>Jeton.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Jeton.Services.Contracts\Jeton.Services.Contracts.csproj">
-      <Project>{21AF0EF1-0CC7-4E60-AB3F-8D4E49C6C99F}</Project>
-      <Name>Jeton.Services.Contracts</Name>
+    <ProjectReference Include="..\Jeton.Data\Jeton.Data.csproj">
+      <Project>{96CCBD96-E2D0-404E-A1D2-703299E68BA1}</Project>
+      <Name>Jeton.Data</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="TokenService\" />
+    <Folder Include="UserService\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

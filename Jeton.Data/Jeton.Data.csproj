@@ -93,47 +93,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\JetonDBContext.cs" />
-    <Compile Include="Entities\BaseEntity.cs" />
-    <Compile Include="Entities\JetonUser.cs" />
-    <Compile Include="Entities\RegisteredApp.cs" />
-    <Compile Include="Entities\GeneratedToken.cs" />
-    <Compile Include="Interfaces\IRegisteredAppRepository.cs" />
-    <Compile Include="Interfaces\ITokenRepository.cs" />
-    <Compile Include="Migrations\201608231142235_JetonMig.cs" />
-    <Compile Include="Migrations\201608231142235_JetonMig.Designer.cs">
-      <DependentUpon>201608231142235_JetonMig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201608231152482_JetonMig1.cs" />
-    <Compile Include="Migrations\201608231152482_JetonMig1.Designer.cs">
-      <DependentUpon>201608231152482_JetonMig1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Configuration\AppConfiguration.cs" />
+    <Compile Include="Configuration\TokenConfiguration.cs" />
+    <Compile Include="Configuration\UserConfiguration.cs" />
+    <Compile Include="Infrastructure\DbFactory.cs" />
+    <Compile Include="Infrastructure\Disposable.cs" />
+    <Compile Include="Infrastructure\Interfaces\IDbFactory.cs" />
+    <Compile Include="Infrastructure\Interfaces\IRepository.cs" />
+    <Compile Include="Infrastructure\Interfaces\IUnitOfWork.cs" />
+    <Compile Include="JetonEntities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\RegisteredAppRepository.cs" />
-    <Compile Include="Repositories\TokenRepository.cs" />
+    <Compile Include="Repositories\AppRepo\AppRepository.cs" />
+    <Compile Include="Repositories\AppRepo\IAppRepository.cs" />
+    <Compile Include="RepositoryBase.cs" />
+    <Compile Include="UnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Jeton.Common\Jeton.Common.csproj">
-      <Project>{d9a85dc0-310d-40ca-8936-5394b71b982e}</Project>
-      <Name>Jeton.Common</Name>
+    <Folder Include="Repositories\TokenRepo\" />
+    <Folder Include="Repositories\UserRepo\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Jeton.Core\Jeton.Core.csproj">
+      <Project>{4A51FFA9-30B4-4F53-9434-CB0005985AC4}</Project>
+      <Name>Jeton.Core</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Initializer\" />
-    <Folder Include="Models\" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201608231142235_JetonMig.resx">
-      <DependentUpon>201608231142235_JetonMig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201608231152482_JetonMig1.resx">
-      <DependentUpon>201608231152482_JetonMig1.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
