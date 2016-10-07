@@ -16,7 +16,7 @@ namespace Jeton.Core.Entities
         public string TokenKey { get; set; }
         public DateTime? Expire { get; set; }
 
-        public int UserID { get; set; }
+        public Guid UserID { get; set; }
         public User User { get; set; }
     }
 }
