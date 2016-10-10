@@ -107,6 +107,8 @@
     <Compile Include="Repositories\AppRepo\IAppRepository.cs" />
     <Compile Include="Repositories\TokenRepo\ITokenRepository.cs" />
     <Compile Include="Repositories\TokenRepo\TokenRepository.cs" />
+    <Compile Include="Repositories\UserRepo\IUserRepository.cs" />
+    <Compile Include="Repositories\UserRepo\UserRepository.cs" />
     <Compile Include="RepositoryBase.cs" />
     <Compile Include="UnitOfWork.cs" />
   </ItemGroup>
@@ -114,9 +116,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Repositories\UserRepo\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Jeton.Core\Jeton.Core.csproj">
       <Project>{4A51FFA9-30B4-4F53-9434-CB0005985AC4}</Project>

@@ -5,25 +5,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Jeton.Data.Infrastructure.Interfaces;
+using Jeton.Core.Common;
+using Jeton.Core.Helpers;
+using static Jeton.Core.Common.Constants;
 
 namespace Jeton.Data.Repositories.TokenRepo
 {
-    public class TokenRepository : RepositoryBase<Token>,ITokenRepository
+    public class TokenRepository : RepositoryBase<Token>, ITokenRepository
     {
-        public TokenRepository(IDbFactory dbFactory) 
-            : base(dbFactory)
+        public TokenRepository(IDbFactory dbFactory) : base(dbFactory)
         {
 
         }
 
         public IEnumerable<Token> GetLiveTokens()
         {
-            return this.DbContext.Tokens.Where(t => t.Expire <= DateTime.Now);
+            return this.DbContext.Tokens.Where(t => t.Expire > DateTime.Now);
         }
 
         public Token GetTokenById(Guid tokenId)
         {
             return this.DbContext.Tokens.Find(tokenId);
+        }
+
+        public Token GetTokenByKey(string tokenKey)
+        {
+            return this.DbContext.Tokens.FirstOrDefault(t => t.TokenKey.Equals(tokenKey));
         }
 
         public Token GetTokenByUser(User user)
@@ -43,8 +50,18 @@ namespace Jeton.Data.Repositories.TokenRepo
 
         public override void Update(Token entity)
         {
-            entity.Modified = DateTime.Now;
-            entity.TokenKey = entity.User.NameId; //Generate Token Key
+            //Token Manager
+            var tokenManager = new TokenManager(TimeType.Hour);
+
+            var now = DateTime.Now;
+
+            //Token Update Key and Expire 
+            entity.TokenKey = tokenManager.GenerateToken(entity.User.NameId, entity.User.Name);
+            entity.Expire = tokenManager.GetExpire();
+            entity.Modified = now;
+
+            //Update
+            base.Update(entity);
         }
     }
 }

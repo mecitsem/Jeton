@@ -15,5 +15,6 @@ namespace Jeton.Data.Repositories.TokenRepo
         Token GetTokenById(Guid tokenId);
         Token GetTokenByUserId(Guid userId);
         Token GetTokenByUser(User user);
+        Token GetTokenByKey(string tokenKey);
     }
 }

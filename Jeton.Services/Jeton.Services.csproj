@@ -57,6 +57,10 @@
     <Compile Include="AppService\AppService.cs" />
     <Compile Include="AppService\IAppService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TokenService\ITokenService.cs" />
+    <Compile Include="TokenService\TokenService.cs" />
+    <Compile Include="UserService\IUserService.cs" />
+    <Compile Include="UserService\UserService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -74,10 +78,7 @@
       <Name>Jeton.Data</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="TokenService\" />
-    <Folder Include="UserService\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <VSToolsPath Condition="'$(VSToolsPath)' == '' and '$(VisualStudioVersion)' != '' and '$(VisualStudioVersion)' != '11.0'">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

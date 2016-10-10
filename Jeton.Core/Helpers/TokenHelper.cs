@@ -1,37 +1,39 @@
-﻿using Jeton.Core.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Jeton.Core.Common.Constants;
 
 namespace Jeton.Core.Helpers
 {
     public class TokenHelper
     {
-        
-        public string GenerateToken()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="timeDuration"></param>
+        /// <param name="timeType"></param>
+        /// <returns></returns>
+        public static DateTime CalculateExpire(int timeDuration, TimeType timeType)
         {
-            var time = BitConverter.GetBytes(DateTime.UtcNow.ToBinary());
-            var key = Guid.NewGuid().ToByteArray();
-            var token = Convert.ToBase64String(time.Concat(key).ToArray());
-            return token;
-        }
-
-        public bool TokenIsLive(string token)
-        {
-            bool result = false; ;
-            try
+            var time = DateTime.Now;
+            switch (timeType)
             {
-                var data = Convert.FromBase64String(token);
-                DateTime when = DateTime.FromBinary(BitConverter.ToInt64(data, 0));
-                result = when.AddHours(Constants.TokenLiveHours) < DateTime.UtcNow;
+                case TimeType.Hour:
+                    time.AddHours(timeDuration);
+                    break;
+                case TimeType.Minute:
+                    time.AddMinutes(timeDuration);
+                    break;
+                case TimeType.Second:
+                    time.AddSeconds(timeDuration);
+                    break;
+                default:
+                    time.AddHours(timeDuration);
+                    break;
             }
-            catch (Exception ex)
-            {
-
-            }
-            return result;
+            return time;
         }
     }
 }

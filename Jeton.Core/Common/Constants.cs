@@ -8,6 +8,13 @@ namespace Jeton.Core.Common
 {
     public class Constants
     {
-        public const int TokenLiveHours = 24;
+        public const int TokenLiveDuration = 24;
+
+        public enum TimeType : int
+        {
+            Second = 1,
+            Minute = 2,
+            Hour = 3
+        }
     }
 }
