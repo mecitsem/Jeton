@@ -48,6 +48,11 @@ namespace Jeton.Data.Repositories.TokenRepo
             return this.DbContext.Tokens;
         }
 
+        public bool IsExist(string tokenKey)
+        {
+            return this.DbContext.Tokens.Any(t => t.TokenKey.Equals(tokenKey));
+        }
+
         public override void Update(Token entity)
         {
             //Token Manager

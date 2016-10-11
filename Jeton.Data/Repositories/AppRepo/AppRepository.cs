@@ -24,6 +24,11 @@ namespace Jeton.Data.Repositories.AppRepo
             return this.DbContext.Apps.FirstOrDefault(a => a.Name.Equals(appName));
         }
 
+        public bool IsExist(Guid appId)
+        {
+            return this.DbContext.Apps.Any(a => a.AppID.Equals(appId));
+        }
+
         public override void Update(App entity)
         {
             entity.Modified = DateTime.Now;

@@ -10,6 +10,7 @@ namespace Jeton.Data.Repositories.TokenRepo
 {
     public interface ITokenRepository: IRepository<Token>
     {
+        bool IsExist(string tokenKey);
         IEnumerable<Token> GetTokens();
         IEnumerable<Token> GetLiveTokens();
         Token GetTokenById(Guid tokenId);

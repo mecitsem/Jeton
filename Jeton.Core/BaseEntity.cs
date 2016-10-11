@@ -10,6 +10,7 @@ namespace Jeton.Core
     {
         public DateTime? Created { get; set; }
         public DateTime? Modified { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public BaseEntity()
         {

@@ -30,7 +30,7 @@ namespace Jeton.Data.Infrastructure
             isDisposed = true;
         }
 
-        // Ovveride this to dispose custom objects
+        // Override this to dispose custom objects
         protected virtual void DisposeCore()
         {
         }

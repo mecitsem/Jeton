@@ -1,4 +1,5 @@
-﻿using Jeton.Data.Infrastructure.Interfaces;
+﻿using Jeton.Core;
+using Jeton.Data.Infrastructure.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -9,13 +10,14 @@ using System.Threading.Tasks;
 
 namespace Jeton.Data
 {
-    public class RepositoryBase<T> where T : class
+    public class RepositoryBase<T> : IRepository<T> where T : class
     {
         #region Properties
         private JetonEntities dataContext;
         private readonly IDbSet<T> dbSet;
-        
-        protected IDbFactory DbFactory {
+
+        protected IDbFactory DbFactory
+        {
             get;
             private set;
         }
@@ -30,6 +32,10 @@ namespace Jeton.Data
         {
             DbFactory = dbFactory;
             dbSet = DbContext.Set<T>();
+        }
+
+        public RepositoryBase()
+        {
         }
 
         #region Implementaion
@@ -56,8 +62,33 @@ namespace Jeton.Data
         /// <param name="entity"></param>
         public virtual void Delete(T entity)
         {
-            dbSet.Remove(entity);
+
+            if (entity.GetType().GetProperty("IsDeleted") != null)
+            {
+                T _entity = entity;
+
+                _entity.GetType().GetProperty("IsDeleted").SetValue(_entity, true);
+
+                this.Update(_entity);
+            }
+            else
+            {
+                var dbEntityEntry = dataContext.Entry(entity);
+
+                if (dbEntityEntry.State != EntityState.Deleted)
+                {
+                    dbEntityEntry.State = EntityState.Deleted;
+                }
+                else
+                {
+                    dbSet.Attach(entity);
+                    dbSet.Remove(entity);
+                }
+
+            }
         }
+
+
         /// <summary>
         /// DELETE MANY
         /// </summary>
@@ -66,7 +97,7 @@ namespace Jeton.Data
         {
             IEnumerable<T> objects = dbSet.Where<T>(where).AsEnumerable();
             foreach (T obj in objects)
-                dbSet.Remove(obj);
+                Delete(obj);
         }
         /// <summary>
         /// GET

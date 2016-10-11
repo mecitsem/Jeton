@@ -215,6 +215,10 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Jeton.Core\Jeton.Core.csproj">
+      <Project>{4A51FFA9-30B4-4F53-9434-CB0005985AC4}</Project>
+      <Name>Jeton.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Jeton.Services\Jeton.Services.csproj">
       <Project>{382A5932-FEB3-449A-9704-46CCF6CF67AD}</Project>
       <Name>Jeton.Services</Name>

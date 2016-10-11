@@ -12,5 +12,6 @@ namespace Jeton.Data.Repositories.AppRepo
     {
         App GetAppByName(string appName);
         App GetAppById(Guid appId);
+        bool IsExist(Guid appId);
     }
 }

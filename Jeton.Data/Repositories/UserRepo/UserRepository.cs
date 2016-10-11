@@ -39,10 +39,23 @@ namespace Jeton.Data.Repositories.UserRepo
             return this.DbContext.Users;
         }
 
+        public bool IsExist(string nameId)
+        {
+            return this.DbContext.Users.Any(u => u.NameId.Equals(nameId));
+        }
+
         public override void Update(User entity)
         {
             entity.Modified = DateTime.Now;
             base.Update(entity);
+        }
+
+        public override void Add(User entity)
+        {
+            var now = DateTime.Now;
+            entity.Created = now;
+            entity.Modified = now;
+            base.Add(entity);
         }
     }
 }

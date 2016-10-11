@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Jeton.Core.Entities;
 using Jeton.Data.Repositories.TokenRepo;
 using Jeton.Data.Infrastructure.Interfaces;
+using Jeton.Core.Helpers;
+using Jeton.Core.Common;
 
 namespace Jeton.Services.TokenService
 {
@@ -79,8 +81,16 @@ namespace Jeton.Services.TokenService
             unitOfWork.Commit();
         }
 
-       
+        public bool IsExist(string tokenKey)
+        {
+            return tokenRepository.IsExist(tokenKey);
+        }
 
-       
+        public bool IsExistByUser(User user)
+        {
+            return tokenRepository.GetTokenByUser(user) != null;
+        }
+
+        
     }
 }

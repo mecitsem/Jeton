@@ -65,6 +65,9 @@ namespace Jeton.Services.AppService
             unitOfWork.Commit();
         }
 
-       
+        public bool IsExist(Guid appId)
+        {
+            return appRepository.IsExist(appId);
+        }
     }
 }

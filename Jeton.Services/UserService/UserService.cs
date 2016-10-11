@@ -75,6 +75,9 @@ namespace Jeton.Services.UserService
             unitOfWork.Commit();
         }
 
-  
+        public bool IsExist(string nameId)
+        {
+            return userRepository.IsExist(nameId);
+        }
     }
 }

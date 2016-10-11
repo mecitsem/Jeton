@@ -11,7 +11,7 @@ namespace Jeton.Data
 {
     public class JetonEntities : DbContext
     {
-        public JetonEntities() : base("JetonConnection") { }
+        public JetonEntities() : base("JetonEntities") { }
 
         public DbSet<App> Apps { get; set; }
         public DbSet<Token> Tokens { get; set; }

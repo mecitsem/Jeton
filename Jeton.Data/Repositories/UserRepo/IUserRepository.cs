@@ -10,6 +10,7 @@ namespace Jeton.Data.Repositories.UserRepo
 {
     public interface IUserRepository : IRepository<User>
     {
+        bool IsExist(string nameId);
         User GetUserById(Guid userId);
         User GetUserByName(string name);
         User GetUserByNameId(string nameId);

@@ -9,6 +9,7 @@ namespace Jeton.Services.UserService
 {
     public interface IUserService
     {
+        bool IsExist(string nameId);
         IEnumerable<User> GetUsers();
         IEnumerable<User> GetLiveUsers();
         User GetUserById(Guid userId);

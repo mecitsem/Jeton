@@ -9,6 +9,7 @@ namespace Jeton.Services.AppService
 {
     public interface IAppService
     {
+        bool IsExist(Guid appId);
         IEnumerable<App> GetApps();
         App GetAppById(Guid appId);
         App GetAppByName(string appName);

@@ -9,7 +9,7 @@ namespace Jeton.Core.Common
     public class Constants
     {
         public const int TokenLiveDuration = 24;
-
+        public const string AccessKey = "AccessKey";
         public enum TimeType : int
         {
             Second = 1,
