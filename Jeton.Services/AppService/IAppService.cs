@@ -9,13 +9,13 @@ namespace Jeton.Services.AppService
 {
     public interface IAppService
     {
+        string GenerateAccessKey();
         bool IsExist(Guid appId);
         IEnumerable<App> GetApps();
         App GetAppById(Guid appId);
         App GetAppByName(string appName);
-        void Insert(App app);
+        App Insert(App app);
         void Update(App app);
         void Delete(Guid appId);
-        void Save();
     }
 }

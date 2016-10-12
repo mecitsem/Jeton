@@ -13,7 +13,12 @@ namespace Jeton.Data.Infrastructure.Interfaces
         /// Marks an entity as new
         /// </summary>
         /// <param name="entity"></param>
-        void Add(T entity);
+        T Insert(T entity);
+        /// <summary>
+        /// Insert entities
+        /// </summary>
+        /// <param name="entities">Entities</param>
+        void Insert(IEnumerable<T> entities);
         /// <summary>
         /// Marks an entity as modified
         /// </summary>
@@ -36,21 +41,12 @@ namespace Jeton.Data.Infrastructure.Interfaces
         /// <returns></returns>
         T GetById(Guid id);
         /// <summary>
-        /// Get an entity using delegate
+        /// Gets a table
         /// </summary>
-        /// <param name="where"></param>
-        /// <returns></returns>
-        T Get(Expression<Func<T, bool>> where);
+        IQueryable<T> Table { get; }
         /// <summary>
-        /// Gets all entities of type T
+        /// Gets a table with "no tracking" enabled (EF feature) Use it only when you load record(s) only for read-only operations
         /// </summary>
-        /// <returns></returns>
-        IEnumerable<T> GetAll();
-        /// <summary>
-        /// Gets entities using delegate
-        /// </summary>
-        /// <param name="where"></param>
-        /// <returns></returns>
-        IEnumerable<T> GetMany(Expression<Func<T, bool>> where);
+        IQueryable<T> TableNoTracking { get; }
     }
 }

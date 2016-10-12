@@ -4,59 +4,70 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Jeton.Core.Entities;
-using Jeton.Data.Repositories.UserRepo;
 using Jeton.Data.Infrastructure.Interfaces;
 
 namespace Jeton.Services.UserService
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository userRepository;
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IRepository<User> userRepository;
 
-        public UserService(IUserRepository userRepository, IUnitOfWork unitOfWork)
+        public UserService(IRepository<User> userRepository)
         {
             this.userRepository = userRepository;
-            this.unitOfWork = unitOfWork;
         }
 
         #region CREATE
-        public void Insert(User user)
+        public User Insert(User user)
         {
-            userRepository.Add(user);
+            if (user == null)
+                throw new ArgumentException("user");
+
+            return userRepository.Insert(user);
         }
         #endregion
 
         #region READ
-        public IEnumerable<User> GetLiveUsers()
-        {
-            return userRepository.GetActiveUsers();
-        }
-
         public User GetUserById(Guid userId)
         {
-            return userRepository.GetUserById(userId);
+            if (userId == null)
+                throw new ArgumentNullException("userId");
+
+            return userRepository.GetById(userId);
         }
 
         public User GetUserByName(string name)
         {
-            return userRepository.GetUserByName(name);
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException("name");
+
+            var table = userRepository.Table;
+
+            return table.FirstOrDefault(u => u.Name.Equals(name));
         }
 
         public User GetUserByNameId(string nameId)
         {
-            return userRepository.GetUserByNameId(nameId);
+            if (string.IsNullOrEmpty(nameId))
+                throw new ArgumentNullException("nameId");
+
+            var table = userRepository.Table;
+
+            return table.FirstOrDefault(u => u.NameId.Equals(nameId));
         }
 
         public IEnumerable<User> GetUsers()
         {
-            return userRepository.GetAll();
+            return userRepository.Table.ToList();
         }
         #endregion
 
         #region UPDATE
         public void Update(User user)
         {
+            if (user == null)
+                throw new ArgumentNullException("user");
+
             userRepository.Update(user);
         }
         #endregion
@@ -68,16 +79,14 @@ namespace Jeton.Services.UserService
         }
         #endregion
 
-  
-
-        public void Save()
-        {
-            unitOfWork.Commit();
-        }
 
         public bool IsExist(string nameId)
         {
-            return userRepository.IsExist(nameId);
+            if (string.IsNullOrEmpty(nameId))
+                throw new ArgumentNullException("nameId");
+            var table = userRepository.TableNoTracking;
+
+            return table.Any(u => u.NameId.Equals(nameId));
         }
     }
 }

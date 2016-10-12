@@ -10,6 +10,16 @@ namespace Jeton.Core.Common
     {
         public const int TokenLiveDuration = 24;
         public const string AccessKey = "AccessKey";
+        public const string UserName = "UserName";
+        public const string UserNameId = "UserNameId";
+
+
+
+        public enum AppSettings
+        {
+            PassPhrase
+        }
+
         public enum TimeType : int
         {
             Second = 1,

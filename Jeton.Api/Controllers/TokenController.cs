@@ -25,74 +25,105 @@ namespace Jeton.Api.Controllers
             this.userService = userService;
         }
 
-        [Route("~/api/{appId}/{userName}/{userNameId}")]
-        [HttpGet]
-        public HttpResponseMessage GenerateToken(string appId, string userName, string userNameId)
+        [Route("~/api/{appId}")]
+        [HttpPost]
+        public IHttpActionResult GenerateToken([FromUri] string appId)
         {
-            HttpResponseMessage response;
+            IHttpActionResult response;
             try
             {
                 Guid _appId = new Guid();
+                IEnumerable<string> accessKeys, userNames, userNameIds;
+                string accessKey, userName, userNameId;
+
+                #region CHECK Parameters
 
                 //Check AppId
                 if (string.IsNullOrEmpty(appId) && !Guid.TryParse(appId, out _appId))
-                {
-                    throw new ArgumentNullException("appKey is null!");
-                }
+                    return BadRequest("AppId is null or not Guid format");
+
+
+                //Request Header
+                var headers = Request.Headers;
+
+                //Check AccessKey
+                if (!headers.Contains(Constants.AccessKey))
+                    return BadRequest("AccessKey is required. Please add your header.");
+
+
+                //Get AccessKey
+                if (!headers.TryGetValues(Constants.AccessKey, out accessKeys))
+                    return BadRequest("AccessKey is null. Please add your AccessKey.");
+
+                // SET AccessKEY
+                accessKey = accessKeys.FirstOrDefault();
+
                 //Check UserName
-                if (string.IsNullOrEmpty(userName))
-                {
-                    throw new ArgumentNullException("userName is null!");
-                }
+                if (!headers.Contains(Constants.UserName))
+                    return BadRequest("UserName is required. Please add your header.");
+
+                //Get UserName
+                if (!headers.TryGetValues(Constants.UserName, out userNames))
+                    return BadRequest("UserName is null. Please add your UserName.");
+
+                userName = userNames.FirstOrDefault();
+
                 //Check UserNameId
-                if (string.IsNullOrEmpty(userNameId))
-                {
-                    throw new ArgumentNullException("userNameId is null!");
-                }
+                if (!headers.Contains(Constants.UserNameId))
+                    return BadRequest("UserNameId is required. Please add your header.");
 
-                //Check App 
-                var headerValues = Request.Headers.GetValues(Constants.AccessKey);
 
-                if (headerValues == null)
-                    throw new ArgumentNullException("AccessKey parameter is not exist!");
+                //Get UserNameId
+                if (!headers.TryGetValues(Constants.UserNameId, out userNameIds))
+                    return BadRequest("UserNameId is null. Please add your UserNameId.");
 
-                var accessKey = headerValues.FirstOrDefault();
+                userNameId = userNameIds.FirstOrDefault();
 
-                if (string.IsNullOrEmpty(accessKey))
-                    throw new ArgumentNullException("AccessKey is null or empty");
+                #endregion
 
-                //Get App
+                #region Check App
+
+                //Check App is Exist
+                if (!appService.IsExist(_appId))
+                    return BadRequest("AppId is invalid. Please register your App");
+
+
+                //Get APP
                 var app = appService.GetAppById(_appId);
-
-                if (app == null)
-                    throw new ArgumentNullException("App is not registered or invalid. Please contact your administor.");
-
-                if (!app.IsRoot)
-                    throw new ArgumentException("This app can not generate token becase this app is not root app.");
 
                 //Check Access Key
                 if (!app.AccessKey.Equals(accessKey))
-                    throw new ArgumentException("This access key is invalid.");
+                    return Unauthorized();
 
-                //Check User
-                var user = userService.GetUserByNameId(userNameId);
+                if (!app.IsRoot)
+                    return BadRequest("This app can not generate token becase this app is not root app.");
+
+                #endregion
+
+                #region Check User
+                
+                //Get User
+                Core.Entities.User user = userService.GetUserByNameId(userNameId);
 
                 if (user == null)
                 {
-                    userService.Insert(new Core.Entities.User()
+                    user = userService.Insert(new Core.Entities.User()
                     {
                         Name = userName,
-                        NameId = userNameId
+                        NameId = userNameId,
                     });
                 }
+                #endregion
 
+                //Generate Token
+                var token = tokenService.Generate(user);
 
-                response = Request.CreateResponse(HttpStatusCode.OK, "");
+                //Response
+                response =  Ok(token.TokenKey);
             }
             catch (Exception ex)
             {
-
-                response = Request.CreateErrorResponse(HttpStatusCode.ExpectationFailed, ex);
+                response = InternalServerError(ex);
             }
 
             return response;

@@ -11,13 +11,11 @@ namespace Jeton.Services.UserService
     {
         bool IsExist(string nameId);
         IEnumerable<User> GetUsers();
-        IEnumerable<User> GetLiveUsers();
         User GetUserById(Guid userId);
         User GetUserByName(string name);
         User GetUserByNameId(string nameId);
-        void Insert(User user);
+        User Insert(User user);
         void Update(User user);
         void Delete(User user);
-        void Save();
     }
 }

@@ -11,7 +11,7 @@ namespace Jeton.Core.Common
 {
     public class TokenManager
     {
-        private const string SEP = "#";
+        private const char SEP = '#';
         private TimeType timeType;
 
         public TokenManager(TimeType timeType)
@@ -20,12 +20,12 @@ namespace Jeton.Core.Common
         }
 
         /// <summary>
-        ///  Token Schema (Time # NameId # Name # Guid)
+        ///  Token Schema (Time # NameId # Name # Guid) Time is Utc!
         /// </summary>
         /// <param name="nameId">Unique Identity</param>
         /// <param name="name">User login name</param>
         /// <returns></returns>
-        public string GenerateToken(string nameId, string name)
+        public string GenerateTokenKey(string nameId, string name)
         {
             if (string.IsNullOrWhiteSpace(nameId))
             {
@@ -38,32 +38,32 @@ namespace Jeton.Core.Common
             }
 
 
-            //NameId
-            var userKey = Encoding.ASCII.GetBytes(nameId);
-
-            //LoginName
-            var userName = Encoding.ASCII.GetBytes(name);
-
             //Now
-            var now = DateTime.Now;
-            var time = BitConverter.GetBytes(now.ToBinary());
+            var date = DateTime.UtcNow;
+            var time = date.ToString();
 
-            //Unique Key
+            //Random Uniqe Key
             var guid = Guid.NewGuid();
-            var key = guid.ToByteArray();
+            var key = guid.ToString();
 
-            var seperator = Encoding.ASCII.GetBytes(SEP);
 
             //Token Binary Array
-            var tokenArray = time.Concat(seperator)     // Now #
-                                 .Concat(userKey)       // NameId
-                                 .Concat(seperator)     // #
-                                 .Concat(userName)      // Login Name
-                                 .Concat(seperator)     // #
-                                 .Concat(key)           // Guid
-                                 .ToArray();
+            var sb = new StringBuilder();
+            sb.Append(time);
+            sb.Append(SEP);
+            sb.Append(nameId);
+            sb.Append(SEP);
+            sb.Append(name);
+            sb.Append(SEP);
+            sb.Append(key);
             //Create Token
-            var token = Convert.ToBase64String(tokenArray);
+
+            var passPhrase = ConfigHelper.GetPassPhrase();
+
+            if (string.IsNullOrEmpty(passPhrase))
+                throw new ArgumentNullException("passPhrase");
+
+            var token = CryptoManager.Encrypt(sb.ToString(), passPhrase);
 
             return token;
         }
@@ -87,13 +87,17 @@ namespace Jeton.Core.Common
 
             try
             {
-
-                var tokenData = Convert.FromBase64String(token);
-
+                var passPhrase = ConfigHelper.GetPassPhrase();
+                var data = CryptoManager.Decrypt(token, passPhrase);
                 //Time
-                var time = DateTime.FromBinary(BitConverter.ToInt64(tokenData, 0));
-            
-                var now = DateTime.Now;
+                var time = default(DateTime);
+    
+                if (!DateTime.TryParse(data.Split(SEP)[0], out time))
+                {
+                    throw new ArgumentException("Datetime is invalid");
+                }
+
+                var now = DateTime.UtcNow;
                 
                 //Calculate Expire
                 var expire = GetExpire();

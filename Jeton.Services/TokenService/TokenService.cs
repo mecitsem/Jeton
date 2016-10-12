@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Jeton.Core.Entities;
-using Jeton.Data.Repositories.TokenRepo;
 using Jeton.Data.Infrastructure.Interfaces;
 using Jeton.Core.Helpers;
 using Jeton.Core.Common;
@@ -13,84 +12,134 @@ namespace Jeton.Services.TokenService
 {
     public class TokenService : ITokenService
     {
-        private readonly ITokenRepository tokenRepository;
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IRepository<Token> tokenRepository;
 
-        public TokenService(ITokenRepository tokenRepository, IUnitOfWork unitOfWork)
+        public TokenService(IRepository<Token> tokenRepository)
         {
             this.tokenRepository = tokenRepository;
-            this.unitOfWork = unitOfWork;
         }
 
         #region CREATE
-        public void Insert(Token token)
+        public Token Insert(Token token)
         {
-            tokenRepository.Add(token);
+            if (token == null)
+                throw new ArgumentNullException("token");
+
+            return tokenRepository.Insert(token);
         }
         #endregion
 
         #region READ
-        public Token GetTokenById(Guid tokenId)
+        public virtual Token GetTokenById(Guid tokenId)
         {
-            return tokenRepository.GetTokenById(tokenId);
+            return tokenRepository.GetById(tokenId);
         }
 
-        public Token GetTokenByKey(string tokenKey)
+        public virtual Token GetTokenByKey(string tokenKey)
         {
-            return tokenRepository.GetTokenByKey(tokenKey);
+            if (string.IsNullOrEmpty(tokenKey))
+                return null;
+
+            var table = tokenRepository.Table;
+
+            return table.FirstOrDefault(t => t.TokenKey.Equals(tokenKey));
         }
 
-        public Token GetTokenByUser(User user)
+        public virtual Token GetTokenByUser(User user)
         {
-            return tokenRepository.GetTokenByUser(user);
+            if (user == null)
+                return null;
+
+            var table = tokenRepository.Table;
+
+            return table.FirstOrDefault(t => t.UserID.Equals(user.UserID));
         }
 
-        public Token GetTokenByUserID(Guid userId)
+        public virtual Token GetTokenByUserID(Guid userId)
         {
-            return tokenRepository.GetTokenByUserId(userId);
+            if (userId == null)
+                return null;
+
+            var table = tokenRepository.Table;
+
+            return table.FirstOrDefault(t => t.UserID.Equals(userId));
         }
 
-        public IEnumerable<Token> GetTokens()
+        public virtual IEnumerable<Token> GetTokens()
         {
-            return tokenRepository.GetTokens();
+            return tokenRepository.Table.ToList();
         }
 
-        public IEnumerable<Token> GetLiveTokens()
+        public virtual IEnumerable<Token> GetLiveTokens()
         {
-            return tokenRepository.GetLiveTokens();
+            var now = DateTime.Now;
+            var table = tokenRepository.Table;
+            return table.Where(t => t.Expire > now).ToList();
         }
         #endregion
 
         #region UPDATE
-        public void Update(Token token)
+        public virtual void Update(Token token)
         {
+            if (token == null)
+                throw new ArgumentNullException("token");
+
             tokenRepository.Update(token);
         }
         #endregion
 
         #region DELETE
-        public void Delete(Token token)
+        public virtual void Delete(Token token)
         {
+            if (token == null)
+                throw new ArgumentNullException("token");
+
             tokenRepository.Delete(token);
         }
         #endregion
 
 
-        public void Save()
+        public virtual bool IsExist(string tokenKey)
         {
-            unitOfWork.Commit();
+            return tokenRepository.TableNoTracking.Any(t => t.TokenKey.Equals(tokenKey));
         }
 
-        public bool IsExist(string tokenKey)
+        public virtual bool IsExistByUser(User user)
         {
-            return tokenRepository.IsExist(tokenKey);
+            return tokenRepository.TableNoTracking.Any(t => t.UserID.Equals(user.UserID));
         }
 
-        public bool IsExistByUser(User user)
+        public virtual Token Generate(User user)
         {
-            return tokenRepository.GetTokenByUser(user) != null;
-        }
+            if (user == null)
+                throw new ArgumentNullException("user");
 
-        
+            
+            var tokenManager = new TokenManager(Constants.TimeType.Minute);
+            var tokenKey = tokenManager.GenerateTokenKey(user.NameId, user.Name);
+            var tokenExprire = tokenManager.GetExpire();
+            var table = tokenRepository.Table;
+
+
+            Token token;
+            if (IsExistByUser(user)) //Token isExist Update Token
+            {
+                token = table.FirstOrDefault(t => t.UserID.Equals(user.UserID));
+                token.TokenKey = tokenKey;
+                token.Expire = tokenExprire;
+                tokenRepository.Update(token);
+            }
+            else //Create Token
+            {
+                
+                var newToken = new Token();
+                newToken.TokenKey = tokenKey;
+                newToken.Expire = tokenExprire;
+                token = tokenRepository.Insert(newToken);
+            }
+
+            return token;
+
+        }
     }
 }

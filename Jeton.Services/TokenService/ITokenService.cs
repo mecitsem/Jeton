@@ -9,6 +9,7 @@ namespace Jeton.Services.TokenService
 {
     public interface ITokenService
     {
+        Token Generate(User user);
         bool IsExist(string tokenKey);
         bool IsExistByUser(User user);
         IEnumerable<Token> GetTokens();
@@ -17,9 +18,8 @@ namespace Jeton.Services.TokenService
         Token GetTokenByKey(string tokenKey);
         Token GetTokenByUserID(Guid userId);
         Token GetTokenByUser(User user);
-        void Insert(Token token);
+        Token Insert(Token token);
         void Update(Token token);
         void Delete(Token token);
-        void Save();
     }
 }

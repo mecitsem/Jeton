@@ -4,49 +4,63 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Jeton.Core.Entities;
-using Jeton.Data.Repositories.AppRepo;
 using Jeton.Data.Infrastructure.Interfaces;
+using Jeton.Core.Helpers;
+using Jeton.Core.Common;
 
 namespace Jeton.Services.AppService
 {
     public class AppService : IAppService
     {
-        private readonly IAppRepository appRepository;
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IRepository<App> appRepository;
 
-        public AppService(IAppRepository appRepository, IUnitOfWork unitOfWork)
+
+        public AppService(IRepository<App> appRepository)
         {
             this.appRepository = appRepository;
-            this.unitOfWork = unitOfWork;
         }
 
         #region CREATE
-        public void Insert(App app)
+        public App Insert(App app)
         {
-            appRepository.Add(app);
+            if (app == null)
+                throw new ArgumentNullException("app");
+
+            return appRepository.Insert(app);
         }
         #endregion
 
         #region READ
         public App GetAppById(Guid appId)
         {
-            return appRepository.GetAppById(appId);
+            if (appId == null)
+                throw new ArgumentNullException("appId");
+
+            return appRepository.GetById(appId);
         }
 
         public App GetAppByName(string appName)
         {
-            return appRepository.GetAppByName(appName);
+            if (string.IsNullOrEmpty(appName))
+                throw new ArgumentNullException("appName");
+
+            var table = appRepository.Table;
+
+            return table.FirstOrDefault(a => a.Name.Equals(appName));
         }
 
         public IEnumerable<App> GetApps()
         {
-            return appRepository.GetAll();
+            return appRepository.Table.ToList();
         }
         #endregion
 
         #region UPDATE
         public void Update(App app)
         {
+            if (app == null)
+                throw new ArgumentNullException("app");
+
             appRepository.Update(app);
         }
         #endregion
@@ -54,20 +68,28 @@ namespace Jeton.Services.AppService
         #region DELETE
         public void Delete(Guid appId)
         {
-            var app = appRepository.GetAppById(appId);
-            appRepository.Delete(app);
+            if (appId == null)
+                throw new ArgumentNullException("appId");
+
+
+            appRepository.Delete(a => a.AppID.Equals(appId));
         }
         #endregion
 
 
-        public void Save()
-        {
-            unitOfWork.Commit();
-        }
-
         public bool IsExist(Guid appId)
         {
-            return appRepository.IsExist(appId);
+            if (appId == null)
+                throw new ArgumentNullException("appId");
+
+            var table = appRepository.Table;
+
+            return table.Any(a => a.AppID.Equals(appId));
+        }
+
+        public string GenerateAccessKey()
+        {
+            return CryptoManager.Encrypt(Guid.NewGuid().ToString(), ConfigHelper.GetPassPhrase());
         }
     }
 }

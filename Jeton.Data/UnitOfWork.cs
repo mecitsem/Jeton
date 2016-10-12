@@ -18,9 +18,9 @@ namespace Jeton.Data
         private readonly IDbFactory dbFactory;
         private JetonEntities dbContext;
 
-        private AppRepository _appRepository;
-        private TokenRepository _tokenRepository;
-        private UserRepository _userRepository;
+        private readonly AppRepository appRepository;
+        private readonly TokenRepository tokenRepository;
+        private readonly UserRepository userRepository;
 
         public UnitOfWork(IDbFactory dbFactory)
         {
@@ -49,7 +49,7 @@ namespace Jeton.Data
         {
             get
             {
-                return _appRepository ?? (new AppRepository(dbFactory));
+                return appRepository ?? (new AppRepository(dbFactory));
             }
         }
 
@@ -57,7 +57,7 @@ namespace Jeton.Data
         {
             get
             {
-                return _tokenRepository ?? (new TokenRepository(dbFactory));
+                return tokenRepository ?? (new TokenRepository(dbFactory));
             }
         }
 
@@ -65,7 +65,7 @@ namespace Jeton.Data
         {
             get
             {
-                return _userRepository ?? (new UserRepository(dbFactory));
+                return userRepository ?? (new UserRepository(dbFactory));
             }
         }
 
