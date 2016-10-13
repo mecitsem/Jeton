@@ -14,26 +14,27 @@ namespace Jeton.Core.Helpers
         /// </summary>
         /// <param name="timeDuration"></param>
         /// <param name="timeType"></param>
+        /// <param name="time"></param>
         /// <returns></returns>
-        public static DateTime CalculateExpire(int timeDuration, TimeType timeType)
+        public static DateTime CalculateExpire(int timeDuration, TimeType timeType, DateTime time)
         {
-            var time = DateTime.Now;
+            var expire = time;
             switch (timeType)
             {
                 case TimeType.Hour:
-                    time.AddHours(timeDuration);
+                    expire = time.AddHours(timeDuration);
                     break;
                 case TimeType.Minute:
-                    time.AddMinutes(timeDuration);
+                    expire = time.AddMinutes(timeDuration);
                     break;
                 case TimeType.Second:
-                    time.AddSeconds(timeDuration);
+                    expire = time.AddSeconds(timeDuration);
                     break;
                 default:
-                    time.AddHours(timeDuration);
+                    expire = time.AddMinutes(timeDuration);
                     break;
             }
-            return time;
+            return expire;
         }
     }
 }

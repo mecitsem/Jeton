@@ -9,6 +9,8 @@ namespace Jeton.Services.TokenService
 {
     public interface ITokenService
     {
+        bool IsLiveByTokenKey(string tokenKey);
+        bool IsLive(Token token);
         Token Generate(User user);
         bool IsExist(string tokenKey);
         bool IsExistByUser(User user);

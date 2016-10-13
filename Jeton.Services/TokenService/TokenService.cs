@@ -115,10 +115,11 @@ namespace Jeton.Services.TokenService
             if (user == null)
                 throw new ArgumentNullException("user");
 
-
-            var tokenManager = new TokenManager(Constants.TimeType.Minute);
+           
+            var tokenManager = new TokenManager();
+            var time = tokenManager.Now;
             var tokenKey = tokenManager.GenerateTokenKey(user.NameId, user.Name);
-            var tokenExprire = tokenManager.GetExpire();
+            var tokenExprire = tokenManager.GetExpire(time);
             var table = tokenRepository.Table;
 
 
@@ -144,6 +145,41 @@ namespace Jeton.Services.TokenService
             }
 
             return token;
+
+        }
+
+        public bool IsLive(Token token)
+        {
+            if (token == null)
+                throw new ArgumentNullException("token");
+
+            bool result = false;
+
+            var tokenManager = new TokenManager();
+
+            if (token.Expire.HasValue)
+            {
+                result = tokenManager.TokenIsLive(token.Expire.Value);
+            }
+            else
+            {
+                result = tokenManager.TokenIsLive(token.TokenKey);
+            }
+
+            return result;
+        }
+
+        public bool IsLiveByTokenKey(string tokenKey)
+        {
+            if (string.IsNullOrEmpty(tokenKey))
+                throw new ArgumentNullException("tokenKey");
+
+            if (!IsExist(tokenKey))
+                throw new AggregateException("Token is not exist");
+
+            var token = GetTokenByKey(tokenKey);
+
+            return IsLive(token);
 
         }
     }

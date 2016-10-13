@@ -28,9 +28,10 @@ namespace Jeton.Api.Controllers
             this.userService = userService;
         }
 
-        
 
-        [Route("api/token/{appId}")]
+
+        [Route("api/token/generate/{appId}")]
+        [ActionName("Generate")]
         [HttpPost]
         public IHttpActionResult GenerateToken([FromUri] string appId, UserModel userModel)
         {
@@ -62,8 +63,8 @@ namespace Jeton.Api.Controllers
                     return BadRequest("AccessKey is null or empty. Please add your AccessKey.");
 
 
-                if(!ModelState.IsValid)
-                    return BadRequest("UserName is required. Please add your header.");
+                if (!ModelState.IsValid)
+                    return BadRequest("Please check your parameter.UserName and UserNameId");
 
 
 
@@ -106,7 +107,8 @@ namespace Jeton.Api.Controllers
 
                 //Generate Token
                 var token = tokenService.Generate(user);
-                var tokenDTO = new TokenDTO() {
+                var tokenDTO = new TokenDTO()
+                {
                     TokenKey = token.TokenKey
                 };
                 //Response
@@ -120,6 +122,89 @@ namespace Jeton.Api.Controllers
             return response;
         }
 
+        [Route("api/token/check/{appId}")]
+        [ActionName("Check")]        
+        [HttpPost]
+        public IHttpActionResult TokenIsActive([FromUri] string appId, TokenModel tokenModel)
+        {
+            IHttpActionResult response;
+            try
+            {
+                Guid _appId = new Guid();
 
+                string accessKey;
+
+                #region CHECK Parameters
+
+                //Check AppId
+                if (string.IsNullOrEmpty(appId) || !Guid.TryParse(appId, out _appId) || _appId.Equals(default(Guid)))
+                    return BadRequest("AppId is null or not Guid format");
+
+                //Request Header
+
+
+                //Check AccessKey
+                if (!Request.HeaderKeyIsExist(Constants.AccessKey))
+                    return BadRequest("AccessKey is required. Please add your header.");
+
+                accessKey = Request.GetHeaderValue(Constants.AccessKey);
+
+                //Check AccessKey Value
+                if (string.IsNullOrWhiteSpace(accessKey))
+                    return BadRequest("AccessKey is null or empty. Please add your AccessKey.");
+
+
+                if (!ModelState.IsValid)
+                    return BadRequest("Please check your tokenKey parameter");
+
+                #endregion
+
+
+                #region Check App
+
+                //Check App is Exist
+                if (!appService.IsExist(_appId))
+                    return BadRequest("AppId is invalid. Please register your app.");
+
+
+                //Get APP
+                var app = appService.GetAppById(_appId);
+
+                //Check Access Key
+                if (!app.AccessKey.Equals(accessKey))
+                    return Unauthorized();
+
+                #endregion
+
+                if (!tokenService.IsExist(tokenModel.TokenKey))
+                    return BadRequest("TokenKey is not exist.");
+
+
+
+                var isActive = tokenService.IsLiveByTokenKey(tokenModel.TokenKey);
+                var token = tokenService.GetTokenByKey(tokenModel.TokenKey);
+                var tokenActiveDTO = new TokenActiveDTO();
+
+                if (!isActive)
+                {
+                    tokenActiveDTO.IsActive = false;
+                }
+                else
+                {
+                    tokenActiveDTO.IsActive = true;
+                    var user = userService.GetUserById(token.UserID);
+                    tokenActiveDTO.UserName = user.Name;
+                    tokenActiveDTO.UserNameId = user.NameId;
+                }
+
+                response = Ok(tokenActiveDTO);
+
+            }
+            catch (Exception ex)
+            {
+                response = InternalServerError(ex);
+            }
+            return response;
+        }
     }
 }

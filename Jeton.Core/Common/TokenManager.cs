@@ -19,6 +19,13 @@ namespace Jeton.Core.Common
             this.timeType = timeType;
         }
 
+        public TokenManager()
+        {
+            this.timeType = TimeType.Minute;
+        }
+
+        public DateTime Now { get { return DateTime.UtcNow; } }
+
         /// <summary>
         ///  Token Schema (Time # NameId # Name # Guid) Time is Utc!
         /// </summary>
@@ -39,8 +46,7 @@ namespace Jeton.Core.Common
 
 
             //Now
-            var date = DateTime.UtcNow;
-            var time = date.ToString();
+            var time = Now.ToString();
 
             //Random Uniqe Key
             var guid = Guid.NewGuid();
@@ -68,7 +74,15 @@ namespace Jeton.Core.Common
             return token;
         }
 
-   
+        public bool TokenIsLive(DateTime expire)
+        {
+            return expire > Now;
+        }
+
+        public bool TokenIsLive(string tokenKey)
+        {
+            return TokenIsLive(tokenKey, Constants.TokenLiveDuration, timeType);
+        }
 
         /// <summary>
         /// Check token alive
@@ -76,11 +90,11 @@ namespace Jeton.Core.Common
         /// <param name="token">Token Schema  (Time # NameId # Name # Guid)</param>
         /// <param name="timeType">Hour, Minute, Second</param>
         /// <returns></returns>
-        public bool TokenIsLive(string token, int timeDuration, TimeType timeType)
+        public bool TokenIsLive(string tokenKey, int timeDuration, TimeType timeType)
         {
             bool result = false; ;
 
-            if (string.IsNullOrWhiteSpace(token))
+            if (string.IsNullOrWhiteSpace(tokenKey))
             {
                 throw new ArgumentNullException("Token is null");
             }
@@ -88,22 +102,22 @@ namespace Jeton.Core.Common
             try
             {
                 var passPhrase = ConfigHelper.GetPassPhrase();
-                var data = CryptoManager.Decrypt(token, passPhrase);
+                var data = CryptoManager.Decrypt(tokenKey, passPhrase);
                 //Time
                 var time = default(DateTime);
-    
+
                 if (!DateTime.TryParse(data.Split(SEP)[0], out time))
                 {
                     throw new ArgumentException("Datetime is invalid");
                 }
 
-                var now = DateTime.UtcNow;
-                
+               
+
                 //Calculate Expire
-                var expire = GetExpire();
-                
+                var expire = GetExpire(time);
+
                 //Check Time
-                result = expire > now;
+                result = expire > Now;
 
             }
             catch (Exception ex)
@@ -113,9 +127,9 @@ namespace Jeton.Core.Common
             return result;
         }
 
-        public DateTime GetExpire()
+        public DateTime GetExpire(DateTime time)
         {
-            return TokenHelper.CalculateExpire(TokenLiveDuration, timeType);
+            return TokenHelper.CalculateExpire(TokenLiveDuration, timeType, time);
         }
     }
 }
