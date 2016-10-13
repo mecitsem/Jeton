@@ -55,17 +55,7 @@ namespace Jeton.Data.Repositories.TokenRepo
 
         public override void Update(Token entity)
         {
-            //Token Manager
-            var tokenManager = new TokenManager(TimeType.Hour);
-
-            var now = DateTime.Now;
-
-            //Token Update Key and Expire 
-            entity.TokenKey = tokenManager.GenerateToken(entity.User.NameId, entity.User.Name);
-            entity.Expire = tokenManager.GetExpire();
-            entity.Modified = now;
-
-            //Update
+            entity.Modified = DateTime.Now;
             base.Update(entity);
         }
     }

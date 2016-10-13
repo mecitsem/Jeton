@@ -13,7 +13,7 @@ namespace Jeton.Data.Configuration
         public TokenConfiguration()
         {
             ToTable("Tokes");
-            Property(t => t.TokenKey).IsRequired().HasMaxLength(255);
+            Property(t => t.TokenKey).IsRequired().HasMaxLength(1000);
             
         }
     }

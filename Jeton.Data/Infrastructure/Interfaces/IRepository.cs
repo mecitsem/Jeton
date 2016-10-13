@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Jeton.Data.Infrastructure.Interfaces
 {
-    public interface IRepository<T> where T : class
+    public partial interface IRepository<T> where T : class
     {
         /// <summary>
         /// Marks an entity as new

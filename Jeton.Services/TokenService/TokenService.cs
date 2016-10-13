@@ -7,14 +7,15 @@ using Jeton.Core.Entities;
 using Jeton.Data.Infrastructure.Interfaces;
 using Jeton.Core.Helpers;
 using Jeton.Core.Common;
+using Jeton.Data.Repositories.TokenRepo;
 
 namespace Jeton.Services.TokenService
 {
     public class TokenService : ITokenService
     {
-        private readonly IRepository<Token> tokenRepository;
+        private readonly ITokenRepository tokenRepository;
 
-        public TokenService(IRepository<Token> tokenRepository)
+        public TokenService(ITokenRepository tokenRepository)
         {
             this.tokenRepository = tokenRepository;
         }
@@ -114,7 +115,7 @@ namespace Jeton.Services.TokenService
             if (user == null)
                 throw new ArgumentNullException("user");
 
-            
+
             var tokenManager = new TokenManager(Constants.TimeType.Minute);
             var tokenKey = tokenManager.GenerateTokenKey(user.NameId, user.Name);
             var tokenExprire = tokenManager.GetExpire();
@@ -131,10 +132,14 @@ namespace Jeton.Services.TokenService
             }
             else //Create Token
             {
-                
-                var newToken = new Token();
-                newToken.TokenKey = tokenKey;
-                newToken.Expire = tokenExprire;
+
+                var newToken = new Token()
+                {
+                    User = user,
+                    UserID = user.UserID,
+                    TokenKey = tokenKey,
+                    Expire = tokenExprire
+                };
                 token = tokenRepository.Insert(newToken);
             }
 

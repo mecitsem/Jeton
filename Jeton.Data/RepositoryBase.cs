@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Jeton.Data
 {
-    public class RepositoryBase<T> : IRepository<T> where T : class
+    public partial class RepositoryBase<T> : IRepository<T> where T : class
     {
         #region Properties
         private JetonEntities dataContext;
@@ -47,9 +47,6 @@ namespace Jeton.Data
             DbFactory = dbFactory;
         }
 
-        public RepositoryBase()
-        {
-        }
 
         #region Utilities
         /// <summary>
@@ -172,7 +169,7 @@ namespace Jeton.Data
         /// Insert entity
         /// </summary>
         /// <param name="entity">Entity</param>
-        public T Insert(T entity)
+        public virtual T Insert(T entity)
         {
             try
             {
@@ -194,7 +191,7 @@ namespace Jeton.Data
         /// Insert entities
         /// </summary>
         /// <param name="entities">Entities</param>
-        public void Insert(IEnumerable<T> entities)
+        public virtual void Insert(IEnumerable<T> entities)
         {
             try
             {

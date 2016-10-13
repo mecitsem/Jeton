@@ -5,14 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Jeton.Core.Entities;
 using Jeton.Data.Infrastructure.Interfaces;
+using Jeton.Data.Repositories.UserRepo;
 
 namespace Jeton.Services.UserService
 {
     public class UserService : IUserService
     {
-        private readonly IRepository<User> userRepository;
+        private readonly IUserRepository userRepository;
 
-        public UserService(IRepository<User> userRepository)
+        public UserService(IUserRepository userRepository)
         {
             this.userRepository = userRepository;
         }

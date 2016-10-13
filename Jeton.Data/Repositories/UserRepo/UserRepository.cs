@@ -50,12 +50,12 @@ namespace Jeton.Data.Repositories.UserRepo
             base.Update(entity);
         }
 
-        public override void Add(User entity)
+        public override User Insert(User entity)
         {
             var now = DateTime.Now;
             entity.Created = now;
             entity.Modified = now;
-            base.Add(entity);
+            return base.Insert(entity);
         }
     }
 }

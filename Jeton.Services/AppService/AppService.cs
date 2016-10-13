@@ -7,15 +7,16 @@ using Jeton.Core.Entities;
 using Jeton.Data.Infrastructure.Interfaces;
 using Jeton.Core.Helpers;
 using Jeton.Core.Common;
+using Jeton.Data.Repositories.AppRepo;
 
 namespace Jeton.Services.AppService
 {
     public class AppService : IAppService
     {
-        private readonly IRepository<App> appRepository;
+        private readonly IAppRepository appRepository;
 
 
-        public AppService(IRepository<App> appRepository)
+        public AppService(IAppRepository appRepository)
         {
             this.appRepository = appRepository;
         }
