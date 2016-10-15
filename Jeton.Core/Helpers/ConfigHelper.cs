@@ -10,6 +10,8 @@ namespace Jeton.Core.Helpers
 {
     public class ConfigHelper
     {
+        private const string _appSettingsPrefix = "jeton";
+
         public static string GetPassPhrase()
         {
             var passPhrase = GetAppSettingsValue(Constants.AppSettings.PassPhrase);
@@ -20,9 +22,14 @@ namespace Jeton.Core.Helpers
             return passPhrase;
         }
 
+        /// <summary>
+        /// Key Format [prefix]:[keyName] For exp: <add key="jeton:PassPhrase" value="" />
+        /// </summary>
+        /// <param name="appSettingsKey"></param>
+        /// <returns></returns>
         public static string GetAppSettingsValue(Constants.AppSettings appSettingsKey)
         {
-            return ConfigurationManager.AppSettings[appSettingsKey.ToString()];
+            return ConfigurationManager.AppSettings[string.Format("{0}:{1}", _appSettingsPrefix, appSettingsKey.ToString())];
         }
     }
 }
