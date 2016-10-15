@@ -1,11 +1,7 @@
 ﻿using Jeton.Core.Entities;
 using Jeton.Data.Infrastructure.Interfaces;
-using Jeton.Data.Repositories;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Jeton.Data.Repositories.AppRepo
 {
@@ -16,17 +12,17 @@ namespace Jeton.Data.Repositories.AppRepo
 
         public App GetAppById(Guid appId)
         {
-           return this.DbContext.Apps.Find(appId);
+           return DbContext.Apps.Find(appId);
         }
 
         public App GetAppByName(string appName)
         {
-            return this.DbContext.Apps.FirstOrDefault(a => a.Name.Equals(appName));
+            return DbContext.Apps.FirstOrDefault(a => a.Name.Equals(appName));
         }
 
         public bool IsExist(Guid appId)
         {
-            return this.DbContext.Apps.Any(a => a.AppID.Equals(appId));
+            return DbContext.Apps.Any(a => a.AppID.Equals(appId));
         }
 
         public override void Update(App entity)

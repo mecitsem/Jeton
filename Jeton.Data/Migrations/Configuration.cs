@@ -1,3 +1,5 @@
+using Jeton.Core.Common;
+
 namespace Jeton.Data.Migrations
 {
     using Core.Entities;
@@ -13,7 +15,7 @@ namespace Jeton.Data.Migrations
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(Jeton.Data.JetonEntities context)
+        protected override void Seed(JetonEntities context)
         {
             //  This method will be called after migrating to the latest version.
 
@@ -28,13 +30,26 @@ namespace Jeton.Data.Migrations
             //    );
             //
 
-            var app = new App() {
-                Name = "Demo",
-                IsRoot = true,
-                AccessKey = "BkX9uAhkHoRXTrkPbyZHsx48Odyeh",
-            };
+            var tokenManager = new TokenManager();
 
+            var app = new App()
+            {
+                Name = "RootApp",
+                IsRoot = true,
+                AccessKey = tokenManager.GenerateAccessKey(),
+            };
+            //Save RootApp
             context.Apps.Add(app);
+
+            var app1 = new App()
+            {
+                Name = "App1",
+                IsRoot = false,
+                AccessKey = tokenManager.GenerateAccessKey()
+            };
+            //Save App1
+            context.Apps.Add(app1);
+
             context.SaveChanges();
         }
     }

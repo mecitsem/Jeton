@@ -1,6 +1,4 @@
-﻿using Jeton.Core.Entities;
-using Jeton.Data;
-using Jeton.Data.Infrastructure;
+﻿using Jeton.Data.Infrastructure;
 using Jeton.Data.Infrastructure.Interfaces;
 using Jeton.Data.Repositories.AppRepo;
 using Jeton.Data.Repositories.TokenRepo;
@@ -9,10 +7,6 @@ using Jeton.Services.AppService;
 using Jeton.Services.TokenService;
 using Jeton.Services.UserService;
 using Microsoft.Practices.Unity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Http;
 
 namespace Jeton.Api.Initializer

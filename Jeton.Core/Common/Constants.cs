@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Jeton.Core.Common
+﻿namespace Jeton.Core.Common
 {
     public class Constants
     {
@@ -20,7 +14,7 @@ namespace Jeton.Core.Common
             PassPhrase
         }
 
-        public enum TimeType : int
+        public enum TimeType
         {
             Second = 1,
             Minute = 2,

@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Jeton.Core.Entities;
-using Jeton.Data.Infrastructure.Interfaces;
 using Jeton.Core.Helpers;
-using Jeton.Core.Common;
 using Jeton.Data.Repositories.AppRepo;
 
 namespace Jeton.Services.AppService
@@ -25,7 +21,7 @@ namespace Jeton.Services.AppService
         public App Insert(App app)
         {
             if (app == null)
-                throw new ArgumentNullException("app");
+                throw new ArgumentNullException(nameof(app));
 
             return appRepository.Insert(app);
         }
@@ -35,7 +31,7 @@ namespace Jeton.Services.AppService
         public App GetAppById(Guid appId)
         {
             if (appId == null)
-                throw new ArgumentNullException("appId");
+                throw new ArgumentNullException(nameof(appId));
 
             return appRepository.GetById(appId);
         }
@@ -43,7 +39,7 @@ namespace Jeton.Services.AppService
         public App GetAppByName(string appName)
         {
             if (string.IsNullOrEmpty(appName))
-                throw new ArgumentNullException("appName");
+                throw new ArgumentNullException(nameof(appName));
 
             var table = appRepository.Table;
 
@@ -60,7 +56,7 @@ namespace Jeton.Services.AppService
         public void Update(App app)
         {
             if (app == null)
-                throw new ArgumentNullException("app");
+                throw new ArgumentNullException(nameof(app));
 
             appRepository.Update(app);
         }
@@ -70,7 +66,7 @@ namespace Jeton.Services.AppService
         public void Delete(Guid appId)
         {
             if (appId == null)
-                throw new ArgumentNullException("appId");
+                throw new ArgumentNullException(nameof(appId));
 
 
             appRepository.Delete(a => a.AppID.Equals(appId));
@@ -81,7 +77,7 @@ namespace Jeton.Services.AppService
         public bool IsExist(Guid appId)
         {
             if (appId == null)
-                throw new ArgumentNullException("appId");
+                throw new ArgumentNullException(nameof(appId));
 
             var table = appRepository.Table;
 
@@ -90,7 +86,7 @@ namespace Jeton.Services.AppService
 
         public string GenerateAccessKey()
         {
-            return CryptoManager.Encrypt(Guid.NewGuid().ToString(), ConfigHelper.GetPassPhrase());
+            return CryptoHelper.Encrypt(Guid.NewGuid().ToString(), ConfigHelper.GetPassPhrase());
         }
     }
 }

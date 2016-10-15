@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Jeton.Core.Helpers
 {
-    public class CryptoManager
+    public class CryptoHelper
     {
 
         private const int Keysize = 256;

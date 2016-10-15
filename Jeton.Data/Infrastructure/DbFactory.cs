@@ -9,17 +9,16 @@ namespace Jeton.Data.Infrastructure
 {
     public class DbFactory : Disposable, IDbFactory
     {
-        JetonEntities dbContext;
+        private JetonEntities _dbContext;
 
         public JetonEntities Init()
         {
-            return dbContext ?? (dbContext = new JetonEntities());
+            return _dbContext ?? (_dbContext = new JetonEntities());
         }
 
         protected override void DisposeCore()
         {
-            if (dbContext != null)
-                dbContext.Dispose();
+            _dbContext?.Dispose();
         }
     }
 }

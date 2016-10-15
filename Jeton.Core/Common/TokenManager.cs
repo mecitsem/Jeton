@@ -1,30 +1,29 @@
-﻿using Jeton.Core.Common;
-using Jeton.Core.Helpers;
+﻿using Jeton.Core.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Globalization;
 using System.Text;
-using System.Threading.Tasks;
 using static Jeton.Core.Common.Constants;
 
 namespace Jeton.Core.Common
 {
     public class TokenManager
     {
-        private const char SEP = '#';
-        private TimeType timeType;
+        private const char Sep = '#';
+        private readonly TimeType _timeType;
 
         public TokenManager(TimeType timeType)
         {
-            this.timeType = timeType;
+            _timeType = timeType;
         }
 
         public TokenManager()
         {
-            this.timeType = TimeType.Minute;
+            _timeType = TimeType.Minute;
         }
 
-        public DateTime Now { get { return DateTime.UtcNow; } }
+        private string PassPhrase => ConfigHelper.GetPassPhrase();
+
+        public DateTime Now => DateTime.UtcNow;
 
         /// <summary>
         ///  Token Schema (Time # NameId # Name # Guid) Time is Utc!
@@ -36,17 +35,17 @@ namespace Jeton.Core.Common
         {
             if (string.IsNullOrWhiteSpace(nameId))
             {
-                throw new ArgumentNullException("NameId parameter is null!");
+                throw new ArgumentNullException(nameof(nameId));
             }
 
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentNullException("Name parameter is null!");
+                throw new ArgumentNullException(nameof(name));
             }
 
 
             //Now
-            var time = Now.ToString();
+            var time = Now.ToString(CultureInfo.InvariantCulture);
 
             //Random Uniqe Key
             var guid = Guid.NewGuid();
@@ -56,20 +55,17 @@ namespace Jeton.Core.Common
             //Token Binary Array
             var sb = new StringBuilder();
             sb.Append(time);
-            sb.Append(SEP);
+            sb.Append(Sep);
             sb.Append(nameId);
-            sb.Append(SEP);
+            sb.Append(Sep);
             sb.Append(name);
-            sb.Append(SEP);
+            sb.Append(Sep);
             sb.Append(key);
             //Create Token
 
-            var passPhrase = ConfigHelper.GetPassPhrase();
 
-            if (string.IsNullOrEmpty(passPhrase))
-                throw new ArgumentNullException("passPhrase");
 
-            var token = CryptoManager.Encrypt(sb.ToString(), passPhrase);
+            var token = CryptoHelper.Encrypt(sb.ToString(), PassPhrase);
 
             return token;
         }
@@ -81,37 +77,38 @@ namespace Jeton.Core.Common
 
         public bool TokenIsLive(string tokenKey)
         {
-            return TokenIsLive(tokenKey, Constants.TokenLiveDuration, timeType);
+            return TokenIsLive(tokenKey, TokenLiveDuration, _timeType);
         }
 
         /// <summary>
         /// Check token alive
         /// </summary>
-        /// <param name="token">Token Schema  (Time # NameId # Name # Guid)</param>
+        /// <param name="timeDuration"></param>
         /// <param name="timeType">Hour, Minute, Second</param>
+        /// <param name="tokenKey"></param>
         /// <returns></returns>
         public bool TokenIsLive(string tokenKey, int timeDuration, TimeType timeType)
         {
-            bool result = false; ;
+            bool result = false;
 
             if (string.IsNullOrWhiteSpace(tokenKey))
             {
-                throw new ArgumentNullException("Token is null");
+                throw new ArgumentNullException(nameof(tokenKey));
             }
 
             try
             {
-                var passPhrase = ConfigHelper.GetPassPhrase();
-                var data = CryptoManager.Decrypt(tokenKey, passPhrase);
-                //Time
-                var time = default(DateTime);
 
-                if (!DateTime.TryParse(data.Split(SEP)[0], out time))
+                var data = CryptoHelper.Decrypt(tokenKey, PassPhrase);
+                //Time
+                DateTime time;
+
+                if (!DateTime.TryParse(data.Split(Sep)[0], out time))
                 {
                     throw new ArgumentException("Datetime is invalid");
                 }
 
-               
+
 
                 //Calculate Expire
                 var expire = GetExpire(time);
@@ -122,14 +119,19 @@ namespace Jeton.Core.Common
             }
             catch (Exception ex)
             {
-
+                // ignored
             }
             return result;
         }
 
         public DateTime GetExpire(DateTime time)
         {
-            return TokenHelper.CalculateExpire(TokenLiveDuration, timeType, time);
+            return TokenHelper.CalculateExpire(TokenLiveDuration, _timeType, time);
+        }
+
+        public string GenerateAccessKey()
+        {
+            return CryptoHelper.Encrypt(Guid.NewGuid().ToString(), PassPhrase);
         }
     }
 }

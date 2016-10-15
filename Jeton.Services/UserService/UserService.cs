@@ -1,30 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Jeton.Core.Entities;
-using Jeton.Data.Infrastructure.Interfaces;
 using Jeton.Data.Repositories.UserRepo;
 
 namespace Jeton.Services.UserService
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository userRepository;
+        private readonly IUserRepository _userRepository;
 
         public UserService(IUserRepository userRepository)
         {
-            this.userRepository = userRepository;
+            _userRepository = userRepository;
         }
 
         #region CREATE
         public User Insert(User user)
         {
             if (user == null)
-                throw new ArgumentException("user");
+                throw new ArgumentNullException(nameof(user));
 
-            return userRepository.Insert(user);
+            return _userRepository.Insert(user);
         }
         #endregion
 
@@ -32,17 +29,17 @@ namespace Jeton.Services.UserService
         public User GetUserById(Guid userId)
         {
             if (userId == null)
-                throw new ArgumentNullException("userId");
+                throw new ArgumentNullException(nameof(userId));
 
-            return userRepository.GetById(userId);
+            return _userRepository.GetById(userId);
         }
 
         public User GetUserByName(string name)
         {
             if (string.IsNullOrEmpty(name))
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
 
-            var table = userRepository.Table;
+            var table = _userRepository.Table;
 
             return table.FirstOrDefault(u => u.Name.Equals(name));
         }
@@ -50,16 +47,16 @@ namespace Jeton.Services.UserService
         public User GetUserByNameId(string nameId)
         {
             if (string.IsNullOrEmpty(nameId))
-                throw new ArgumentNullException("nameId");
+                throw new ArgumentNullException(nameof(nameId));
 
-            var table = userRepository.Table;
+            var table = _userRepository.Table;
 
             return table.FirstOrDefault(u => u.NameId.Equals(nameId));
         }
 
         public IEnumerable<User> GetUsers()
         {
-            return userRepository.Table.ToList();
+            return _userRepository.Table.ToList();
         }
         #endregion
 
@@ -67,16 +64,16 @@ namespace Jeton.Services.UserService
         public void Update(User user)
         {
             if (user == null)
-                throw new ArgumentNullException("user");
+                throw new ArgumentNullException(nameof(user));
 
-            userRepository.Update(user);
+            _userRepository.Update(user);
         }
         #endregion
 
         #region DELETE
         public void Delete(User user)
         {
-            userRepository.Delete(user);
+            _userRepository.Delete(user);
         }
         #endregion
 
@@ -84,8 +81,8 @@ namespace Jeton.Services.UserService
         public bool IsExist(string nameId)
         {
             if (string.IsNullOrEmpty(nameId))
-                throw new ArgumentNullException("nameId");
-            var table = userRepository.TableNoTracking;
+                throw new ArgumentNullException(nameof(nameId));
+            var table = _userRepository.TableNoTracking;
 
             return table.Any(u => u.NameId.Equals(nameId));
         }

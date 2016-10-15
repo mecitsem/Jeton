@@ -1,20 +1,17 @@
-﻿using Jeton.Core;
-using Jeton.Data.Infrastructure.Interfaces;
+﻿using Jeton.Data.Infrastructure.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Jeton.Data
 {
     public partial class RepositoryBase<T> : IRepository<T> where T : class
     {
         #region Properties
-        private JetonEntities dataContext;
+        private JetonEntities _dataContext;
         private IDbSet<T> _entities;
     
 
@@ -27,18 +24,9 @@ namespace Jeton.Data
         /// <summary>
         /// Entities
         /// </summary>
-        protected virtual IDbSet<T> Entities
-        {
-            get
-            {
-                return _entities ?? (_entities = DbContext.Set<T>());
-            }
-        }
+        protected virtual IDbSet<T> Entities => _entities ?? (_entities = DbContext.Set<T>());
 
-        protected JetonEntities DbContext
-        {
-            get { return dataContext ?? (dataContext = DbFactory.Init()); }
-        }
+        protected JetonEntities DbContext => _dataContext ?? (_dataContext = DbFactory.Init());
 
         #endregion
 
@@ -56,12 +44,9 @@ namespace Jeton.Data
         /// <returns>Error</returns>
         protected string GetFullErrorText(DbEntityValidationException exc)
         {
-            var msg = string.Empty;
-            foreach (var validationErrors in exc.EntityValidationErrors)
-                foreach (var error in validationErrors.ValidationErrors)
-                    msg += string.Format("Property: {0} Error: {1}", error.PropertyName, error.ErrorMessage) + Environment.NewLine;
-            return msg;
+            return exc.EntityValidationErrors.SelectMany(validationErrors => validationErrors.ValidationErrors).Aggregate(string.Empty, (current, error) => current + ($"Property: {error.PropertyName} Error: {error.ErrorMessage}" + Environment.NewLine));
         }
+
         #endregion
 
         #region Implementaion
@@ -75,7 +60,7 @@ namespace Jeton.Data
             try
             {
                 if (entity == null)
-                    throw new ArgumentNullException("entity");
+                    throw new ArgumentNullException(nameof(entity));
 
                 Entities.Attach(entity);
 
@@ -98,7 +83,7 @@ namespace Jeton.Data
             try
             {
                 if (entity == null)
-                    throw new ArgumentNullException("entity");
+                    throw new ArgumentNullException(nameof(entity));
 
                 if (entity.GetType().GetProperty("IsDeleted") != null)
                 {
@@ -142,8 +127,8 @@ namespace Jeton.Data
         /// <param name="where"></param>
         public virtual void Delete(Expression<Func<T, bool>> where)
         {
-            IEnumerable<T> objects = this.Entities.Where<T>(where).AsEnumerable();
-            foreach (T obj in objects)
+            var objects = Entities.Where<T>(where).AsEnumerable();
+            foreach (var obj in objects)
                 Delete(obj);
         }
         /// <summary>
@@ -174,7 +159,7 @@ namespace Jeton.Data
             try
             {
                 if (entity == null)
-                    throw new ArgumentNullException("entity");
+                    throw new ArgumentNullException(nameof(entity));
 
                 var result = this.Entities.Add(entity);
 
@@ -196,7 +181,7 @@ namespace Jeton.Data
             try
             {
                 if (entities == null)
-                    throw new ArgumentNullException("entities");
+                    throw new ArgumentNullException(nameof(entities));
 
                 foreach (var entity in entities)
                     this.Entities.Add(entity);
@@ -209,21 +194,10 @@ namespace Jeton.Data
             }
         }
 
-        public IQueryable<T> Table
-        {
-            get
-            {
-                return this.Entities;
-            }
-        }
+        public IQueryable<T> Table => Entities;
 
-        public IQueryable<T> TableNoTracking
-        {
-            get
-            {
-                return this.Entities.AsNoTracking();
-            }
-        }
+        public IQueryable<T> TableNoTracking => Entities.AsNoTracking();
+
         #endregion
 
 

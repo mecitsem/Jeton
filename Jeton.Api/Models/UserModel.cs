@@ -9,9 +9,9 @@ namespace Jeton.Api.Models
     public class UserModel
     {
         [Required]
-        public string NameId { get; set; }
+        public string UserNameId { get; set; }
 
         [Required]
-        public string Name { get; set; }
+        public string UserName { get; set; }
     }
 }

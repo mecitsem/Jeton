@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Jeton.Core.Common.Constants;
 
 namespace Jeton.Core.Helpers
@@ -18,7 +14,7 @@ namespace Jeton.Core.Helpers
         /// <returns></returns>
         public static DateTime CalculateExpire(int timeDuration, TimeType timeType, DateTime time)
         {
-            var expire = time;
+            DateTime expire;
             switch (timeType)
             {
                 case TimeType.Hour:

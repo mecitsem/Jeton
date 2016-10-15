@@ -3,44 +3,43 @@ using Jeton.Services.AppService;
 using Jeton.Services.TokenService;
 using Jeton.Services.UserService;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+using System.ComponentModel.DataAnnotations;
 using System.Web.Http;
+using System.Web.Http.ModelBinding;
 using Jeton.Api.Extensions;
 using Jeton.Api.Models;
 using Jeton.Api.DTOs;
+using Jeton.Api.Filters;
 
 namespace Jeton.Api.Controllers
 {
     public class TokenController : ApiController
     {
 
-        private readonly ITokenService tokenService;
-        private readonly IAppService appService;
-        private readonly IUserService userService;
+        private readonly ITokenService _tokenService;
+        private readonly IAppService _appService;
+        private readonly IUserService _userService;
 
         public TokenController(IAppService appService, ITokenService tokenService, IUserService userService)
         {
-            this.appService = appService;
-            this.tokenService = tokenService;
-            this.userService = userService;
+            _appService = appService;
+            _tokenService = tokenService;
+            _userService = userService;
         }
+
 
 
 
         [Route("api/token/generate/{appId}")]
         [ActionName("Generate")]
+        [CheckModelForNull]
         [HttpPost]
-        public IHttpActionResult GenerateToken([FromUri] string appId, UserModel userModel)
+        public IHttpActionResult GenerateToken([FromUri] string appId, [FromBody] UserModel userModel)
         {
             IHttpActionResult response;
             try
             {
-                Guid _appId = new Guid();
-
-                string accessKey;
+                Guid _appId;
 
                 #region CHECK Parameters
 
@@ -56,17 +55,11 @@ namespace Jeton.Api.Controllers
                 if (!Request.HeaderKeyIsExist(Constants.AccessKey))
                     return BadRequest("AccessKey is required. Please add your header.");
 
-                accessKey = Request.GetHeaderValue(Constants.AccessKey);
+                var accessKey = Request.GetHeaderValue(Constants.AccessKey);
 
                 //Check AccessKey Value
                 if (string.IsNullOrWhiteSpace(accessKey))
                     return BadRequest("AccessKey is null or empty. Please add your AccessKey.");
-
-
-                if (!ModelState.IsValid)
-                    return BadRequest("Please check your parameter.UserName and UserNameId");
-
-
 
 
                 #endregion
@@ -74,12 +67,12 @@ namespace Jeton.Api.Controllers
                 #region Check App
 
                 //Check App is Exist
-                if (!appService.IsExist(_appId))
+                if (!_appService.IsExist(_appId))
                     return BadRequest("AppId is invalid. Please register your app");
 
 
                 //Get APP
-                var app = appService.GetAppById(_appId);
+                var app = _appService.GetAppById(_appId);
 
                 //Check Access Key
                 if (!app.AccessKey.Equals(accessKey))
@@ -93,26 +86,23 @@ namespace Jeton.Api.Controllers
                 #region Check User
 
                 //Get User
-                Core.Entities.User user = userService.GetUserByNameId(userModel.NameId);
+                var user = _userService.GetUserByNameId(userModel.UserNameId) ??
+                                          _userService.Insert(new Core.Entities.User()
+                                          {
+                                              Name = userModel.UserName,
+                                              NameId = userModel.UserNameId,
+                                          });
 
-                if (user == null)
-                {
-                    user = userService.Insert(new Core.Entities.User()
-                    {
-                        Name = userModel.Name,
-                        NameId = userModel.NameId,
-                    });
-                }
                 #endregion
 
                 //Generate Token
-                var token = tokenService.Generate(user);
-                var tokenDTO = new TokenDTO()
+                var token = _tokenService.Generate(user);
+                var tokenDto = new TokenDTO()
                 {
                     TokenKey = token.TokenKey
                 };
                 //Response
-                response = Ok(tokenDTO);
+                response = Ok(tokenDto);
             }
             catch (Exception ex)
             {
@@ -123,20 +113,18 @@ namespace Jeton.Api.Controllers
         }
 
         [Route("api/token/check/{appId}")]
-        [ActionName("Check")]        
+        [ActionName("Check")]
+        [CheckModelForNull]
         [HttpPost]
-        public IHttpActionResult TokenIsActive([FromUri] string appId, TokenModel tokenModel)
+        public IHttpActionResult TokenIsActive([FromUri] string appId, [FromBody] TokenModel tokenModel)
         {
             IHttpActionResult response;
             try
             {
-                Guid _appId = new Guid();
-
-                string accessKey;
-
                 #region CHECK Parameters
 
                 //Check AppId
+                Guid _appId;
                 if (string.IsNullOrEmpty(appId) || !Guid.TryParse(appId, out _appId) || _appId.Equals(default(Guid)))
                     return BadRequest("AppId is null or not Guid format");
 
@@ -147,15 +135,11 @@ namespace Jeton.Api.Controllers
                 if (!Request.HeaderKeyIsExist(Constants.AccessKey))
                     return BadRequest("AccessKey is required. Please add your header.");
 
-                accessKey = Request.GetHeaderValue(Constants.AccessKey);
+                var accessKey = Request.GetHeaderValue(Constants.AccessKey);
 
                 //Check AccessKey Value
                 if (string.IsNullOrWhiteSpace(accessKey))
                     return BadRequest("AccessKey is null or empty. Please add your AccessKey.");
-
-
-                if (!ModelState.IsValid)
-                    return BadRequest("Please check your tokenKey parameter");
 
                 #endregion
 
@@ -163,12 +147,12 @@ namespace Jeton.Api.Controllers
                 #region Check App
 
                 //Check App is Exist
-                if (!appService.IsExist(_appId))
+                if (!_appService.IsExist(_appId))
                     return BadRequest("AppId is invalid. Please register your app.");
 
 
                 //Get APP
-                var app = appService.GetAppById(_appId);
+                var app = _appService.GetAppById(_appId);
 
                 //Check Access Key
                 if (!app.AccessKey.Equals(accessKey))
@@ -176,28 +160,28 @@ namespace Jeton.Api.Controllers
 
                 #endregion
 
-                if (!tokenService.IsExist(tokenModel.TokenKey))
+                if (!_tokenService.IsExist(tokenModel.TokenKey))
                     return BadRequest("TokenKey is not exist.");
 
 
 
-                var isActive = tokenService.IsLiveByTokenKey(tokenModel.TokenKey);
-                var token = tokenService.GetTokenByKey(tokenModel.TokenKey);
-                var tokenActiveDTO = new TokenActiveDTO();
+                var isActive = _tokenService.IsLiveByTokenKey(tokenModel.TokenKey);
+                var token = _tokenService.GetTokenByKey(tokenModel.TokenKey);
+                var tokenActiveDto = new TokenActiveDTO();
 
                 if (!isActive)
                 {
-                    tokenActiveDTO.IsActive = false;
+                    tokenActiveDto.IsActive = false;
                 }
                 else
                 {
-                    tokenActiveDTO.IsActive = true;
-                    var user = userService.GetUserById(token.UserID);
-                    tokenActiveDTO.UserName = user.Name;
-                    tokenActiveDTO.UserNameId = user.NameId;
+                    tokenActiveDto.IsActive = true;
+                    var user = _userService.GetUserById(token.UserID);
+                    tokenActiveDto.UserName = user.Name;
+                    tokenActiveDto.UserNameId = user.NameId;
                 }
 
-                response = Ok(tokenActiveDTO);
+                response = Ok(tokenActiveDto);
 
             }
             catch (Exception ex)

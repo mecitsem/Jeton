@@ -9,33 +9,33 @@ namespace Jeton.Api.Initializer
 {
     public class UnityResolver : IDependencyResolver
     {
-        protected IUnityContainer container;
+        protected IUnityContainer Container;
 
         public UnityResolver(IUnityContainer container)
         {
             if (container == null)
             {
-                throw new ArgumentNullException("container");
+                throw new ArgumentNullException(nameof(container));
             }
-            this.container = container;
+            this.Container = container;
         }
 
         public IDependencyScope BeginScope()
         {
-            var child = container.CreateChildContainer();
+            var child = Container.CreateChildContainer();
             return new UnityResolver(child);
         }
 
         public void Dispose()
         {
-            container.Dispose();
+            Container.Dispose();
         }
 
         public object GetService(Type serviceType)
         {
             try
             {
-                return container.Resolve(serviceType);
+                return Container.Resolve(serviceType);
             }
             catch (ResolutionFailedException)
             {
@@ -47,7 +47,7 @@ namespace Jeton.Api.Initializer
         {
             try
             {
-                return container.ResolveAll(serviceType);
+                return Container.ResolveAll(serviceType);
             }
             catch (ResolutionFailedException)
             {

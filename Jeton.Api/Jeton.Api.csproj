@@ -190,6 +190,8 @@
     <Compile Include="DTOs\TokenActiveDTO.cs" />
     <Compile Include="DTOs\TokenDTO.cs" />
     <Compile Include="Extensions\HttpRequestMessageExtensions.cs" />
+    <Compile Include="Filters\CheckModelForNullAttribute.cs" />
+    <Compile Include="Filters\ValidateModelAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

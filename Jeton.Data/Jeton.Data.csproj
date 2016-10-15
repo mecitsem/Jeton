@@ -101,13 +101,9 @@
     <Compile Include="Infrastructure\Interfaces\IDbFactory.cs" />
     <Compile Include="Infrastructure\Interfaces\IRepository.cs" />
     <Compile Include="JetonEntities.cs" />
-    <Compile Include="Migrations\201610121424222_JetonMigration.cs" />
-    <Compile Include="Migrations\201610121424222_JetonMigration.Designer.cs">
-      <DependentUpon>201610121424222_JetonMigration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201610130751311_JetonMigration1.cs" />
-    <Compile Include="Migrations\201610130751311_JetonMigration1.Designer.cs">
-      <DependentUpon>201610130751311_JetonMigration1.cs</DependentUpon>
+    <Compile Include="Migrations\201610151551304_JetonMig.cs" />
+    <Compile Include="Migrations\201610151551304_JetonMig.Designer.cs">
+      <DependentUpon>201610151551304_JetonMig.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -124,18 +120,15 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201610121424222_JetonMigration.resx">
-      <DependentUpon>201610121424222_JetonMigration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610130751311_JetonMigration1.resx">
-      <DependentUpon>201610130751311_JetonMigration1.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Jeton.Core\Jeton.Core.csproj">
       <Project>{4A51FFA9-30B4-4F53-9434-CB0005985AC4}</Project>
       <Name>Jeton.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201610151551304_JetonMig.resx">
+      <DependentUpon>201610151551304_JetonMig.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

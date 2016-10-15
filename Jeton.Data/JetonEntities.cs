@@ -1,11 +1,6 @@
 ﻿using Jeton.Core.Entities;
 using Jeton.Data.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Jeton.Data
 {
@@ -19,7 +14,7 @@ namespace Jeton.Data
 
         public virtual int Commit()
         {
-            return base.SaveChanges();
+            return SaveChanges();
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
