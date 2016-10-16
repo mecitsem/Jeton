@@ -1,4 +1,12 @@
 using System;
+using Jeton.Data.Infrastructure;
+using Jeton.Data.Infrastructure.Interfaces;
+using Jeton.Data.Repositories.AppRepo;
+using Jeton.Data.Repositories.TokenRepo;
+using Jeton.Data.Repositories.UserRepo;
+using Jeton.Services.AppService;
+using Jeton.Services.TokenService;
+using Jeton.Services.UserService;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.Configuration;
 
@@ -37,6 +45,19 @@ namespace Jeton.Admin.Web.App_Start
 
             // TODO: Register your types here
             // container.RegisterType<IProductRepository, ProductRepository>();
+
+            container.RegisterType<IDbFactory, DbFactory>();
+
+            //Repository
+            container.RegisterType<IAppRepository, AppRepository>();
+            container.RegisterType<ITokenRepository, TokenRepository>();
+            container.RegisterType<IUserRepository, UserRepository>();
+
+            //Services
+            container.RegisterType<IAppService, AppService>();
+            container.RegisterType<ITokenService, TokenService>();
+            container.RegisterType<IUserService, UserService>();
+
         }
     }
 }
