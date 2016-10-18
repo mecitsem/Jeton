@@ -70,14 +70,14 @@ namespace Jeton.Core.Common
             return token;
         }
 
-        public bool TokenIsLive(DateTime expire)
+        public bool TokenIsActive(DateTime expire)
         {
             return expire > Now;
         }
 
-        public bool TokenIsLive(string tokenKey)
+        public bool TokenIsActive(string tokenKey)
         {
-            return TokenIsLive(tokenKey, TokenLiveDuration, _timeType);
+            return TokenIsActive(tokenKey, TokenLiveDuration, _timeType);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace Jeton.Core.Common
         /// <param name="timeType">Hour, Minute, Second</param>
         /// <param name="tokenKey"></param>
         /// <returns></returns>
-        public bool TokenIsLive(string tokenKey, int timeDuration, TimeType timeType)
+        public bool TokenIsActive(string tokenKey, int timeDuration, TimeType timeType)
         {
             bool result = false;
 
@@ -133,5 +133,7 @@ namespace Jeton.Core.Common
         {
             return CryptoHelper.Encrypt(Guid.NewGuid().ToString(), PassPhrase);
         }
+
+
     }
 }

@@ -6,13 +6,15 @@ namespace Jeton.Services.TokenService
 {
     public interface ITokenService
     {
-        bool IsLiveByTokenKey(string tokenKey);
-        bool IsLive(Token token);
+        bool IsActiveByTokenKey(string tokenKey);
+        bool IsActive(Token token);
         Token Generate(User user);
         bool IsExist(string tokenKey);
         bool IsExistByUser(User user);
         IEnumerable<Token> GetTokens();
-        IEnumerable<Token> GetLiveTokens();
+        int GetTokensCount();
+        IEnumerable<Token> GetActiveTokens();
+        int GetActiveTokensCount();
         Token GetTokenById(Guid tokenId);
         Token GetTokenByKey(string tokenKey);
         Token GetTokenByUserId(Guid userId);

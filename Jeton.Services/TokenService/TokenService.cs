@@ -64,12 +64,14 @@ namespace Jeton.Services.TokenService
             return _tokenRepository.Table.ToList();
         }
 
-        public virtual IEnumerable<Token> GetLiveTokens()
+        public virtual IEnumerable<Token> GetActiveTokens()
         {
-            var now = DateTime.Now;
+            var tokenManager = new TokenManager();
             var table = _tokenRepository.Table;
-            return table.Where(t => t.Expire > now).ToList();
+            return table.AsEnumerable().Where(t => t.Expire.HasValue ? tokenManager.TokenIsActive(t.Expire.Value) : false).ToList();
         }
+
+
         #endregion
 
         #region UPDATE
@@ -108,7 +110,7 @@ namespace Jeton.Services.TokenService
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-           
+
             var tokenManager = new TokenManager();
             var time = tokenManager.Now;
             var tokenKey = tokenManager.GenerateTokenKey(user.NameId, user.Name);
@@ -142,30 +144,42 @@ namespace Jeton.Services.TokenService
 
         }
 
-        public bool IsLive(Token token)
+        public bool IsActive(Token token)
         {
             if (token == null)
                 throw new ArgumentNullException(nameof(token));
 
             var tokenManager = new TokenManager();
 
-            var result = token.Expire.HasValue ? tokenManager.TokenIsLive(token.Expire.Value) : tokenManager.TokenIsLive(token.TokenKey);
+            var result = token.Expire.HasValue ? tokenManager.TokenIsActive(token.Expire.Value) : tokenManager.TokenIsActive(token.TokenKey);
 
             return result;
         }
 
-        public bool IsLiveByTokenKey(string tokenKey)
+        public bool IsActiveByTokenKey(string tokenKey)
         {
             if (string.IsNullOrEmpty(tokenKey))
                 throw new ArgumentNullException(nameof(tokenKey));
 
             if (!IsExist(tokenKey))
-                throw new AggregateException("Token is not exist");
+                throw new ArgumentException("Token is not exist");
 
             var token = GetTokenByKey(tokenKey);
 
-            return IsLive(token);
+            return IsActive(token);
 
+        }
+
+        public int GetTokensCount()
+        {
+            return _tokenRepository.TableNoTracking.Count();
+        }
+
+        public int GetActiveTokensCount()
+        {
+            var tokenManager = new TokenManager();
+            var table = _tokenRepository.TableNoTracking;
+            return table.AsEnumerable().Where(t => t.Expire.HasValue ? tokenManager.TokenIsActive(t.Expire.Value) : false).Count();
         }
     }
 }

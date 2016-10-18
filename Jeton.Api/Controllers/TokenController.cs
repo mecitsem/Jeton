@@ -165,8 +165,11 @@ namespace Jeton.Api.Controllers
 
 
 
-                var isActive = _tokenService.IsLiveByTokenKey(tokenModel.TokenKey);
+
                 var token = _tokenService.GetTokenByKey(tokenModel.TokenKey);
+
+                var isActive = _tokenService.IsActive(token);
+
                 var tokenActiveDto = new TokenActiveDTO();
 
                 if (!isActive)

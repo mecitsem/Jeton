@@ -41,6 +41,7 @@ namespace Jeton.Admin.Web
                       "~/Content/vendor/morrisjs/morris.css",
                       "~/Content/vendor/font-awesome/css/font-awesome.min.css"
                 ));
+
         }
     }
 }

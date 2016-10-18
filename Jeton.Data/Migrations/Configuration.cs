@@ -1,7 +1,6 @@
-using Jeton.Core.Common;
-
 namespace Jeton.Data.Migrations
 {
+    using Core.Common;
     using Core.Entities;
     using System;
     using System.Data.Entity;
@@ -15,7 +14,7 @@ namespace Jeton.Data.Migrations
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(JetonEntities context)
+        protected override void Seed(Jeton.Data.JetonEntities context)
         {
             //  This method will be called after migrating to the latest version.
 

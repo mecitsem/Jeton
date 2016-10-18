@@ -1,14 +1,14 @@
 using System;
-using Jeton.Data.Infrastructure;
-using Jeton.Data.Infrastructure.Interfaces;
-using Jeton.Data.Repositories.AppRepo;
-using Jeton.Data.Repositories.TokenRepo;
-using Jeton.Data.Repositories.UserRepo;
-using Jeton.Services.AppService;
-using Jeton.Services.TokenService;
-using Jeton.Services.UserService;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.Configuration;
+using Jeton.Data.Infrastructure;
+using Jeton.Data.Infrastructure.Interfaces;
+using Jeton.Data.Repositories.UserRepo;
+using Jeton.Data.Repositories.TokenRepo;
+using Jeton.Data.Repositories.AppRepo;
+using Jeton.Services.TokenService;
+using Jeton.Services.UserService;
+using Jeton.Services.AppService;
 
 namespace Jeton.Admin.Web.App_Start
 {
@@ -57,7 +57,6 @@ namespace Jeton.Admin.Web.App_Start
             container.RegisterType<IAppService, AppService>();
             container.RegisterType<ITokenService, TokenService>();
             container.RegisterType<IUserService, UserService>();
-
         }
     }
 }
