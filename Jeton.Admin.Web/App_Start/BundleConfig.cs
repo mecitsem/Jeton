@@ -23,24 +23,24 @@ namespace Jeton.Admin.Web
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/respond.js"));
 
-            bundles.Add(new ScriptBundle("~/Content/bootstrapper").Include(
-                      "~/Content/vendor/metisMenu/metisMenu.min.js",
-                      "~/Content/vendor/raphael/raphael.min.js",
-                      "~/Content/vendor/morrisjs/morris.min.js",
-                      "~/Content/data/morris-data.js",
-                      "~/Content/dist/js/sb-admin-2.js"
-                ));
+            //bundles.Add(new ScriptBundle("~/Content/bootstrapper").Include(
+            //          "~/Content/vendor/metisMenu/metisMenu.min.js",
+            //          "~/Content/vendor/raphael/raphael.min.js",
+            //          "~/Content/vendor/morrisjs/morris.min.js",
+            //          "~/Content/data/morris-data.js",
+            //          "~/Content/dist/js/sb-admin-2.js"
+            //    ));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css"
                       ));
 
-            bundles.Add(new StyleBundle("~/Content/jetoncss").Include(
-                      "~/Content/vendor/metisMenu/metisMenu.min.css",
-                      "~/Content/dist/css/sb-admin-2.css",
-                      "~/Content/vendor/morrisjs/morris.css",
-                      "~/Content/vendor/font-awesome/css/font-awesome.min.css"
-                ));
+            //bundles.Add(new StyleBundle("~/Content/jetoncss").Include(
+            //          "~/Content/vendor/metisMenu/metisMenu.min.css",
+            //          "~/Content/dist/css/sb-admin-2.css",
+            //          "~/Content/vendor/morrisjs/morris.css",
+            //          "~/Content/vendor/font-awesome/css/font-awesome.min.css"
+            //    ));
 
         }
     }
