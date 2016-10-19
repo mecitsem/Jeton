@@ -1,0 +1,97 @@
+﻿@model Jeton.Admin.Web.ViewModel.AppViewModel
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">@ViewBag.Title</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                @Model.Name
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+
+                @using (Html.BeginForm("Create", "App", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.AccessKey, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-5">
+                                @Html.EditorFor(model => model.AccessKey, new { htmlAttributes = new { @class = "form-control", @readonly = "true" } })
+                                <br />
+                                <button type="button" class="btn btn-outline btn-primary" onclick="GenerateAccessKey()" data-toggle="tooltip" data-placement="top" title="Tooltip on top"><i class="fa fa-refresh"></i> Generate AccessKey </button>
+                            </div>
+                            <div class="col-md-1">
+                                <a class="btn btn-warning" onclick="copyToClipboard(document.getElementById('AccessKey').value)" data-toggle="tooltip" data-placement="top" title="Tooltip on top"><i class="fa fa-copy"></i></a>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.ValidationMessageFor(model => model.AccessKey, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-5">
+                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                            <div class="col-md-5">
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.IsRoot, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-5">
+                                <div class="checkbox">
+                                    @Html.EditorFor(model => model.IsRoot)
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                @Html.ValidationMessageFor(model => model.IsRoot, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Save" class="btn btn-success" />
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+            <div class="panel-footer">
+
+                @Html.ActionLink("Back to List", "Index")
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        function GenerateAccessKey() {
+            var accessKeyElem = $("#AccessKey");
+            $(this).attr("disabled", true);
+            $.getJSON('@Url.Action("GenerateAccessKey", "App")', function (data) {
+                accessKeyElem.val(data);
+            }).done(function () {
+                $(this).attr("disabled", false);
+            });
+        }
+    </script>
+
+}

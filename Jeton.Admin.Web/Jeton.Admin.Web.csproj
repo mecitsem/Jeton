@@ -375,6 +375,8 @@
     <Content Include="Views\Token\Index.cshtml" />
     <Content Include="Views\App\Index.cshtml" />
     <Content Include="Views\App\Detail.cshtml" />
+    <Content Include="Views\App\Edit.cshtml" />
+    <Content Include="Views\App\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

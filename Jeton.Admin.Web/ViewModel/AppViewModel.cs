@@ -9,15 +9,18 @@ namespace Jeton.Admin.Web.ViewModel
 {
     public class AppViewModel
     {
-        [DisplayName("AccessKey")]
+        [ScaffoldColumn(false)]
+        public Guid AppId { get; set; }
+
+        [DisplayName("Access Key")]
         public string AccessKey { get; set; }
 
-        [DisplayName("AppName")]
+        [DisplayName("Name")]
         [Required]
         [MaxLength(255)]
         public string Name { get; set; }
 
-        [DisplayName("Is Root App?")]
+        [DisplayName("Is Root?")]
         public bool IsRoot { get; set; }
     }
 }
