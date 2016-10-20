@@ -105,6 +105,10 @@
     <Compile Include="Migrations\201610170809035_Jeton_Mig.Designer.cs">
       <DependentUpon>201610170809035_Jeton_Mig.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610200651457_Jeton_Mig1.cs" />
+    <Compile Include="Migrations\201610200651457_Jeton_Mig1.Designer.cs">
+      <DependentUpon>201610200651457_Jeton_Mig1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AppRepo\AppRepository.cs" />
@@ -128,6 +132,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201610170809035_Jeton_Mig.resx">
       <DependentUpon>201610170809035_Jeton_Mig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610200651457_Jeton_Mig1.resx">
+      <DependentUpon>201610200651457_Jeton_Mig1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

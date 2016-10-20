@@ -102,14 +102,29 @@ namespace Jeton.Services.TokenService
 
         public virtual bool IsExistByUser(User user)
         {
+            if (user == null) return false;
+
             return _tokenRepository.TableNoTracking.Any(t => t.UserID.Equals(user.UserID));
         }
 
-        public virtual Token Generate(User user)
+        public virtual bool IsExistByApp(App app)
+        {
+            if (app == null) return false;
+
+            return _tokenRepository.TableNoTracking.Any(t => t.AppID.Equals(app.AppID));
+        }
+
+        public virtual Token Generate(User user, App app)
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
+            if (app == null)
+                throw new ArgumentNullException(nameof(app));
+            
+            //Check App is Root
+            if (!app.IsRoot)
+                throw new ArgumentException("The app can't generate token.Becase it is not a root app.");
 
             var tokenManager = new TokenManager();
             var time = tokenManager.Now;
@@ -119,7 +134,7 @@ namespace Jeton.Services.TokenService
 
 
             Token token;
-            if (IsExistByUser(user)) //Token isExist Update Token
+            if (IsExistByUser(user) && IsExistByApp(app)) //Token isExist Update Token
             {
                 token = table.FirstOrDefault(t => t.UserID.Equals(user.UserID));
                 if (token == null) return null;
@@ -135,7 +150,9 @@ namespace Jeton.Services.TokenService
                     User = user,
                     UserID = user.UserID,
                     TokenKey = tokenKey,
-                    Expire = tokenExprire
+                    Expire = tokenExprire,
+                    App = app,
+                    AppID = app.AppID
                 };
                 token = _tokenRepository.Insert(newToken);
             }

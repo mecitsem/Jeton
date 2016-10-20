@@ -96,7 +96,7 @@ namespace Jeton.Api.Controllers
                 #endregion
 
                 //Generate Token
-                var token = _tokenService.Generate(user);
+                var token = _tokenService.Generate(user, app);
                 var tokenDto = new TokenDTO()
                 {
                     TokenKey = token.TokenKey

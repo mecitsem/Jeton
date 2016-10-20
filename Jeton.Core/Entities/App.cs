@@ -19,5 +19,6 @@ namespace Jeton.Core.Entities
         public string AccessKey { get; set; }
         public string Name { get; set; }
         public bool IsRoot { get; set; }
+
     }
 }

@@ -17,6 +17,11 @@ namespace Jeton.Core.Entities
         public DateTime? Expire { get; set; }
 
         public Guid UserID { get; set; }
-        public User User { get; set; }
+        [ForeignKey("UserID")]
+        public virtual User User { get; set; }
+
+        public Guid AppID { get; set; }
+        [ForeignKey("AppID")]
+        public virtual App App { get; set; }
     }
 }

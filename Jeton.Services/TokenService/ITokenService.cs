@@ -8,9 +8,10 @@ namespace Jeton.Services.TokenService
     {
         bool IsActiveByTokenKey(string tokenKey);
         bool IsActive(Token token);
-        Token Generate(User user);
+        Token Generate(User user, App app);
         bool IsExist(string tokenKey);
         bool IsExistByUser(User user);
+        bool IsExistByApp(App app);
         IEnumerable<Token> GetTokens();
         int GetTokensCount();
         IEnumerable<Token> GetActiveTokens();

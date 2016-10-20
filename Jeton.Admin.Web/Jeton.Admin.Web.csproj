@@ -377,12 +377,12 @@
     <Content Include="Views\App\Detail.cshtml" />
     <Content Include="Views\App\Edit.cshtml" />
     <Content Include="Views\App\Create.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Helpers\" />
     <Folder Include="Services\" />
-    <Folder Include="Views\User\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

@@ -1,17 +1,13 @@
-﻿@model IEnumerable<Jeton.Admin.Web.Models.AppModel>
+﻿@model IEnumerable<Jeton.Admin.Web.Models.UserModel>
+
 @{
     ViewBag.Title = "Index";
 }
 
 <div class="row">
     <div class="col-lg-12">
-        <h1 class="page-header">Apps 
-            <p class="pull-right">
-                @Html.ActionLink("+ Create App", "Create", new { }, new { @class = "btn btn-success" })
-            </p>
-        </h1>
-      
-      
+        <h1 class="page-header">Users</h1>
+
     </div>
 </div>
 <!-- /.row -->
@@ -19,19 +15,18 @@
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                App List
+                User List
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
-               
+
                 <table width="100%" class="table table-striped table-bordered table-hover" id="app-datatable">
                     <thead>
                         <tr>
-                            <th data-orderable="false">Detail</th>
-                            <th>AppId</th>
-                            <th>Name</th>
-                            <th>Access Key</th>
-                            <th>App Type</th>
+
+                            <th>UserId</th>
+                            <th>User NameId</th>
+                            <th>User Name</th>
                             <th>Created</th>
                             <th>Modified</th>
 
@@ -42,37 +37,32 @@
                         {
 
                             <tr class="odd gradeX">
-                                <td class="text-center">
-                                    <a class="btn btn-info" href="@Url.Action("Detail", "App", new { Id = item.AppId })"><i class="fa fa-list"></i></a>
-                                </td>
                                 <td>
                                     <div class="row">
                                         <div class="col-md-10">
-                                            <input class="form-control" style="width:100%;" type="text" placeholder="" readonly value="@item.AppId">
+                                            <input class="form-control" style="width:100%;" type="text" placeholder="" readonly value="@item.UserId">
                                         </div>
-                                        <div class="col-md-push-2">
-                                            <a class="btn btn-default" onclick="copyToClipboard('@item.AppId')" data-toggle="tooltip" data-placement="top" title="Copy to clipboard"><i class="fa fa-copy"></i></a>
+                                        <div class="col-md-2">
+                                            <a class="btn btn-default" onclick="copyToClipboard('@item.UserId')" data-toggle="tooltip" data-placement="top" title="Copy to clipboard"><i class="fa fa-copy"></i></a>
                                         </div>
                                     </div>
                                 </td>
-                                <td>@item.Name</td>
                                 <td>
                                     <div class="row">
                                         <div class="col-md-10">
-                                            <input class="form-control" style="width:100%;" type="text" placeholder="" readonly value="@item.AccessKey">
+                                            <input class="form-control" style="width:100%;" type="text" placeholder="" readonly value="@item.NameId">
                                         </div>
-                                        <div class="col-md-push-2">
-                                            <a class="btn btn-default" onclick="copyToClipboard('@item.AccessKey')" data-toggle="tooltip" data-placement="top" title="Copy to clipboard"><i class="fa fa-copy"></i></a>
+                                        <div class="col-md-2">
+                                            <a class="btn btn-default" onclick="copyToClipboard('@item.NameId')" data-toggle="tooltip" data-placement="top" title="Copy to clipboard"><i class="fa fa-copy"></i></a>
                                         </div>
                                     </div>
 
 
                                 </td>
-
-
-                                <td class="text-center">@(item.IsRoot? Html.Raw("<strong><span class='text-success'>Root</span></strong>") : Html.Raw("<strong><span class='text-danger'>Normal</span></strong>"))</td>
-                                <td>@item.Created</td>
-                                <td>@item.Modified</td>
+                                <td class="center">@item.Name</td>
+                                <td class="center">@item.Created</td>
+                                <td class="center">@item.Modified</td>
+                               
                             </tr>
                         }
 
