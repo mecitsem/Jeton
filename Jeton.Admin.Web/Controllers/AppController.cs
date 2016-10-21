@@ -22,10 +22,14 @@ namespace Jeton.Admin.Web.Controllers
         }
 
         // GET: App
-        public ActionResult Index()
+        public ActionResult Index(bool? getActiveApp)
         {
+            ViewBag.AppStatus = getActiveApp.HasValue ? (getActiveApp.Value ? "Active" : "Passive") : "All";
             var mapper = config.CreateMapper();
-            var appList = _appService.GetApps().AsEnumerable().Select(a => mapper.Map<AppModel>(a)).ToList();
+            var appList = _appService.GetApps().AsEnumerable().
+                            Where(a => getActiveApp.HasValue ? (getActiveApp.Value ?
+                                            !a.IsDeleted.HasValue || (a.IsDeleted.HasValue && a.IsDeleted.Value == false) :
+                                            a.IsDeleted.HasValue && a.IsDeleted.Value == true) : true).Select(a => mapper.Map<AppModel>(a)).ToList();
             return View(appList);
         }
 
@@ -47,10 +51,10 @@ namespace Jeton.Admin.Web.Controllers
         {
             Guid appId;
             if (string.IsNullOrEmpty(id) || !Guid.TryParse(id, out appId))
-                return RedirectToAction("Index", "App");
+                return HttpNotFound("AppId is null or it's not a Guid.");
 
             if (!_appService.IsExist(appId))
-                return RedirectToAction("Index", "App");
+                return HttpNotFound("AppId is not exist.");
 
             var mapper = configModel.CreateMapper();
             var app = mapper.Map<AppViewModel>(_appService.GetAppById(appId));
@@ -86,6 +90,7 @@ namespace Jeton.Admin.Web.Controllers
             catch (Exception ex)
             {
                 //TODO:Log
+                ModelState.AddModelError("Edit", ex);
             }
             return View(model);
 
@@ -124,12 +129,37 @@ namespace Jeton.Admin.Web.Controllers
             }
             catch (Exception ex)
             {
-                //TODO: Log
+                //TODO:Log
+                ModelState.AddModelError("Create", ex);
             }
 
             return View(model);
 
 
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(string id)
+        {
+            Guid appId;
+            if (string.IsNullOrEmpty(id) || !Guid.TryParse(id, out appId))
+                return HttpNotFound("AppId is null or it's not a Guid.");
+
+            if (!_appService.IsExist(appId))
+                return HttpNotFound("AppId is not exist.");
+            try
+            {
+                _appService.Delete(appId);
+            }
+            catch (Exception ex)
+            {
+                //TODO:Log
+                ModelState.AddModelError("Delete", ex);
+            }
+
+
+            return RedirectToAction("Index", "App");
         }
     }
 }

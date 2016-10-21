@@ -6,6 +6,7 @@ namespace Jeton.Services.AppService
 {
     public interface IAppService
     {
+        bool IsActive(App app);
         string GenerateAccessKey();
         bool IsExist(Guid appId);
         IEnumerable<App> GetApps();

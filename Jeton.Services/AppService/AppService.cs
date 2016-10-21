@@ -68,8 +68,12 @@ namespace Jeton.Services.AppService
             if (appId == null)
                 throw new ArgumentNullException(nameof(appId));
 
+            if (!IsExist(appId))
+                throw new ArgumentException("App is not exist");
 
-            appRepository.Delete(a => a.AppID.Equals(appId));
+            var app = GetAppById(appId);
+
+            appRepository.Delete(app);
         }
         #endregion
 
@@ -87,6 +91,22 @@ namespace Jeton.Services.AppService
         public string GenerateAccessKey()
         {
             return CryptoHelper.Encrypt(Guid.NewGuid().ToString(), ConfigHelper.GetPassPhrase());
+        }
+
+        public bool IsActive(App app)
+        {
+            if (app == null)
+                throw new ArgumentNullException(nameof(app));
+
+            bool result = false;
+
+            if (!app.IsDeleted.HasValue)
+                result = true;
+
+            if (app.IsDeleted.HasValue && app.IsDeleted == true)
+                result = true;
+
+            return result;
         }
     }
 }

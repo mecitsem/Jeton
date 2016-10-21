@@ -13,7 +13,7 @@ namespace Jeton.Data
         #region Properties
         private JetonEntities _dataContext;
         private IDbSet<T> _entities;
-    
+
 
         protected IDbFactory DbFactory
         {
@@ -109,8 +109,6 @@ namespace Jeton.Data
 
                     this.DbContext.SaveChanges();
                 }
-
-
             }
             catch (DbEntityValidationException dbEx)
             {

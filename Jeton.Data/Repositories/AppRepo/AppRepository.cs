@@ -2,6 +2,7 @@
 using Jeton.Data.Infrastructure.Interfaces;
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace Jeton.Data.Repositories.AppRepo
 {
@@ -35,26 +36,32 @@ namespace Jeton.Data.Repositories.AppRepo
             return DbContext.Apps.Any(a => a.Name.Equals(appName, StringComparison.OrdinalIgnoreCase));
         }
 
+        public bool IsExistByName(App app)
+        {
+            return DbContext.Apps.Any(a => !a.AppID.Equals(app.AppID) && a.Name.Equals(app.Name, StringComparison.OrdinalIgnoreCase));
+        }
+
         public override void Update(App entity)
         {
             entity.Modified = DateTime.Now;
-
             base.Update(entity);
         }
 
         public override App Insert(App entity)
         {
 
-            if (IsExistByName(entity.Name))
+            if (IsExistByName(entity))
             {
                 int index = 0;
                 string name = entity.Name;
-                while (IsExistByName(entity.Name))
+                while (IsExistByName(entity))
                 {
                     entity.Name = string.Format("{0}_{1}", name, ++index);
                 }
             }
             return base.Insert(entity);
         }
+
+       
     }
 }
