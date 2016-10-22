@@ -68,7 +68,7 @@ namespace Jeton.Services.TokenService
         {
             var tokenManager = new TokenManager();
             var table = _tokenRepository.Table;
-            return table.AsEnumerable().Where(t => t.Expire.HasValue ? tokenManager.TokenIsActive(t.Expire.Value) : false).ToList();
+            return table.AsEnumerable().Where(t => t.Expire.HasValue && tokenManager.TokenIsActive(t.Expire.Value)).ToList();
         }
 
 
@@ -196,7 +196,7 @@ namespace Jeton.Services.TokenService
         {
             var tokenManager = new TokenManager();
             var table = _tokenRepository.TableNoTracking;
-            return table.AsEnumerable().Where(t => t.Expire.HasValue ? tokenManager.TokenIsActive(t.Expire.Value) : false).Count();
+            return table.AsEnumerable().Count(t => t.Expire.HasValue && tokenManager.TokenIsActive(t.Expire.Value));
         }
     }
 }

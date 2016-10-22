@@ -2,7 +2,6 @@
 using Jeton.Data.Infrastructure.Interfaces;
 using System;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace Jeton.Data.Repositories.AppRepo
 {
@@ -49,15 +48,12 @@ namespace Jeton.Data.Repositories.AppRepo
 
         public override App Insert(App entity)
         {
-
-            if (IsExistByName(entity))
+            if (!IsExistByName(entity)) return base.Insert(entity);
+            var index = 0;
+            var name = entity.Name;
+            while (IsExistByName(entity))
             {
-                int index = 0;
-                string name = entity.Name;
-                while (IsExistByName(entity))
-                {
-                    entity.Name = string.Format("{0}_{1}", name, ++index);
-                }
+                entity.Name = $"{name}_{++index}";
             }
             return base.Insert(entity);
         }

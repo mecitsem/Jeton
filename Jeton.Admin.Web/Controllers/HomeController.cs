@@ -1,19 +1,13 @@
-﻿using AutoMapper;
-using Jeton.Admin.Web.Models;
-using Jeton.Core.Entities;
-using Jeton.Services.AppService;
+﻿using Jeton.Services.AppService;
 using Jeton.Services.TokenService;
 using Jeton.Services.UserService;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Jeton.Admin.Web.Controllers
 {
     //[Authorize(Roles = @"BUILTIN\Administrators")]
-    [Authorize]
+    //[Authorize]
     public class HomeController : Controller
     {
         private readonly IAppService _appService;

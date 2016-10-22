@@ -9,12 +9,12 @@ namespace Jeton.Services.AppService
 {
     public class AppService : IAppService
     {
-        private readonly IAppRepository appRepository;
+        private readonly IAppRepository _appRepository;
 
 
         public AppService(IAppRepository appRepository)
         {
-            this.appRepository = appRepository;
+            this._appRepository = appRepository;
         }
 
         #region CREATE
@@ -23,7 +23,7 @@ namespace Jeton.Services.AppService
             if (app == null)
                 throw new ArgumentNullException(nameof(app));
 
-            return appRepository.Insert(app);
+            return _appRepository.Insert(app);
         }
         #endregion
 
@@ -33,7 +33,7 @@ namespace Jeton.Services.AppService
             if (appId == null)
                 throw new ArgumentNullException(nameof(appId));
 
-            return appRepository.GetById(appId);
+            return _appRepository.GetById(appId);
         }
 
         public App GetAppByName(string appName)
@@ -41,14 +41,14 @@ namespace Jeton.Services.AppService
             if (string.IsNullOrEmpty(appName))
                 throw new ArgumentNullException(nameof(appName));
 
-            var table = appRepository.Table;
+            var table = _appRepository.Table;
 
             return table.FirstOrDefault(a => a.Name.Equals(appName));
         }
 
         public IEnumerable<App> GetApps()
         {
-            return appRepository.Table.ToList();
+            return _appRepository.Table.ToList();
         }
         #endregion
 
@@ -58,7 +58,7 @@ namespace Jeton.Services.AppService
             if (app == null)
                 throw new ArgumentNullException(nameof(app));
 
-            appRepository.Update(app);
+            _appRepository.Update(app);
         }
         #endregion
 
@@ -73,7 +73,7 @@ namespace Jeton.Services.AppService
 
             var app = GetAppById(appId);
 
-            appRepository.Delete(app);
+            _appRepository.Delete(app);
         }
         #endregion
 
@@ -83,7 +83,7 @@ namespace Jeton.Services.AppService
             if (appId == null)
                 throw new ArgumentNullException(nameof(appId));
 
-            var table = appRepository.Table;
+            var table = _appRepository.Table;
 
             return table.Any(a => a.AppID.Equals(appId));
         }
@@ -98,13 +98,7 @@ namespace Jeton.Services.AppService
             if (app == null)
                 throw new ArgumentNullException(nameof(app));
 
-            bool result = false;
-
-            if (!app.IsDeleted.HasValue)
-                result = true;
-
-            if (app.IsDeleted.HasValue && app.IsDeleted == true)
-                result = true;
+            var result = !app.IsDeleted.HasValue || app.IsDeleted == true;
 
             return result;
         }

@@ -4,9 +4,7 @@ using Jeton.Admin.Web.ViewModel;
 using Jeton.Core.Entities;
 using Jeton.Services.AppService;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Jeton.Admin.Web.Controllers
@@ -14,8 +12,8 @@ namespace Jeton.Admin.Web.Controllers
     public class AppController : Controller
     {
         private readonly IAppService _appService;
-        private MapperConfiguration config = new MapperConfiguration(cfg => cfg.CreateMap<App, AppModel>());
-        private MapperConfiguration configModel = new MapperConfiguration(cfg => cfg.CreateMap<App, AppViewModel>());
+        private readonly MapperConfiguration _config = new MapperConfiguration(cfg => cfg.CreateMap<App, AppModel>());
+        private readonly MapperConfiguration _configModel = new MapperConfiguration(cfg => cfg.CreateMap<App, AppViewModel>());
         public AppController(IAppService appService)
         {
             _appService = appService;
@@ -25,11 +23,11 @@ namespace Jeton.Admin.Web.Controllers
         public ActionResult Index(bool? getActiveApp)
         {
             ViewBag.AppStatus = getActiveApp.HasValue ? (getActiveApp.Value ? "Active" : "Passive") : "All";
-            var mapper = config.CreateMapper();
+            var mapper = _config.CreateMapper();
             var appList = _appService.GetApps().AsEnumerable().
-                            Where(a => getActiveApp.HasValue ? (getActiveApp.Value ?
-                                            !a.IsDeleted.HasValue || (a.IsDeleted.HasValue && a.IsDeleted.Value == false) :
-                                            a.IsDeleted.HasValue && a.IsDeleted.Value == true) : true).Select(a => mapper.Map<AppModel>(a)).ToList();
+                            Where(a => !getActiveApp.HasValue || (getActiveApp.Value ?
+                                !a.IsDeleted.HasValue || (a.IsDeleted.Value == false) :
+                                a.IsDeleted.HasValue && a.IsDeleted.Value)).Select(a => mapper.Map<AppModel>(a)).ToList();
             return View(appList);
         }
 
@@ -41,7 +39,7 @@ namespace Jeton.Admin.Web.Controllers
 
             if (!_appService.IsExist(appId))
                 return null;
-            var mapper = config.CreateMapper();
+            var mapper = _config.CreateMapper();
             var app = mapper.Map<AppModel>(_appService.GetAppById(appId));
 
             return View(app);
@@ -56,7 +54,7 @@ namespace Jeton.Admin.Web.Controllers
             if (!_appService.IsExist(appId))
                 return HttpNotFound("AppId is not exist.");
 
-            var mapper = configModel.CreateMapper();
+            var mapper = _configModel.CreateMapper();
             var app = mapper.Map<AppViewModel>(_appService.GetAppById(appId));
 
             return View(app);
@@ -105,8 +103,7 @@ namespace Jeton.Admin.Web.Controllers
 
         public ActionResult Create()
         {
-            var model = new AppViewModel();
-            model.AccessKey = _appService.GenerateAccessKey();
+            var model = new AppViewModel { AccessKey = _appService.GenerateAccessKey() };
             return View(model);
         }
 
@@ -119,10 +116,12 @@ namespace Jeton.Admin.Web.Controllers
 
             try
             {
-                var newApp = new App();
-                newApp.AccessKey = model.AccessKey;
-                newApp.Name = model.Name;
-                newApp.IsRoot = model.IsRoot;
+                var newApp = new App
+                {
+                    AccessKey = model.AccessKey,
+                    Name = model.Name,
+                    IsRoot = model.IsRoot
+                };
 
                 var app = _appService.Insert(newApp);
                 return RedirectToAction("Detail", new { id = app.AppID });

@@ -66,7 +66,7 @@ namespace Jeton.Data
 
                 DbContext.Entry(entity).State = EntityState.Modified;
 
-                this.DbContext.SaveChanges();
+                DbContext.SaveChanges();
             }
             catch (DbEntityValidationException dbEx)
             {
@@ -87,15 +87,15 @@ namespace Jeton.Data
 
                 if (entity.GetType().GetProperty("IsDeleted") != null)
                 {
-                    T _entity = entity;
+                    var _entity = entity;
 
                     _entity.GetType().GetProperty("IsDeleted").SetValue(_entity, true);
 
-                    this.Update(_entity);
+                    Update(_entity);
                 }
                 else
                 {
-                    var dbEntityEntry = this.DbContext.Entry(entity);
+                    var dbEntityEntry = DbContext.Entry(entity);
 
                     if (dbEntityEntry.State != EntityState.Deleted)
                     {
@@ -103,11 +103,11 @@ namespace Jeton.Data
                     }
                     else
                     {
-                        this.Entities.Attach(entity);
-                        this.Entities.Remove(entity);
+                        Entities.Attach(entity);
+                        Entities.Remove(entity);
                     }
 
-                    this.DbContext.SaveChanges();
+                    DbContext.SaveChanges();
                 }
             }
             catch (DbEntityValidationException dbEx)
@@ -136,7 +136,7 @@ namespace Jeton.Data
         /// <returns></returns>
         public virtual T GetById(Guid id)
         {
-            return this.Entities.Find(id);
+            return Entities.Find(id);
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace Jeton.Data
         /// <returns></returns>
         public virtual IEnumerable<T> GetMany(Expression<Func<T, bool>> where)
         {
-            return this.Entities.Where(where);
+            return Entities.Where(where);
         }
         /// <summary>
         /// Insert entity
@@ -159,9 +159,9 @@ namespace Jeton.Data
                 if (entity == null)
                     throw new ArgumentNullException(nameof(entity));
 
-                var result = this.Entities.Add(entity);
+                var result = Entities.Add(entity);
 
-                this.DbContext.SaveChanges();
+                DbContext.SaveChanges();
 
                 return result;
             }
@@ -182,9 +182,9 @@ namespace Jeton.Data
                     throw new ArgumentNullException(nameof(entities));
 
                 foreach (var entity in entities)
-                    this.Entities.Add(entity);
+                    Entities.Add(entity);
 
-                this.DbContext.SaveChanges();
+                DbContext.SaveChanges();
             }
             catch (DbEntityValidationException dbEx)
             {
