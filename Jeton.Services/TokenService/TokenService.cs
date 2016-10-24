@@ -128,7 +128,7 @@ namespace Jeton.Services.TokenService
 
             var tokenManager = new TokenManager();
             var time = tokenManager.Now;
-            var tokenKey = tokenManager.GenerateTokenKey(user.NameId, user.Name);
+            var tokenKey = tokenManager.GenerateTokenKey(user.NameId, user.Name,app.AppID.ToString());
             var tokenExprire = tokenManager.GetExpire(time);
             var table = _tokenRepository.Table;
 

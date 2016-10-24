@@ -1,7 +1,11 @@
 ﻿using Jeton.Core.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
+using Jeton.Core.Models;
+using JWT;
 using static Jeton.Core.Common.Constants;
 
 namespace Jeton.Core.Common
@@ -21,7 +25,7 @@ namespace Jeton.Core.Common
             _timeType = TimeType.Minute;
         }
 
-        private string PassPhrase => ConfigHelper.GetPassPhrase();
+        private string secretKey => ConfigHelper.GetPassPhrase();
 
         public DateTime Now => DateTime.UtcNow;
 
@@ -30,42 +34,47 @@ namespace Jeton.Core.Common
         /// </summary>
         /// <param name="nameId">Unique Identity</param>
         /// <param name="name">User login name</param>
+        /// <param name="appId"></param>
         /// <returns></returns>
-        public string GenerateTokenKey(string nameId, string name)
+        public string GenerateTokenKey(string nameId, string name, string appId)
         {
             if (string.IsNullOrWhiteSpace(nameId))
-            {
                 throw new ArgumentNullException(nameof(nameId));
-            }
 
             if (string.IsNullOrWhiteSpace(name))
-            {
                 throw new ArgumentNullException(nameof(name));
-            }
 
+            if (string.IsNullOrWhiteSpace(appId))
+                throw new ArgumentNullException(nameof(appId));
 
             //Now
             var time = Now.ToString(CultureInfo.InvariantCulture);
-
+            var expire = GetExpire(Now);
             //Random Uniqe Key
             var guid = Guid.NewGuid();
             var key = guid.ToString();
 
 
-            //Token Binary Array
-            var sb = new StringBuilder();
-            sb.Append(time);
-            sb.Append(Sep);
-            sb.Append(nameId);
-            sb.Append(Sep);
-            sb.Append(name);
-            sb.Append(Sep);
-            sb.Append(key);
+
+            var extraheaders = new Dictionary<string, object>()
+            {
+                {"time", time},
+                {"guid", key},
+                {"appId", appId },
+                {"exp",expire }
+            };
+
+            var payload = new Payload()
+            {
+                UserName = name,
+                UserNameId = nameId
+            };
+
             //Create Token
 
 
 
-            var token = CryptoHelper.Encrypt(sb.ToString(), PassPhrase);
+            var token = JsonWebToken.Encode(extraheaders, payload, secretKey, JwtHashAlgorithm.HS256); //CryptoHelper.Encrypt(sb.ToString(), PassPhrase);
 
             return token;
         }
@@ -99,17 +108,15 @@ namespace Jeton.Core.Common
             try
             {
 
-                var data = CryptoHelper.Decrypt(tokenKey, PassPhrase);
-                //Time
-                DateTime time;
+                var payload = JsonWebToken.Decode(tokenKey, secretKey);
 
-                if (!DateTime.TryParse(data.Split(Sep)[0], out time))
+                //Time
+                DateTime time
+
+                if (!DateTime.TryParse(data., out time))
                 {
                     throw new ArgumentException("Datetime is invalid");
                 }
-
-
-
                 //Calculate Expire
                 var expire = GetExpire(time);
 
