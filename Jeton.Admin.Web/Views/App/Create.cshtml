@@ -26,6 +26,17 @@
 
                     <div class="form-horizontal">
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-5">
+                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                            <div class="col-md-5">
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             @Html.LabelFor(model => model.AccessKey, htmlAttributes: new { @class = "control-label col-md-2" })
                             <div class="col-md-5">
@@ -38,16 +49,6 @@
                             </div>
                             <div class="col-md-4">
                                 @Html.ValidationMessageFor(model => model.AccessKey, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-5">
-                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                            </div>
-                            <div class="col-md-5">
-                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                             </div>
                         </div>
 

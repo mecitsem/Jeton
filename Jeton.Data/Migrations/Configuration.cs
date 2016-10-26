@@ -29,27 +29,29 @@ namespace Jeton.Data.Migrations
             //    );
             //
 
-            var tokenManager = new TokenManager();
+            //var tokenManager = new TokenManager();
 
-            var app = new App()
-            {
-                Name = "RootApp",
-                IsRoot = true,
-                AccessKey = tokenManager.GenerateAccessKey(),
-            };
-            //Save RootApp
-            context.Apps.Add(app);
+            //var app = new App()
+            //{
+            //    Name = "RootApp",
+            //    IsRoot = true,
+            //    AccessKey = tokenManager.GenerateAccessKey(),
+            //};
+            ////Save RootApp
+            //context.Apps.Add(app);
 
-            var app1 = new App()
-            {
-                Name = "App1",
-                IsRoot = false,
-                AccessKey = tokenManager.GenerateAccessKey()
-            };
-            //Save App1
-            context.Apps.Add(app1);
+            //var app1 = new App()
+            //{
+            //    Name = "App1",
+            //    IsRoot = false,
+            //    AccessKey = tokenManager.GenerateAccessKey()
+            //};
+            ////Save App1
+            //context.Apps.Add(app1);
 
-            context.SaveChanges();
+            //context.SaveChanges();
+
+
         }
     }
 }

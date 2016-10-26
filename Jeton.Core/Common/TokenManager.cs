@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
+using Jeton.Core.Entities;
 using Jeton.Core.Models;
 using JWT;
 using static Jeton.Core.Common.Constants;
@@ -12,44 +13,57 @@ namespace Jeton.Core.Common
 {
     public class TokenManager
     {
-        private const char Sep = '#';
-        private readonly TimeType _timeType;
 
         public TokenManager(TimeType timeType)
         {
-            _timeType = timeType;
+            TimeType = timeType;
         }
 
         public TokenManager()
         {
-            _timeType = TimeType.Minute;
+            TimeType = TimeType.Minute;
+            CheckExpireFrom = CheckExpireFrom.Database;
+            TokenDuration = TokenLiveDuration;
         }
 
-        private string secretKey => ConfigHelper.GetPassPhrase();
+        #region Properties
+        public TimeType TimeType { get; set; }
+        public static string SecretKey => ConfigHelper.GetPassPhrase();
+        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+        private int _tokenDuration;
+        public int TokenDuration
+        {
+            get { return _tokenDuration; }
+            set
+            {
+                if (value <= 0)
+                    throw new ArgumentOutOfRangeException($"Token Duration must be greather than 0");
+                _tokenDuration = value;
+            }
+        }
+
+        public CheckExpireFrom CheckExpireFrom { get; set; }
 
         public DateTime Now => DateTime.UtcNow;
+
+        #endregion
+
+
 
         /// <summary>
         ///  Token Schema (Time # NameId # Name # Guid) Time is Utc!
         /// </summary>
-        /// <param name="nameId">Unique Identity</param>
-        /// <param name="name">User login name</param>
-        /// <param name="appId"></param>
+        /// <param name="payload"></param>
         /// <returns></returns>
-        public string GenerateTokenKey(string nameId, string name, string appId)
+        public string GenerateTokenKey(Payload payload)
         {
-            if (string.IsNullOrWhiteSpace(nameId))
-                throw new ArgumentNullException(nameof(nameId));
-
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentNullException(nameof(name));
-
-            if (string.IsNullOrWhiteSpace(appId))
-                throw new ArgumentNullException(nameof(appId));
+            if (payload == null)
+                throw new ArgumentNullException(nameof(payload));
 
             //Now
-            var time = Now.ToString(CultureInfo.InvariantCulture);
-            var expire = GetExpire(Now);
+            var now = Now;
+            var time = now.ToString(CultureInfo.InvariantCulture);
+            var expire = GetExpire(now);
             //Random Uniqe Key
             var guid = Guid.NewGuid();
             var key = guid.ToString();
@@ -58,35 +72,49 @@ namespace Jeton.Core.Common
 
             var extraheaders = new Dictionary<string, object>()
             {
-                {"time", time},
+                {"time",time },
                 {"guid", key},
-                {"appId", appId },
+                {"rootappId", payload.RootAppId },
                 {"exp",expire }
             };
-
-            var payload = new Payload()
-            {
-                UserName = name,
-                UserNameId = nameId
-            };
-
             //Create Token
 
-
-
-            var token = JsonWebToken.Encode(extraheaders, payload, secretKey, JwtHashAlgorithm.HS256); //CryptoHelper.Encrypt(sb.ToString(), PassPhrase);
+            //var token = CryptoHelper.Encrypt(sb.ToString(), SecretKey);
+            var token = JsonWebToken.Encode(extraheaders, payload, SecretKey, JwtHashAlgorithm.HS256); //JWT
 
             return token;
         }
 
-        public bool TokenIsActive(DateTime expire)
+
+        public bool TokenIsExpired(DateTime expire)
         {
-            return expire > Now;
+            var nowUnixTimestamp = GetUnixTimeStamp(Now);
+            var expireUnixTimestamp = GetUnixTimeStamp(expire);
+            return nowUnixTimestamp > expireUnixTimestamp;
         }
 
-        public bool TokenIsActive(string tokenKey)
+        public bool TokenIsExpired(Token token)
         {
-            return TokenIsActive(tokenKey, TokenLiveDuration, _timeType);
+            if(token == null)
+                throw new ArgumentNullException(nameof(token));
+
+            if(!token.Expire.HasValue)
+                throw new ArgumentException("Token expire is null");
+
+            bool result;
+
+            switch (CheckExpireFrom)
+            {
+                case CheckExpireFrom.Database:
+                    result = TokenIsExpired(token.Expire.Value);
+                    break;
+                case CheckExpireFrom.Token:
+                    result = TokenIsExpired(token.TokenKey, TokenDuration, TimeType);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            return result;
         }
 
         /// <summary>
@@ -96,33 +124,24 @@ namespace Jeton.Core.Common
         /// <param name="timeType">Hour, Minute, Second</param>
         /// <param name="tokenKey"></param>
         /// <returns></returns>
-        public bool TokenIsActive(string tokenKey, int timeDuration, TimeType timeType)
+        public bool TokenIsExpired(string tokenKey, int timeDuration, TimeType timeType)
         {
-            bool result = false;
+            var result = false;
 
             if (string.IsNullOrWhiteSpace(tokenKey))
-            {
                 throw new ArgumentNullException(nameof(tokenKey));
-            }
+
 
             try
             {
+                var payload = JsonWebToken.DecodeToObject<Payload>(tokenKey, SecretKey);
 
-                var payload = JsonWebToken.Decode(tokenKey, secretKey);
-
-                //Time
-                DateTime time
-
-                if (!DateTime.TryParse(data., out time))
-                {
+                if (payload == null)
                     throw new ArgumentException("Datetime is invalid");
-                }
-                //Calculate Expire
-                var expire = GetExpire(time);
 
-                //Check Time
-                result = expire > Now;
+                var nowUnixTimestamp = GetUnixTimeStamp(Now);
 
+                result = nowUnixTimestamp > payload.Expire;
             }
             catch (Exception ex)
             {
@@ -133,14 +152,17 @@ namespace Jeton.Core.Common
 
         public DateTime GetExpire(DateTime time)
         {
-            return TokenHelper.CalculateExpire(TokenLiveDuration, _timeType, time);
+            return TokenHelper.CalculateExpire(TokenDuration, TimeType, time);
         }
 
         public string GenerateAccessKey()
         {
-            return CryptoHelper.Encrypt(Guid.NewGuid().ToString(), PassPhrase);
+            return CryptoHelper.Encrypt(Guid.NewGuid().ToString(), SecretKey);
         }
 
-
+        public int GetUnixTimeStamp(DateTime dateTime)
+        {
+           return (int)Math.Round((dateTime - UnixEpoch).TotalSeconds);
+        }
     }
 }

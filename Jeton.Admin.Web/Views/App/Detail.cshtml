@@ -73,10 +73,17 @@
                 @Html.ActionLink("Edit", "Edit", new { id = Model.AppId }, new { @class = "btn btn-primary" }) |
                 @Html.ActionLink("Back to List", "Index")
 
-                @using (Html.BeginForm("Delete", "App", new { id = Model.AppId }, FormMethod.Post, new { @class = "pull-right" }))
+                @using (Html.BeginForm("ChangeStatus", "App", new { id = Model.AppId }, FormMethod.Post, new { @class = "pull-right" }))
                 {
                     @Html.AntiForgeryToken()
-                    <input type="submit" value="Disable" class="btn btn-danger pull-right" onclick="return confirm('Are you sure you wish to disable this item?');" />
+                    if (Model.IsDeleted)
+                    {
+                        <input type="submit" value="Activate" class="btn btn-success pull-right" onclick="return confirm('Are you sure you wish to activate this app?');"/>
+                    }
+                    else
+                    {
+                        <input type="submit" value="Disable" class="btn btn-danger pull-right" onclick="return confirm('Are you sure you wish to disable this app?');" />
+                    }
                 }
 
             </div>

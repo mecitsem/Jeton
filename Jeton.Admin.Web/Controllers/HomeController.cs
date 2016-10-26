@@ -14,8 +14,8 @@ namespace Jeton.Admin.Web.Controllers
         private readonly ITokenService _tokenService;
         private readonly IUserService _userService;
 
-      
-       
+
+
 
         public HomeController(IAppService appService, ITokenService tokenService, IUserService userService)
         {
@@ -27,7 +27,7 @@ namespace Jeton.Admin.Web.Controllers
         public ActionResult Index()
         {
 
-            ViewBag.AppCount = _appService.GetApps().Count();
+            ViewBag.AppCount = _appService.GetApps().Count(a => !a.IsDeleted.HasValue || (a.IsDeleted == false));
             ViewBag.TokenCount = _tokenService.GetActiveTokensCount();
             ViewBag.UserCount = _userService.GetUsers().Count();
             return View();

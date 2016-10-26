@@ -180,12 +180,15 @@
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Controllers\AppController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SettingsController.cs" />
     <Compile Include="Controllers\TokenController.cs" />
+    <Compile Include="Controllers\ToolsController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AppModel.cs" />
+    <Compile Include="Models\SettingModel.cs" />
     <Compile Include="Models\TokenModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -378,6 +381,9 @@
     <Content Include="Views\App\Edit.cshtml" />
     <Content Include="Views\App\Create.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\Tools\Index.cshtml" />
+    <Content Include="Views\Tools\TokenValidate.cshtml" />
+    <Content Include="Views\Settings\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

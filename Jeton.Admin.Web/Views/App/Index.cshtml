@@ -28,8 +28,8 @@
                     </button>
                     <ul class="dropdown-menu">
                         <li><a href="@Url.Action("Index","App")">All</a></li>
-                        <li><a href="@Url.Action("Index","App",new { getActiveApp = true })">Active</a></li>
-                        <li><a href="@Url.Action("Index","App",new { getActiveApp = false })">Passive</a></li>
+                        <li><a href="@Url.Action("Index","App",new { active = true })">Active</a></li>
+                        <li><a href="@Url.Action("Index","App",new { active = false })">Inactive </a></li>
                     </ul>
                 </div>
                 <br />

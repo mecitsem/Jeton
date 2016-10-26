@@ -53,5 +53,12 @@ namespace Jeton.Data.Repositories.TokenRepo
             entity.Modified = DateTime.Now;
             base.Update(entity);
         }
+
+        public override Token Insert(Token entity)
+        {
+            entity.Created = DateTime.Now;
+            entity.Modified = DateTime.Now;
+            return base.Insert(entity);
+        }
     }
 }

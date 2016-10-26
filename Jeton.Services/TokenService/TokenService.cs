@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Jeton.Core.Entities;
 using Jeton.Core.Common;
+using Jeton.Core.Models;
 using Jeton.Data.Repositories.TokenRepo;
 
 namespace Jeton.Services.TokenService
@@ -68,7 +69,7 @@ namespace Jeton.Services.TokenService
         {
             var tokenManager = new TokenManager();
             var table = _tokenRepository.Table;
-            return table.AsEnumerable().Where(t => t.Expire.HasValue && tokenManager.TokenIsActive(t.Expire.Value)).ToList();
+            return table.AsEnumerable().Where(t => !tokenManager.TokenIsExpired(t)).ToList();
         }
 
 
@@ -102,16 +103,12 @@ namespace Jeton.Services.TokenService
 
         public virtual bool IsExistByUser(User user)
         {
-            if (user == null) return false;
-
-            return _tokenRepository.TableNoTracking.Any(t => t.UserID.Equals(user.UserID));
+            return user != null && _tokenRepository.TableNoTracking.Any(t => t.UserID.Equals(user.UserID));
         }
 
         public virtual bool IsExistByApp(App app)
         {
-            if (app == null) return false;
-
-            return _tokenRepository.TableNoTracking.Any(t => t.AppID.Equals(app.AppID));
+            return app != null && _tokenRepository.TableNoTracking.Any(t => t.AppID.Equals(app.AppID));
         }
 
         public virtual Token Generate(User user, App app)
@@ -121,15 +118,29 @@ namespace Jeton.Services.TokenService
 
             if (app == null)
                 throw new ArgumentNullException(nameof(app));
-            
+
             //Check App is Root
             if (!app.IsRoot)
                 throw new ArgumentException("The app can't generate token.Becase it is not a root app.");
 
             var tokenManager = new TokenManager();
             var time = tokenManager.Now;
-            var tokenKey = tokenManager.GenerateTokenKey(user.NameId, user.Name,app.AppID.ToString());
-            var tokenExprire = tokenManager.GetExpire(time);
+            var unixTimestamp = tokenManager.GetUnixTimeStamp(time);
+
+            var expire = tokenManager.GetExpire(time);
+            var unixExpstamp = tokenManager.GetUnixTimeStamp(expire);
+
+            var payload = new Payload()
+            {
+                Time = unixTimestamp,
+                RootAppId = app.AppID,
+                UserName = user.Name,
+                UserNameId = user.NameId,
+                Expire = unixExpstamp
+            };
+
+            var tokenKey = tokenManager.GenerateTokenKey(payload);
+
             var table = _tokenRepository.Table;
 
 
@@ -139,7 +150,7 @@ namespace Jeton.Services.TokenService
                 token = table.FirstOrDefault(t => t.UserID.Equals(user.UserID));
                 if (token == null) return null;
                 token.TokenKey = tokenKey;
-                token.Expire = tokenExprire;
+                token.Expire = expire;
                 _tokenRepository.Update(token);
             }
             else //Create Token
@@ -150,7 +161,7 @@ namespace Jeton.Services.TokenService
                     User = user,
                     UserID = user.UserID,
                     TokenKey = tokenKey,
-                    Expire = tokenExprire,
+                    Expire = expire,
                     App = app,
                     AppID = app.AppID
                 };
@@ -161,30 +172,17 @@ namespace Jeton.Services.TokenService
 
         }
 
-        public bool IsActive(Token token)
+        public bool IsExpired(Token token)
         {
             if (token == null)
                 throw new ArgumentNullException(nameof(token));
 
             var tokenManager = new TokenManager();
 
-            var result = token.Expire.HasValue ? tokenManager.TokenIsActive(token.Expire.Value) : tokenManager.TokenIsActive(token.TokenKey);
+            //Check Token expired by Payload in TokenKey
+            var result = tokenManager.TokenIsExpired(token);
 
             return result;
-        }
-
-        public bool IsActiveByTokenKey(string tokenKey)
-        {
-            if (string.IsNullOrEmpty(tokenKey))
-                throw new ArgumentNullException(nameof(tokenKey));
-
-            if (!IsExist(tokenKey))
-                throw new ArgumentException("Token is not exist");
-
-            var token = GetTokenByKey(tokenKey);
-
-            return IsActive(token);
-
         }
 
         public int GetTokensCount()
@@ -196,7 +194,7 @@ namespace Jeton.Services.TokenService
         {
             var tokenManager = new TokenManager();
             var table = _tokenRepository.TableNoTracking;
-            return table.AsEnumerable().Count(t => t.Expire.HasValue && tokenManager.TokenIsActive(t.Expire.Value));
+            return table.AsEnumerable().Count(t => !tokenManager.TokenIsExpired(t));
         }
     }
 }

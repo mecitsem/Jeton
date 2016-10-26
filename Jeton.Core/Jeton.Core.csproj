@@ -48,6 +48,8 @@
   <ItemGroup>
     <Compile Include="BaseEntity.cs" />
     <Compile Include="Common\Constants.cs" />
+    <Compile Include="Common\JetonExtensions.cs" />
+    <Compile Include="Entities\Setting.cs" />
     <Compile Include="Entities\Token.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Entities\App.cs" />

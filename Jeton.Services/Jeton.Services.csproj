@@ -57,6 +57,8 @@
     <Compile Include="AppService\AppService.cs" />
     <Compile Include="AppService\IAppService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SettingService\ISettingService.cs" />
+    <Compile Include="SettingService\SettingService.cs" />
     <Compile Include="TokenService\ITokenService.cs" />
     <Compile Include="TokenService\TokenService.cs" />
     <Compile Include="UserService\IUserService.cs" />

@@ -13,5 +13,6 @@ namespace Jeton.Admin.Web.Models
         public DateTime Created { get; set; }
         public DateTime? Modified { get; set; }
         public bool IsRoot { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

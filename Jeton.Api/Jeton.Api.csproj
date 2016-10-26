@@ -187,7 +187,6 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TokenController.cs" />
-    <Compile Include="DTOs\TokenActiveDTO.cs" />
     <Compile Include="DTOs\TokenDTO.cs" />
     <Compile Include="Extensions\HttpRequestMessageExtensions.cs" />
     <Compile Include="Filters\CheckModelForNullAttribute.cs" />
@@ -198,6 +197,7 @@
     <Compile Include="Initializer\Bootstrapper.cs" />
     <Compile Include="Initializer\UnityResolver.cs" />
     <Compile Include="Models\TokenModel.cs" />
+    <Compile Include="Models\TokenResponse.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

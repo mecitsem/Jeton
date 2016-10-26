@@ -121,7 +121,7 @@ namespace Jeton.Api.Controllers
         [ActionName("Check")]
         [CheckModelForNull]
         [HttpPost]
-        public IHttpActionResult TokenIsActive([FromUri] string appId, [FromBody] TokenModel tokenModel)
+        public IHttpActionResult CheckToken([FromUri] string appId, [FromBody] TokenModel tokenModel)
         {
             IHttpActionResult response;
             try
@@ -172,28 +172,25 @@ namespace Jeton.Api.Controllers
                 if (!_tokenService.IsExist(tokenModel.TokenKey))
                     return BadRequest("TokenKey is not exist.");
 
-
-
-
                 var token = _tokenService.GetTokenByKey(tokenModel.TokenKey);
 
-                var isActive = _tokenService.IsActive(token);
+                var isExpired = _tokenService.IsExpired(token);
 
-                var tokenActiveDto = new TokenActiveDTO();
+                if (isExpired)
+                    return BadRequest("Token is expired");
 
-                if (!isActive)
-                {
-                    tokenActiveDto.IsActive = false;
-                }
-                else
-                {
-                    tokenActiveDto.IsActive = true;
-                    var user = _userService.GetUserById(token.UserID);
-                    tokenActiveDto.UserName = user.Name;
-                    tokenActiveDto.UserNameId = user.NameId;
-                }
+                var tokenResponse = new TokenResponse();
 
-                response = Ok(tokenActiveDto);
+                var user = _userService.GetUserById(token.UserID);
+
+                if (user == null)
+                    throw new ArgumentNullException(nameof(user));
+
+                tokenResponse.UserName = user.Name;
+                tokenResponse.UserNameId = user.NameId;
+
+
+                response = Ok(tokenResponse);
 
             }
             catch (Exception ex)

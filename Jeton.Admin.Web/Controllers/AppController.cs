@@ -20,12 +20,12 @@ namespace Jeton.Admin.Web.Controllers
         }
 
         // GET: App
-        public ActionResult Index(bool? getActiveApp)
+        public ActionResult Index(bool? active)
         {
-            ViewBag.AppStatus = getActiveApp.HasValue ? (getActiveApp.Value ? "Active" : "Passive") : "All";
+            ViewBag.AppStatus = active.HasValue ? (active.Value ? "Active" : "Inactive") : "All";
             var mapper = _config.CreateMapper();
             var appList = _appService.GetApps().AsEnumerable().
-                            Where(a => !getActiveApp.HasValue || (getActiveApp.Value ?
+                            Where(a => !active.HasValue || (active.Value ?
                                 !a.IsDeleted.HasValue || (a.IsDeleted.Value == false) :
                                 a.IsDeleted.HasValue && a.IsDeleted.Value)).Select(a => mapper.Map<AppModel>(a)).ToList();
             return View(appList);
@@ -77,7 +77,7 @@ namespace Jeton.Admin.Web.Controllers
 
                 //Fields
                 app.AccessKey = model.AccessKey;
-                app.Name = model.Name;
+                //app.Name = model.Name;
                 app.IsRoot = model.IsRoot;
 
                 //Update
@@ -139,7 +139,7 @@ namespace Jeton.Admin.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(string id)
+        public ActionResult ChangeStatus(string id)
         {
             Guid appId;
             if (string.IsNullOrEmpty(id) || !Guid.TryParse(id, out appId))
@@ -149,12 +149,14 @@ namespace Jeton.Admin.Web.Controllers
                 return HttpNotFound("AppId is not exist.");
             try
             {
-                _appService.Delete(appId);
+                var app = _appService.GetAppById(appId);
+                app.IsDeleted = !app.IsDeleted;
+                _appService.Update(app);
             }
             catch (Exception ex)
             {
                 //TODO:Log
-                ModelState.AddModelError("Delete", ex);
+                ModelState.AddModelError("ChangeStatus", ex);
             }
 
 

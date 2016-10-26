@@ -6,8 +6,7 @@ namespace Jeton.Services.TokenService
 {
     public interface ITokenService
     {
-        bool IsActiveByTokenKey(string tokenKey);
-        bool IsActive(Token token);
+        bool IsExpired(Token token);
         Token Generate(User user, App app);
         bool IsExist(string tokenKey);
         bool IsExistByUser(User user);
