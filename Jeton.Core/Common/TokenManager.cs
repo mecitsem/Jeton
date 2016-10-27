@@ -14,21 +14,23 @@ namespace Jeton.Core.Common
     public class TokenManager
     {
 
-        public TokenManager(TimeType timeType)
+        public TokenManager(TimeType timeType,string secretKey)
         {
             TimeType = timeType;
+            SecretKey = secretKey;
         }
 
-        public TokenManager()
+        public TokenManager(string secretKey)
         {
             TimeType = TimeType.Minute;
             CheckExpireFrom = CheckExpireFrom.Database;
             TokenDuration = TokenLiveDuration;
+            SecretKey = secretKey;
         }
 
         #region Properties
         public TimeType TimeType { get; set; }
-        public static string SecretKey => ConfigHelper.GetPassPhrase();
+        public string SecretKey { get; set; }
         private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
         private int _tokenDuration;
         public int TokenDuration
@@ -59,6 +61,9 @@ namespace Jeton.Core.Common
         {
             if (payload == null)
                 throw new ArgumentNullException(nameof(payload));
+
+            if (string.IsNullOrWhiteSpace(SecretKey))
+                throw new ArgumentNullException(nameof(SecretKey));
 
             //Now
             var now = Now;
@@ -95,10 +100,12 @@ namespace Jeton.Core.Common
 
         public bool TokenIsExpired(Token token)
         {
-            if(token == null)
+            if (token == null)
                 throw new ArgumentNullException(nameof(token));
 
-            if(!token.Expire.HasValue)
+      
+
+            if (!token.Expire.HasValue)
                 throw new ArgumentException("Token expire is null");
 
             bool result;
@@ -131,6 +138,8 @@ namespace Jeton.Core.Common
             if (string.IsNullOrWhiteSpace(tokenKey))
                 throw new ArgumentNullException(nameof(tokenKey));
 
+            if (string.IsNullOrWhiteSpace(SecretKey))
+                throw new ArgumentNullException(nameof(SecretKey));
 
             try
             {
@@ -162,7 +171,7 @@ namespace Jeton.Core.Common
 
         public int GetUnixTimeStamp(DateTime dateTime)
         {
-           return (int)Math.Round((dateTime - UnixEpoch).TotalSeconds);
+            return (int)Math.Round((dateTime - UnixEpoch).TotalSeconds);
         }
     }
 }

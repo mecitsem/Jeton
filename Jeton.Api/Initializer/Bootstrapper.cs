@@ -8,6 +8,8 @@ using Jeton.Services.TokenService;
 using Jeton.Services.UserService;
 using Microsoft.Practices.Unity;
 using System.Web.Http;
+using Jeton.Data.Repositories.SettingRepo;
+using Jeton.Services.SettingService;
 
 namespace Jeton.Api.Initializer
 {
@@ -20,19 +22,20 @@ namespace Jeton.Api.Initializer
         {
             var container = new UnityContainer();
 
-
+            //Factory
             container.RegisterType<IDbFactory, DbFactory>(new HierarchicalLifetimeManager());
 
             //Repository
             container.RegisterType<IAppRepository, AppRepository>(new HierarchicalLifetimeManager());
             container.RegisterType<ITokenRepository, TokenRepository>(new HierarchicalLifetimeManager());
             container.RegisterType<IUserRepository, UserRepository>(new HierarchicalLifetimeManager());
-
+            container.RegisterType<ISettingRepository, SettingRepository>(new HierarchicalLifetimeManager());
+            
             //Services
             container.RegisterType<IAppService, AppService>();
             container.RegisterType<ITokenService, TokenService>();
             container.RegisterType<IUserService, UserService>();
-
+            container.RegisterType<ISettingService, SettingService>();
 
 
             config.DependencyResolver = new UnityResolver(container);

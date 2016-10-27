@@ -15,6 +15,21 @@ namespace Jeton.Services.SettingService
             _settingRepository = settingRepository;
         }
 
+        public bool IsExist(string name)
+        {
+           return _settingRepository.IsExist(name);
+        }
+
+        public bool IsExist(Guid settingId)
+        {
+            return _settingRepository.IsExist(settingId);
+        }
+
+        public bool IsExist(Setting setting)
+        {
+            return _settingRepository.IsExist(setting);
+        }
+
         public Setting GetSettingById(Guid settingId)
         {
             return _settingRepository.GetSettingById(settingId);

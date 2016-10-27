@@ -35,10 +35,11 @@ namespace Jeton.Admin.Web.Controllers
         {
             Guid appId;
             if (string.IsNullOrEmpty(id) || !Guid.TryParse(id, out appId))
-                return null;
+                return View();
 
             if (!_appService.IsExist(appId))
-                return null;
+                return View();
+
             var mapper = _config.CreateMapper();
             var app = mapper.Map<AppModel>(_appService.GetAppById(appId));
 

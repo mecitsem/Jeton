@@ -27,7 +27,7 @@
                             @Html.TextBoxFor(model => model.AppId, new { @class = "form-control", @disabled = "" })
                         </div>
                         <div class="col-sm-1">
-                            <a class="btn btn-warning" onclick="copyToClipboard('@Model.AppId')" data-toggle="tooltip" data-placement="top" title="Tooltip on top"><i class="fa fa-copy"></i></a>
+                            <a class="btn btn-default" onclick="copyToClipboard('@Model.AppId')" data-toggle="tooltip" data-placement="top" title="Tooltip on top"><i class="fa fa-copy"></i></a>
                         </div>
                     </div>
                     <div class="form-group">
@@ -36,7 +36,7 @@
                             @Html.TextBoxFor(model => model.AccessKey, new { @class = "form-control", @disabled = "" })
                         </div>
                         <div class="col-sm-1">
-                            <a class="btn btn-warning" onclick="copyToClipboard('@Model.AccessKey')" data-toggle="tooltip" data-placement="top" data-original-title="Copy to clipboard"><i class="fa fa-copy"></i></a>
+                            <a class="btn btn-default" onclick="copyToClipboard('@Model.AccessKey')" data-toggle="tooltip" data-placement="top" data-original-title="Copy to clipboard"><i class="fa fa-copy"></i></a>
                         </div>
                     </div>
                     <div class="form-group">

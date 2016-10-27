@@ -56,6 +56,7 @@
     <Compile Include="Common\TokenManager.cs" />
     <Compile Include="Helpers\ConfigHelper.cs" />
     <Compile Include="Helpers\CryptoHelper.cs" />
+    <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Helpers\TokenHelper.cs" />
     <Compile Include="Models\Payload.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

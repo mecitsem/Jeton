@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Jeton.Core.Entities;
 using Jeton.Core.Common;
+using Jeton.Core.Helpers;
 using Jeton.Core.Models;
+using Jeton.Data.Repositories.SettingRepo;
 using Jeton.Data.Repositories.TokenRepo;
 
 namespace Jeton.Services.TokenService
@@ -11,10 +13,13 @@ namespace Jeton.Services.TokenService
     public class TokenService : ITokenService
     {
         private readonly ITokenRepository _tokenRepository;
+        private readonly ISettingRepository _settingRepository;
 
-        public TokenService(ITokenRepository tokenRepository)
+        public TokenService(ITokenRepository tokenRepository,
+                            ISettingRepository settingRepository)
         {
-            this._tokenRepository = tokenRepository;
+            _tokenRepository = tokenRepository;
+            _settingRepository = settingRepository;
         }
 
         #region CREATE
@@ -67,7 +72,18 @@ namespace Jeton.Services.TokenService
 
         public virtual IEnumerable<Token> GetActiveTokens()
         {
-            var tokenManager = new TokenManager();
+            var secretKey = _settingRepository.GetSecretKey();
+            var checkExpireFrom = _settingRepository.GetCheckExpireFrom();
+            var tokenDuration = _settingRepository.GetTokenDuration();
+
+            if (string.IsNullOrWhiteSpace(secretKey))
+                throw new ArgumentNullException(nameof(secretKey));
+
+            var tokenManager = new TokenManager(secretKey)
+            {
+                CheckExpireFrom = checkExpireFrom,
+                TokenDuration = tokenDuration,
+            };
             var table = _tokenRepository.Table;
             return table.AsEnumerable().Where(t => !tokenManager.TokenIsExpired(t)).ToList();
         }
@@ -123,7 +139,20 @@ namespace Jeton.Services.TokenService
             if (!app.IsRoot)
                 throw new ArgumentException("The app can't generate token.Becase it is not a root app.");
 
-            var tokenManager = new TokenManager();
+            var secretKey = _settingRepository.GetSecretKey();
+            var checkExpireFrom = _settingRepository.GetCheckExpireFrom();
+            var tokenDuration = _settingRepository.GetTokenDuration();
+
+            if (string.IsNullOrWhiteSpace(secretKey))
+                throw new ArgumentNullException(nameof(secretKey));
+
+            var tokenManager = new TokenManager(secretKey)
+            {
+                CheckExpireFrom = checkExpireFrom,
+                TokenDuration = tokenDuration,
+            };
+
+
             var time = tokenManager.Now;
             var unixTimestamp = tokenManager.GetUnixTimeStamp(time);
 
@@ -177,7 +206,18 @@ namespace Jeton.Services.TokenService
             if (token == null)
                 throw new ArgumentNullException(nameof(token));
 
-            var tokenManager = new TokenManager();
+            var secretKey = _settingRepository.GetSecretKey();
+            var checkExpireFrom = _settingRepository.GetCheckExpireFrom();
+            var tokenDuration = _settingRepository.GetTokenDuration();
+
+            if (string.IsNullOrWhiteSpace(secretKey))
+                throw new ArgumentNullException(nameof(secretKey));
+
+            var tokenManager = new TokenManager(secretKey)
+            {
+                CheckExpireFrom = checkExpireFrom,
+                TokenDuration = tokenDuration,
+            };
 
             //Check Token expired by Payload in TokenKey
             var result = tokenManager.TokenIsExpired(token);
@@ -192,7 +232,19 @@ namespace Jeton.Services.TokenService
 
         public int GetActiveTokensCount()
         {
-            var tokenManager = new TokenManager();
+            var secretKey = _settingRepository.GetSecretKey();
+            var checkExpireFrom = _settingRepository.GetCheckExpireFrom();
+            var tokenDuration = _settingRepository.GetTokenDuration();
+
+            if (string.IsNullOrWhiteSpace(secretKey))
+                throw new ArgumentNullException(nameof(secretKey));
+
+            var tokenManager = new TokenManager(secretKey)
+            {
+                CheckExpireFrom = checkExpireFrom,
+                TokenDuration = tokenDuration,
+            };
+
             var table = _tokenRepository.TableNoTracking;
             return table.AsEnumerable().Count(t => !tokenManager.TokenIsExpired(t));
         }

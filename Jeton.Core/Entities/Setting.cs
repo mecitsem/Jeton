@@ -17,6 +17,7 @@ namespace Jeton.Core.Entities
         public string Name { get; set; }
         public string Value { get; set; }
         public Constants.ValueType ValueType { get; set; }
+        public bool IsEssential { get; set; }
 
     }
 

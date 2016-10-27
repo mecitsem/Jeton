@@ -6,9 +6,11 @@ using Jeton.Data.Infrastructure.Interfaces;
 using Jeton.Data.Repositories.UserRepo;
 using Jeton.Data.Repositories.TokenRepo;
 using Jeton.Data.Repositories.AppRepo;
+using Jeton.Data.Repositories.SettingRepo;
 using Jeton.Services.TokenService;
 using Jeton.Services.UserService;
 using Jeton.Services.AppService;
+using Jeton.Services.SettingService;
 
 namespace Jeton.Admin.Web.App_Start
 {
@@ -46,17 +48,20 @@ namespace Jeton.Admin.Web.App_Start
             // TODO: Register your types here
             // container.RegisterType<IProductRepository, ProductRepository>();
 
+            //Factory
             container.RegisterType<IDbFactory, DbFactory>();
 
             //Repository
             container.RegisterType<IAppRepository, AppRepository>();
             container.RegisterType<ITokenRepository, TokenRepository>();
             container.RegisterType<IUserRepository, UserRepository>();
+            container.RegisterType<ISettingRepository, SettingRepository>();
 
             //Services
             container.RegisterType<IAppService, AppService>();
             container.RegisterType<ITokenService, TokenService>();
             container.RegisterType<IUserService, UserService>();
+            container.RegisterType<ISettingService, SettingService>();
         }
     }
 }

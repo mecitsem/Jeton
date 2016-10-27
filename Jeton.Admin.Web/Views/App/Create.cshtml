@@ -45,7 +45,7 @@
                                 <button type="button" class="btn btn-outline btn-primary" onclick="GenerateAccessKey()" data-toggle="tooltip" data-placement="top" title="Tooltip on top"><i class="fa fa-refresh"></i> Generate AccessKey </button>
                             </div>
                             <div class="col-md-1">
-                                <a class="btn btn-warning" onclick="copyToClipboard(document.getElementById('AccessKey').value)" data-toggle="tooltip" data-placement="top" title="Tooltip on top"><i class="fa fa-copy"></i></a>
+                                <a class="btn btn-default" onclick="copyToClipboard(document.getElementById('AccessKey').value)" data-toggle="tooltip" data-placement="top" title="Tooltip on top"><i class="fa fa-copy"></i></a>
                             </div>
                             <div class="col-md-4">
                                 @Html.ValidationMessageFor(model => model.AccessKey, "", new { @class = "text-danger" })

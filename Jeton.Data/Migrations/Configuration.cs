@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace Jeton.Data.Migrations
 {
     using Core.Common;
@@ -29,27 +31,36 @@ namespace Jeton.Data.Migrations
             //    );
             //
 
-            //var tokenManager = new TokenManager();
 
-            //var app = new App()
-            //{
-            //    Name = "RootApp",
-            //    IsRoot = true,
-            //    AccessKey = tokenManager.GenerateAccessKey(),
-            //};
-            ////Save RootApp
-            //context.Apps.Add(app);
+            var secretKey = new Setting()
+            {
+                Name = Constants.Settings.SecretKey,
+                Value = "iBqOVMFLd5VK_otREU_6llwE04xpm973cX5Vdo5VyuY",
+                ValueType = Constants.ValueType.String,
+                IsEssential = true
+            };
+            if (!context.Settings.Any(s => s.Name.Equals(secretKey.Name, StringComparison.OrdinalIgnoreCase)))
+                context.Settings.Add(secretKey);
 
-            //var app1 = new App()
-            //{
-            //    Name = "App1",
-            //    IsRoot = false,
-            //    AccessKey = tokenManager.GenerateAccessKey()
-            //};
-            ////Save App1
-            //context.Apps.Add(app1);
-
-            //context.SaveChanges();
+            var checkExpireFrom = new Setting()
+            {
+                Name = Constants.Settings.CheckExpireFrom,
+                Value = ((int)Constants.CheckExpireFrom.Database).ToString(),
+                ValueType = Constants.ValueType.Integer,
+                IsEssential = true
+            };
+            if (!context.Settings.Any(s => s.Name.Equals(checkExpireFrom.Name, StringComparison.OrdinalIgnoreCase)))
+                context.Settings.Add(checkExpireFrom);
+            var tokenDuration = new Setting()
+            {
+                Name = Constants.Settings.TokenDuration,
+                Value = 24.ToString(),
+                ValueType = Constants.ValueType.Integer,
+                IsEssential = true
+            };
+            if (!context.Settings.Any(s => s.Name.Equals(tokenDuration.Name, StringComparison.OrdinalIgnoreCase)))
+                context.Settings.Add(tokenDuration);
+            context.SaveChanges();
 
 
         }

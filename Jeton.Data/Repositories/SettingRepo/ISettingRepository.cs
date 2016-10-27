@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Jeton.Core.Common;
 using Jeton.Core.Entities;
 using Jeton.Data.Infrastructure.Interfaces;
 
@@ -14,5 +15,9 @@ namespace Jeton.Data.Repositories.SettingRepo
         Setting GetSettingByName(string name);
         bool IsExist(Setting setting);
         bool IsExist(Guid settingId);
+        bool IsExist(string name);
+        string GetSecretKey();
+        int GetTokenDuration();
+        Constants.CheckExpireFrom GetCheckExpireFrom();
     }
 }

@@ -30,8 +30,8 @@
 
         public enum CheckExpireFrom
         {
-            Database,
-            Token
+            Database = 0,
+            Token = 1
         }
 
         public enum ValueType
