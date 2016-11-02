@@ -390,6 +390,9 @@
     <Content Include="Views\Settings\Edit.cshtml" />
     <Content Include="Views\Settings\Delete.cshtml" />
     <Content Include="Views\Shared\_PartialEssentialSettings.cshtml" />
+    <Content Include="Views\Shared\_PartialTokenChart.cshtml" />
+    <Content Include="Views\Shared\_PartialAppActivityChart.cshtml" />
+    <Content Include="Views\Shared\_PartialAppStatusChart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -9,7 +9,7 @@
     @Scripts.Render("~/bundles/modernizr")
     <link href="@Url.Content("~/Content/vendor/metisMenu/metisMenu.min.css")" rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/Content/dist/css/sb-admin-2.css")" rel="stylesheet" type="text/css" />
-    @*<link href="@Url.Content("~/Content/vendor/morrisjs/morris.css")" rel="stylesheet" type="text/css" />*@
+    <link href="@Url.Content("~/Content/vendor/morrisjs/morris.css")" rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/Content/vendor/font-awesome/css/font-awesome.min.css")" rel="stylesheet" type="text/css" />
     <!-- DataTables CSS -->
     <link href="@Url.Content("~/Content/vendor/datatables-plugins/dataTables.bootstrap.css")" rel="stylesheet">
@@ -87,14 +87,15 @@
         }
 
         $(document).ready(function () {
-          
-            $('#wrapper').tooltip({
-                selector: "[data-toggle=tooltip]",
-                container: "body"
-            })
+
+            $('#wrapper')
+                .tooltip({
+                    selector: "[data-toggle=tooltip]",
+                    container: "body"
+                });
             // popover demo
             $("[data-toggle=popover]")
-                .popover()
+                .popover();
         });
 
         

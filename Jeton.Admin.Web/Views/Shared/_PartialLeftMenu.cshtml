@@ -10,10 +10,16 @@
                 <a href="#"><i class="fa fa-cloud fa-fw"></i> Apps<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li>
-                        <a href="@Url.Action("Index","App")">App List</a>
+                        <a href="@Url.Action("Index", "App")">View All</a>
                     </li>
                     <li>
-                        <a href="@Url.Action("Create","App")">Create App</a>
+                        <a href="@Url.Action("Index", "App", new {active = true})">View Actives</a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index","App", new { active = false})">View Inactives</a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Create","App")">Create</a>
                     </li>
                 </ul>
                 <!-- /.nav-second-level -->
@@ -37,10 +43,10 @@
                 <!-- /.nav-second-level -->
             </li>
             <li>
-                <a href="#"><i class="fa fa-sun-o fa-fw"></i> Settings<span class="fa arrow"></span></a>
+                <a href="#"><i class="fa fa-gear fa-fw"></i> Settings<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li>
-                        <a href="@Url.Action("Index","Settings")">Settings List</a>
+                        <a href="@Url.Action("Index","Settings")">View All</a>
                     </li>
                     <li>
                         <a href="@Url.Action("Create", "Settings")">Create</a>

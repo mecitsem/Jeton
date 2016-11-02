@@ -71,7 +71,7 @@
             <div class="panel-footer">
 
                 @Html.ActionLink("Edit", "Edit", new { id = Model.AppId }, new { @class = "btn btn-primary" }) |
-                @Html.ActionLink("Back to List", "Index")
+                @Html.ActionLink("Back to list", "Index", null, new { @class = "btn btn-default" })
 
                 @using (Html.BeginForm("ChangeStatus", "App", new { id = Model.AppId }, FormMethod.Post, new { @class = "pull-right" }))
                 {

@@ -102,46 +102,68 @@
 <!-- /.row -->
 <div class="row">
     <div class="col-lg-8">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <i class="fa fa-bar-chart-o fa-fw"></i> Area Chart Example
-                <div class="pull-right">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                            Actions
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu pull-right" role="menu">
-                            <li>
-                                <a href="#">Action</a>
-                            </li>
-                            <li>
-                                <a href="#">Another action</a>
-                            </li>
-                            <li>
-                                <a href="#">Something else here</a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#">Separated link</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <!-- /.panel-heading -->
-            <div class="panel-body">
+        <!-- Token Chart -->
+        @Html.Partial("_PartialTokenChart", null)
 
-            </div>
-            <!-- /.panel-body -->
-        </div>
-        <!-- /.panel -->
-
+        <!-- App Activity Chart -->
+        @Html.Partial("_PartialAppActivityChart", null)
     </div>
     <!-- /.col-lg-8 -->
     <div class="col-lg-4">
-        @Html.Partial("_PartialEssentialSettings", (IEnumerable<Jeton.Admin.Web.Models.SettingModel>)ViewBag.Settings);
+
+        <!-- Settings -->
+        @Html.Partial("_PartialEssentialSettings", (IEnumerable<Jeton.Admin.Web.Models.SettingModel>)ViewBag.Settings)
+
+        <!-- App Status Chart -->
+        @Html.Partial("_PartialAppStatusChart", (IEnumerable<Jeton.Admin.Web.Models.AppModel>)ViewBag.Apps);
+
     </div>
     <!-- /.col-lg-4 -->
 </div>
 <!-- /.row -->
+@section Scripts{
+    <!-- Morris Charts JavaScript -->
+    <script src="@Url.Content("~/Content/vendor/raphael/raphael.min.js")"></script>
+    <script src="@Url.Content("~/Content/vendor/morrisjs/morris.min.js")"></script>
+    @*<script src="@Url.Content("~/Content/data/morris-data.js")"></script>*@
+    <script>
+        $(function() {
+
+            BindAppStatusChart('morris-donut-chart');
+
+
+        });
+
+        function BindAppStatusChart(e) {
+            $.getJSON('@Url.Action("GetActiveApps", "Home")',
+                function (d) {
+                    var rootAppCount = $.grep(d,
+                            function (n, i) {
+                                return n.IsRoot === true;
+                            })
+                        .length;
+
+                    var normalAppCount = $.grep(d,
+                            function (n, i) {
+                                return n.IsRoot === false;
+                            })
+                        .length;
+
+                    Morris.Donut({
+                        element: e,
+                        data: [
+                            {
+                                label: "Root Apps",
+                                value: rootAppCount
+                            }, {
+                                label: "Normal Apps",
+                                value: normalAppCount
+                            }
+                        ],
+                        resize: true,
+                        colors: ['red', 'blue']
+                    });
+                });
+        }
+    </script>
+}
