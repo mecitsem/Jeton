@@ -1,49 +1,88 @@
-﻿@model Jeton.Admin.Web.ViewModel.SettingViewModel
+﻿@using Jeton.Core.Common
+@model Jeton.Admin.Web.ViewModel.SettingViewModel
 
 @{
     ViewBag.Title = "Delete";
 }
 
-<h2>Delete</h2>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>SettingViewModel</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Value)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Value)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.IsEssential)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.IsEssential)
-        </dd>
-
-    </dl>
-
-    @using (Html.BeginForm("Delete", "Settings", FormMethod.Post, new { id = Model.SettingID }))
-    {
-        @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
-        </div>
-    }
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            Delete
+        </h1>
+    </div>
+    <!-- /.col-lg-12 -->
 </div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+
+                Setting Detail
+
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="alert alert-danger">
+                    Are you sure you want to delete this?
+                </div>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-5">
+                            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                        </div>
+                        <div class="col-md-5">
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Value, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-5">
+                            @Html.EditorFor(model => model.Value, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                        </div>
+                        <div class="col-md-5">
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ValueType, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-5">
+                            @Html.DropDownList("ValueType", EnumHelper.GetSelectList(typeof(Constants.ValueType)), new { @class = "form-control", @disabled = "" })
+                        </div>
+                        <div class="col-md-5">
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-5">
+                            @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @disabled = "" })
+                        </div>
+                        <div class="col-md-5">
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+            <div class="panel-footer">
+             
+                @using (Html.BeginForm("Delete", "Settings", FormMethod.Post, new { id = Model.SettingID }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="form-actions no-color">
+                        @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
+                        <input type="submit" value="Delete" class="btn btn-danger pull-right"/>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+

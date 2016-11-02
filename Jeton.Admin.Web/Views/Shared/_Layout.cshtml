@@ -85,6 +85,19 @@
             $temp.remove();
             alert("Copied to clipboard");
         }
+
+        $(document).ready(function () {
+          
+            $('#wrapper').tooltip({
+                selector: "[data-toggle=tooltip]",
+                container: "body"
+            })
+            // popover demo
+            $("[data-toggle=popover]")
+                .popover()
+        });
+
+        
     </script>
     @RenderSection("scripts", required: false)
 </body>

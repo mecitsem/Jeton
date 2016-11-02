@@ -1,37 +1,79 @@
-﻿@model Jeton.Admin.Web.ViewModel.SettingViewModel
+﻿@using Jeton.Core.Common
+@model Jeton.Admin.Web.ViewModel.SettingViewModel
 
 @{
     ViewBag.Title = "Detail";
 }
-
-<h2>Detail</h2>
-
-<div>
-    <h4>SettingViewModel</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Value)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Value)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ValueType)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ValueType)
-        </dd>
-    </dl>
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            Detail
+        </h1>
+    </div>
+    <!-- /.col-lg-12 -->
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.SettingID }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+
+            Setting detail
+
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-5">
+                            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                        </div>
+                        <div class="col-md-5">
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Value, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-5">
+                            @Html.EditorFor(model => model.Value, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                        </div>
+                        <div class="col-md-5">
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ValueType, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-5">
+                            @Html.DropDownList("ValueType", EnumHelper.GetSelectList(typeof(Constants.ValueType)), new { @class = "form-control", @disabled = "" })
+                        </div>
+                        <div class="col-md-5">
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-5">
+                            @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @disabled = "" })
+                        </div>
+                        <div class="col-md-5">
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+            <div class="panel-footer">
+
+
+
+                @Html.ActionLink("Back to list", "Index", null, new { @class = "btn btn-default" })
+                @Html.ActionLink("Edit", "Edit", null, new { @class = "btn btn-warning pull-right" })
+
+
+            </div>
+        </div>
+    </div>
+</div>

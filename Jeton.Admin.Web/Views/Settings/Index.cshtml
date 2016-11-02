@@ -38,8 +38,8 @@
             @foreach (var item in Model)
             {
                 <tr>
-
                     <td>
+                        
                         @(item.IsEssential ? Html.DisplayFor(modelItem => item.Name, new {@class = "text-danger"}) : Html.DisplayFor(modelItem => item.Name))
 
                     </td>
@@ -58,12 +58,12 @@
                     </td>
                  
                     <td>
-                        @Html.ActionLink("Edit", "Edit", new { id = item.SettingID }) |
-                        @Html.ActionLink("Details", "Detail", new { id = item.SettingID })
-                        |
+                        <button class="btn btn-info btn-sm" data-container="body" data-toggle="popover" data-placement="top" data-content="@item.Description"><i class="fa fa-info"></i></button>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.SettingID },new { @class="btn btn-warning btn-sm " })
+                        @Html.ActionLink("Detail", "Detail", new { id = item.SettingID }, new { @class = "btn btn-primary btn-sm " })
                         @if (!item.IsEssential)
                         {
-                            @Html.ActionLink("Delete", "Delete", new { id = item.SettingID })
+                            @Html.ActionLink("Delete", "Delete", new { id = item.SettingID }, new { @class = "btn btn-danger btn-sm pull-right" })
                         }
                     </td>
                 </tr>

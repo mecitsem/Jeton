@@ -1,0 +1,26 @@
+﻿@model IEnumerable<Jeton.Admin.Web.Models.SettingModel>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <i class="fa fa-bell fa-fw"></i> Settings
+    </div>
+    <!-- /.panel-heading -->
+    <div class="panel-body">
+        <div class="list-group">
+            @foreach (var setting in Model)
+            {
+                <a href="#" class="list-group-item" data-container="body" data-toggle="popover" data-placement="top" data-content="@setting.Description">
+                    <i class="fa fa-arrow-circle-right fa-fw"></i> @setting.Name
+                    <span class="pull-right text-muted small">
+                        <em>@setting.Value</em>
+                    </span>
+                </a>
+            }
+
+        </div>
+        <!-- /.list-group -->
+        <a href="@Url.Action("Index","Settings")" class="btn btn-default btn-block">View All Settings</a>
+    </div>
+    <!-- /.panel-body -->
+</div>
+<!-- /.panel -->

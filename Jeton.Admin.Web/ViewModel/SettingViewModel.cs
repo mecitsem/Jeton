@@ -24,6 +24,9 @@ namespace Jeton.Admin.Web.ViewModel
         public Constants.ValueType ValueType { get; set; }
 
         public bool IsEssential { get; set; }
+
+        [StringLength(500)]
+        public string Description { get; set; }
     }
 }
 

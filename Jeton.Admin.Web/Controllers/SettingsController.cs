@@ -117,6 +117,7 @@ namespace Jeton.Admin.Web.Controllers
 
                 setting.Value = model.Value;
                 setting.ValueType = model.ValueType;
+                setting.Description = model.Description;
 
                 _settingService.Update(setting);
 
@@ -159,6 +160,12 @@ namespace Jeton.Admin.Web.Controllers
                 {
                     if (!_settingService.IsExist(id))
                         return HttpNotFound("Setting is not exist.");
+
+                    var setting = _settingService.GetSettingById(id);
+
+                    if (setting.IsEssential)
+                        return new HttpStatusCodeResult(403, "This setting is essential. You can not delete it.");
+
                     _settingService.Delete(id);
                 }
             }

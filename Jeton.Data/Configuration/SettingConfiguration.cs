@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity.ModelConfiguration;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace Jeton.Data.Configuration
             ToTable("Settings");
             Property(i => i.Name).IsRequired().HasMaxLength(255);
             Property(i => i.Value).IsOptional();
+            Property(i => i.Description).IsOptional().HasMaxLength(500);
         }
 
 

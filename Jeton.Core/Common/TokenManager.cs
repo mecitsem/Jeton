@@ -6,30 +6,26 @@ using System.Runtime.Remoting.Messaging;
 using System.Text;
 using Jeton.Core.Entities;
 using Jeton.Core.Models;
-using JWT;
 using static Jeton.Core.Common.Constants;
+using JWT;
 
 namespace Jeton.Core.Common
 {
+    /// <summary>
+    ///  If you implement System.IdentityModel.Tokens.Jwt or different crypto system, you should chgange only this place
+    /// </summary>
     public class TokenManager
     {
 
-        public TokenManager(TimeType timeType,string secretKey)
-        {
-            TimeType = timeType;
-            SecretKey = secretKey;
-        }
-
         public TokenManager(string secretKey)
         {
-            TimeType = TimeType.Minute;
             CheckExpireFrom = CheckExpireFrom.Database;
             TokenDuration = TokenLiveDuration;
             SecretKey = secretKey;
         }
 
         #region Properties
-        public TimeType TimeType { get; set; }
+
         public string SecretKey { get; set; }
         private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
         private int _tokenDuration;
@@ -82,9 +78,9 @@ namespace Jeton.Core.Common
                 {"rootappId", payload.RootAppId },
                 {"exp",expire }
             };
-            //Create Token
 
-            //var token = CryptoHelper.Encrypt(sb.ToString(), SecretKey);
+
+            //Create Token
             var token = JsonWebToken.Encode(extraheaders, payload, SecretKey, JwtHashAlgorithm.HS256); //JWT
 
             return token;
@@ -103,7 +99,7 @@ namespace Jeton.Core.Common
             if (token == null)
                 throw new ArgumentNullException(nameof(token));
 
-      
+
 
             if (!token.Expire.HasValue)
                 throw new ArgumentException("Token expire is null");
@@ -116,7 +112,7 @@ namespace Jeton.Core.Common
                     result = TokenIsExpired(token.Expire.Value);
                     break;
                 case CheckExpireFrom.Token:
-                    result = TokenIsExpired(token.TokenKey, TokenDuration, TimeType);
+                    result = TokenIsExpired(token.TokenKey, TokenDuration);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -128,10 +124,9 @@ namespace Jeton.Core.Common
         /// Check token alive
         /// </summary>
         /// <param name="timeDuration"></param>
-        /// <param name="timeType">Hour, Minute, Second</param>
         /// <param name="tokenKey"></param>
         /// <returns></returns>
-        public bool TokenIsExpired(string tokenKey, int timeDuration, TimeType timeType)
+        public bool TokenIsExpired(string tokenKey, int timeDuration)
         {
             var result = false;
 
@@ -161,7 +156,7 @@ namespace Jeton.Core.Common
 
         public DateTime GetExpire(DateTime time)
         {
-            return TokenHelper.CalculateExpire(TokenDuration, TimeType, time);
+            return TokenHelper.CalculateExpire(TokenDuration, time);
         }
 
         public string GenerateAccessKey()

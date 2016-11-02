@@ -21,13 +21,6 @@
             PassPhrase
         }
 
-        public enum TimeType
-        {
-            Second = 1,
-            Minute = 2,
-            Hour = 3
-        }
-
         public enum CheckExpireFrom
         {
             Database = 0,
