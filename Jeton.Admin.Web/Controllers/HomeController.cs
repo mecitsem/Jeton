@@ -51,13 +51,14 @@ namespace Jeton.Admin.Web.Controllers
             return View();
         }
 
-        public JsonResult GetActiveApps()
+        [HttpGet]
+        public JsonResult GetApps()
         {
             IEnumerable<AppModel> apps;
             try
             {
                 var appMapper = _appMapperConfiguration.CreateMapper();
-                apps = _appService.GetApps().AsEnumerable().Where(a => !a.IsDeleted.HasValue || (a.IsDeleted.Value == false)).Select(t => appMapper.Map<AppModel>(t)).ToList();
+                apps = _appService.GetApps().AsEnumerable().Select(t => appMapper.Map<AppModel>(t)).ToList();
             }
             catch (Exception)
             {
@@ -85,6 +86,25 @@ namespace Jeton.Admin.Web.Controllers
             return Json(tokens, JsonRequestBehavior.AllowGet);
 
         }
+
+        [HttpGet]
+        public JsonResult GetTokenActivity()
+        {
+
+            try
+            {
+                var apps = _appService.GetApps();
+                var tokens = _tokenService.GetTokens();
+                return Json(tokens, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+
+        }
+
+
 
         private void BindTopBarCounts()
         {

@@ -128,7 +128,7 @@ namespace Jeton.Core.Common
         /// <returns></returns>
         public bool TokenIsExpired(string tokenKey, int timeDuration)
         {
-            var result = false;
+            bool result;
 
             if (string.IsNullOrWhiteSpace(tokenKey))
                 throw new ArgumentNullException(nameof(tokenKey));
@@ -138,10 +138,13 @@ namespace Jeton.Core.Common
 
             try
             {
+                //Verify Token
+                if (!IsVerified(tokenKey)) return false;
+
                 var payload = JsonWebToken.DecodeToObject<Payload>(tokenKey, SecretKey);
 
                 if (payload == null)
-                    throw new ArgumentException("Datetime is invalid");
+                    throw new ArgumentNullException(nameof(payload));
 
                 var nowUnixTimestamp = GetUnixTimeStamp(Now);
 
@@ -149,7 +152,9 @@ namespace Jeton.Core.Common
             }
             catch (Exception ex)
             {
-                // ignored
+                //TODO:Log
+                //Token is not verified
+                result = true;
             }
             return result;
         }
@@ -167,6 +172,26 @@ namespace Jeton.Core.Common
         public int GetUnixTimeStamp(DateTime dateTime)
         {
             return (int)Math.Round((dateTime - UnixEpoch).TotalSeconds);
+        }
+
+        public bool IsVerified(string tokenKey, string secretKey)
+        {
+            bool result;
+            try
+            {
+                JsonWebToken.DecodeToObject<Payload>(tokenKey, SecretKey);
+                result = true;
+            }
+            catch
+            {
+                result = false;
+            }
+            return result;
+        }
+
+        public bool IsVerified(string tokenKey)
+        {
+            return IsVerified(tokenKey, SecretKey);
         }
     }
 }

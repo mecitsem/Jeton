@@ -151,7 +151,7 @@ namespace Jeton.Admin.Web.Controllers
             try
             {
                 var app = _appService.GetAppById(appId);
-                app.IsDeleted = !app.IsDeleted;
+                app.IsDeleted = !app.IsDeleted ?? true;
                 _appService.Update(app);
             }
             catch (Exception ex)

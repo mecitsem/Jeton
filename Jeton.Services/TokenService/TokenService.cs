@@ -201,6 +201,31 @@ namespace Jeton.Services.TokenService
 
         }
 
+        public bool IsVerified(Token token)
+        {
+            if (token == null)
+                throw new ArgumentNullException(nameof(token));
+
+            var secretKey = _settingRepository.GetSecretKey();
+            var checkExpireFrom = _settingRepository.GetCheckExpireFrom();
+            var tokenDuration = _settingRepository.GetTokenDuration();
+
+            if (string.IsNullOrWhiteSpace(secretKey))
+                throw new ArgumentNullException(nameof(secretKey));
+
+            var tokenManager = new TokenManager(secretKey)
+            {
+                CheckExpireFrom = checkExpireFrom,
+                TokenDuration = tokenDuration,
+            };
+
+            //Check Token expired by Payload in TokenKey
+            var result = tokenManager.IsVerified(token.TokenKey);
+
+            return result;
+        }
+
+
         public bool IsExpired(Token token)
         {
             if (token == null)
@@ -218,6 +243,10 @@ namespace Jeton.Services.TokenService
                 CheckExpireFrom = checkExpireFrom,
                 TokenDuration = tokenDuration,
             };
+
+            //Verifiy
+            if(checkExpireFrom == Constants.CheckExpireFrom.Token && !IsVerified(token))
+                throw new ArgumentException("Invalid Signature");
 
             //Check Token expired by Payload in TokenKey
             var result = tokenManager.TokenIsExpired(token);

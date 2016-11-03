@@ -98,7 +98,7 @@ namespace Jeton.Services.AppService
             if (app == null)
                 throw new ArgumentNullException(nameof(app));
 
-            var result = !app.IsDeleted.HasValue || app.IsDeleted == true;
+            var result = !(app.IsDeleted.HasValue && app.IsDeleted == true);
 
             return result;
         }

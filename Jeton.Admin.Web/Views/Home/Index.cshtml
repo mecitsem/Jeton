@@ -103,10 +103,10 @@
 <div class="row">
     <div class="col-lg-8">
         <!-- Token Chart -->
-        @Html.Partial("_PartialTokenChart", null)
+        @*@Html.Partial("_PartialTokenChart", null)*@
 
         <!-- App Activity Chart -->
-        @Html.Partial("_PartialAppActivityChart", null)
+        @*@Html.Partial("_PartialAppActivityChart", null)*@
     </div>
     <!-- /.col-lg-8 -->
     <div class="col-lg-4">
@@ -125,45 +125,20 @@
     <!-- Morris Charts JavaScript -->
     <script src="@Url.Content("~/Content/vendor/raphael/raphael.min.js")"></script>
     <script src="@Url.Content("~/Content/vendor/morrisjs/morris.min.js")"></script>
-    @*<script src="@Url.Content("~/Content/data/morris-data.js")"></script>*@
+    <script src="@Url.Content("~/Scripts/jeton_custom.js")"></script>
     <script>
         $(function() {
 
-            BindAppStatusChart('morris-donut-chart');
+            //Bind App Status Donut Chart
+            BindAppStatusChart('morris-donut-chart', '@Url.Action("GetApps", "Home")');
 
+            //Bind Token Activity Area Chart
+            //BindTokenActivityChart('morris-area-chart', '@Url.Action("GetTokens","Home")');
 
+            //Bind App Activity Bar Chart
+            //BindAppActivityBarChart('morris-bar-chart', '@Url.Action("GetApps", "Home")');
         });
 
-        function BindAppStatusChart(e) {
-            $.getJSON('@Url.Action("GetActiveApps", "Home")',
-                function (d) {
-                    var rootAppCount = $.grep(d,
-                            function (n, i) {
-                                return n.IsRoot === true;
-                            })
-                        .length;
-
-                    var normalAppCount = $.grep(d,
-                            function (n, i) {
-                                return n.IsRoot === false;
-                            })
-                        .length;
-
-                    Morris.Donut({
-                        element: e,
-                        data: [
-                            {
-                                label: "Root Apps",
-                                value: rootAppCount
-                            }, {
-                                label: "Normal Apps",
-                                value: normalAppCount
-                            }
-                        ],
-                        resize: true,
-                        colors: ['red', 'blue']
-                    });
-                });
-        }
+        
     </script>
 }
