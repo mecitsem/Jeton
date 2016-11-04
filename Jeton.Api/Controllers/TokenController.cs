@@ -174,6 +174,11 @@ namespace Jeton.Api.Controllers
 
                 var token = _tokenService.GetTokenByKey(tokenModel.TokenKey);
 
+                //Verify
+                if (!_tokenService.IsVerified(token))
+                    return BadRequest("Signature invalid.");
+
+                //Check Expire
                 var isExpired = _tokenService.IsExpired(token);
 
                 if (isExpired)

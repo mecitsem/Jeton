@@ -139,7 +139,7 @@ namespace Jeton.Core.Common
             try
             {
                 //Verify Token
-                if (!IsVerified(tokenKey)) return false;
+                if (!IsVerified(tokenKey)) return true;
 
                 var payload = JsonWebToken.DecodeToObject<Payload>(tokenKey, SecretKey);
 
