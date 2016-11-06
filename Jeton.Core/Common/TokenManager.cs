@@ -2,12 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
 using Jeton.Core.Entities;
 using Jeton.Core.Models;
+using Jeton.Jwt.Core;
 using static Jeton.Core.Common.Constants;
-using JWT;
 
 namespace Jeton.Core.Common
 {

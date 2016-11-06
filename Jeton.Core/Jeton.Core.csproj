@@ -77,6 +77,12 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Jeton.Jwt.Core\Jeton.Jwt.Core.csproj">
+      <Project>{2EAAE9C8-25AF-4A0A-8E5D-224327ADE38C}</Project>
+      <Name>Jeton.Jwt.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
