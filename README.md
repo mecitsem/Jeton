@@ -1,6 +1,6 @@
 # Jeton
 
-Token Base Auth. Service
+Token Base Auth. Service by JWT
 
 <div class="row">
     <div class="col-md-12">
@@ -203,7 +203,6 @@ Token Base Auth. Service
                 <div class="panel-body">
 
 <pre>{
-    "IsActive": true,
     "UserName": "contoso\\bgates",
     "UserNameId": "s-1-5-21-1974876067-1066505772-4238931308-1609"
 }
@@ -217,4 +216,7 @@ Token Base Auth. Service
 
     </div>
 
+</div>
+<div>
+JWT : https://jwt.io/
 </div>
