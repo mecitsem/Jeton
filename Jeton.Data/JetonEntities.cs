@@ -12,6 +12,7 @@ namespace Jeton.Data
         public DbSet<Token> Tokens { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Setting> Settings { get; set; }
+        public DbSet<Log> Log { get; set; }
 
         public virtual int Commit()
         {
@@ -24,6 +25,7 @@ namespace Jeton.Data
             modelBuilder.Configurations.Add(new TokenConfiguration());
             modelBuilder.Configurations.Add(new UserConfiguration());
             modelBuilder.Configurations.Add(new SettingConfiguration());
+            modelBuilder.Configurations.Add(new LogConfiguration());
         }
     }
 }

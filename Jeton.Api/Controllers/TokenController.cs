@@ -4,18 +4,20 @@ using Jeton.Services.TokenService;
 using Jeton.Services.UserService;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
 using Jeton.Api.Extensions;
 using Jeton.Api.Models;
 using Jeton.Api.DTOs;
 using Jeton.Api.Filters;
+using NLog;
 
 namespace Jeton.Api.Controllers
 {
     public class TokenController : ApiController
     {
-
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private readonly ITokenService _tokenService;
         private readonly IAppService _appService;
         private readonly IUserService _userService;
@@ -40,12 +42,14 @@ namespace Jeton.Api.Controllers
             try
             {
                 Guid _appId;
-
                 #region CHECK Parameters
 
                 //Check AppId
                 if (string.IsNullOrEmpty(appId) || !Guid.TryParse(appId, out _appId) || _appId.Equals(default(Guid)))
+                {
+                 
                     return BadRequest("AppId is null or not Guid format");
+                }
 
 
                 //Request Header

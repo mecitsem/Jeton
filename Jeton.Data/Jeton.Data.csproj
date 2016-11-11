@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\AppConfiguration.cs" />
+    <Compile Include="Configuration\LogConfiguration.cs" />
     <Compile Include="Configuration\SettingConfiguration.cs" />
     <Compile Include="Configuration\TokenConfiguration.cs" />
     <Compile Include="Configuration\UserConfiguration.cs" />
@@ -79,9 +80,13 @@
     <Compile Include="Infrastructure\Interfaces\IDbFactory.cs" />
     <Compile Include="Infrastructure\Interfaces\IRepository.cs" />
     <Compile Include="JetonEntities.cs" />
-    <Compile Include="Migrations\201611061044092_JetonMig.cs" />
-    <Compile Include="Migrations\201611061044092_JetonMig.Designer.cs">
-      <DependentUpon>201611061044092_JetonMig.cs</DependentUpon>
+    <Compile Include="Migrations\201611111048376_Jeton_Mig.cs" />
+    <Compile Include="Migrations\201611111048376_Jeton_Mig.Designer.cs">
+      <DependentUpon>201611111048376_Jeton_Mig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611111110125_Jeton_Mig1.cs" />
+    <Compile Include="Migrations\201611111110125_Jeton_Mig1.Designer.cs">
+      <DependentUpon>201611111110125_Jeton_Mig1.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -106,8 +111,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201611061044092_JetonMig.resx">
-      <DependentUpon>201611061044092_JetonMig.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201611111048376_Jeton_Mig.resx">
+      <DependentUpon>201611111048376_Jeton_Mig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611111110125_Jeton_Mig1.resx">
+      <DependentUpon>201611111110125_Jeton_Mig1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

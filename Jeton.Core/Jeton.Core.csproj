@@ -62,6 +62,7 @@
     <Compile Include="BaseEntity.cs" />
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Common\JetonExtensions.cs" />
+    <Compile Include="Entities\Log.cs" />
     <Compile Include="Entities\Setting.cs" />
     <Compile Include="Entities\Token.cs" />
     <Compile Include="Entities\User.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Helpers\ConfigHelper.cs" />
     <Compile Include="Helpers\CryptoHelper.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
+    <Compile Include="Helpers\JsonHelper.cs" />
     <Compile Include="Helpers\TokenHelper.cs" />
     <Compile Include="Models\Payload.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
