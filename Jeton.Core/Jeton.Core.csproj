@@ -73,6 +73,16 @@
     <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Helpers\JsonHelper.cs" />
     <Compile Include="Helpers\TokenHelper.cs" />
+    <Compile Include="Interfaces\IEntity.cs" />
+    <Compile Include="Interfaces\Repositories\IAppRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ISettingRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITokenRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IUserRepository.cs" />
+    <Compile Include="Interfaces\Services\IAppService.cs" />
+    <Compile Include="Interfaces\Services\ISettingService.cs" />
+    <Compile Include="Interfaces\Services\ITokenService.cs" />
+    <Compile Include="Interfaces\Services\IUserService.cs" />
     <Compile Include="Models\Payload.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -85,6 +95,7 @@
       <Name>Jeton.Jwt.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

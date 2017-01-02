@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using Jeton.Data.DbContext;
 
 namespace Jeton.Data.Migrations
 {
@@ -9,14 +10,14 @@ namespace Jeton.Data.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<Jeton.Data.JetonEntities>
+    internal sealed class Configuration : DbMigrationsConfiguration<JetonDbContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(Jeton.Data.JetonEntities context)
+        protected override void Seed(JetonDbContext context)
         {
             //  This method will be called after migrating to the latest version.
 

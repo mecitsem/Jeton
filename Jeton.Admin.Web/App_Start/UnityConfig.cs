@@ -1,18 +1,13 @@
 using System;
-using Microsoft.Practices.Unity;
-using Microsoft.Practices.Unity.Configuration;
+using Jeton.Core.Interfaces.Repositories;
+using Jeton.Core.Interfaces.Services;
 using Jeton.Data.Infrastructure;
 using Jeton.Data.Infrastructure.Interfaces;
-using Jeton.Data.Repositories.UserRepo;
-using Jeton.Data.Repositories.TokenRepo;
-using Jeton.Data.Repositories.AppRepo;
-using Jeton.Data.Repositories.SettingRepo;
-using Jeton.Services.TokenService;
-using Jeton.Services.UserService;
-using Jeton.Services.AppService;
-using Jeton.Services.SettingService;
+using Jeton.Data.Repositories;
+using Jeton.Services;
+using Microsoft.Practices.Unity;
 
-namespace Jeton.Admin.Web.App_Start
+namespace Jeton.Admin.Web
 {
     /// <summary>
     /// Specifies the Unity configuration for the main container.

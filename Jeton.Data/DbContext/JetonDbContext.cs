@@ -1,12 +1,13 @@
-﻿using Jeton.Core.Entities;
+﻿using System.Data.Entity;
+using System.Threading.Tasks;
+using Jeton.Core.Entities;
 using Jeton.Data.Configuration;
-using System.Data.Entity;
 
-namespace Jeton.Data
+namespace Jeton.Data.DbContext
 {
-    public class JetonEntities : DbContext
+    public class JetonDbContext : System.Data.Entity.DbContext
     {
-        public JetonEntities() : base("JetonEntities") { }
+        public JetonDbContext() : base("JetonDbContext") { }
 
         public DbSet<App> Apps { get; set; }
         public DbSet<Token> Tokens { get; set; }
@@ -18,6 +19,12 @@ namespace Jeton.Data
         {
             return SaveChanges();
         }
+
+        public virtual async Task<int> CommitAsync()
+        {
+            return await SaveChangesAsync();
+        }
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

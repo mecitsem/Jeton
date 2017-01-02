@@ -1,14 +1,15 @@
-﻿using Jeton.Data.Infrastructure.Interfaces;
+﻿using Jeton.Data.DbContext;
+using Jeton.Data.Infrastructure.Interfaces;
 
 namespace Jeton.Data.Infrastructure
 {
     public class DbFactory : Disposable, IDbFactory
     {
-        private JetonEntities _dbContext;
+        private JetonDbContext _dbContext;
 
-        public JetonEntities Init()
+        public JetonDbContext Init()
         {
-            return _dbContext ?? (_dbContext = new JetonEntities());
+            return _dbContext ?? (_dbContext = new JetonDbContext());
         }
 
         protected override void DisposeCore()

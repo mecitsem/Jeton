@@ -10,18 +10,13 @@ namespace Jeton.Core.Entities
 {
     public class Token : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid TokenID { get; set; }
         public string TokenKey { get; set; }
         public DateTime? Expire { get; set; }
 
-        public Guid UserID { get; set; }
-        [ForeignKey("UserID")]
+        public Guid UserId { get; set; }
         public virtual User User { get; set; }
 
-        public Guid AppID { get; set; }
-        [ForeignKey("AppID")]
+        public Guid AppId { get; set; }
         public virtual App App { get; set; }
     }
 }

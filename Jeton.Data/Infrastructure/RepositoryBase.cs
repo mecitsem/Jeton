@@ -1,17 +1,21 @@
-﻿using Jeton.Data.Infrastructure.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
+using Jeton.Core.Interfaces;
+using Jeton.Core.Interfaces.Repositories;
+using Jeton.Data.DbContext;
+using Jeton.Data.Infrastructure.Interfaces;
 
-namespace Jeton.Data
+namespace Jeton.Data.Infrastructure
 {
-    public partial class RepositoryBase<T> : IRepository<T> where T : class
+    public partial class RepositoryBase<T> : IRepository<T> where T : class, IEntity
     {
         #region Properties
-        private JetonEntities _dataContext;
+        private JetonDbContext _dataContext;
         private IDbSet<T> _entities;
 
 
@@ -26,7 +30,7 @@ namespace Jeton.Data
         /// </summary>
         protected virtual IDbSet<T> Entities => _entities ?? (_entities = DbContext.Set<T>());
 
-        protected JetonEntities DbContext => _dataContext ?? (_dataContext = DbFactory.Init());
+        protected JetonDbContext DbContext => _dataContext ?? (_dataContext = DbFactory.Init());
 
         #endregion
 
@@ -51,6 +55,11 @@ namespace Jeton.Data
 
         #region Implementaion
 
+        public Task InsertAsync(IEnumerable<T> entities)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// UPDATE
         /// </summary>
@@ -66,13 +75,33 @@ namespace Jeton.Data
 
                 DbContext.Entry(entity).State = EntityState.Modified;
 
-                DbContext.SaveChanges();
+                DbContext.Commit();
             }
             catch (DbEntityValidationException dbEx)
             {
                 throw new Exception(GetFullErrorText(dbEx), dbEx);
             }
         }
+
+        public async Task UpdateAsync(T entity)
+        {
+            try
+            {
+                if (entity == null)
+                    throw new ArgumentNullException(nameof(entity));
+
+                Entities.Attach(entity);
+
+                DbContext.Entry(entity).State = EntityState.Modified;
+
+                await DbContext.CommitAsync();
+            }
+            catch (DbEntityValidationException dbEx)
+            {
+                throw new Exception(GetFullErrorText(dbEx), dbEx);
+            }
+        }
+
         /// <summary>
         /// DELETE
         /// </summary>
@@ -118,6 +147,45 @@ namespace Jeton.Data
 
         }
 
+        public async Task DeleteAsync(T entity)
+        {
+            try
+            {
+                if (entity == null)
+                    throw new ArgumentNullException(nameof(entity));
+
+                if (entity.GetType().GetProperty("IsDeleted") != null)
+                {
+                    var _entity = entity;
+
+                    _entity.GetType().GetProperty("IsDeleted").SetValue(_entity, true);
+
+                    Update(_entity);
+                }
+                else
+                {
+                    var dbEntityEntry = DbContext.Entry(entity);
+
+                    if (dbEntityEntry.State != EntityState.Deleted)
+                    {
+                        dbEntityEntry.State = EntityState.Deleted;
+                    }
+                    else
+                    {
+                        Entities.Attach(entity);
+                        Entities.Remove(entity);
+                    }
+
+                    await DbContext.CommitAsync();
+                }
+            }
+            catch (DbEntityValidationException dbEx)
+            {
+                throw new Exception(GetFullErrorText(dbEx), dbEx);
+            }
+
+        }
+
 
         /// <summary>
         /// DELETE MANY
@@ -129,6 +197,14 @@ namespace Jeton.Data
             foreach (var obj in objects)
                 Delete(obj);
         }
+
+        public async Task DeleteAsync(Expression<Func<T, bool>> @where)
+        {
+            var objects = Entities.Where<T>(where).AsEnumerable();
+            foreach (var obj in objects)
+                await DeleteAsync(obj);
+        }
+
         /// <summary>
         /// GET
         /// </summary>
@@ -137,6 +213,11 @@ namespace Jeton.Data
         public virtual T GetById(Guid id)
         {
             return Entities.Find(id);
+        }
+
+        public async Task<T> GetByIdAsync(Guid id)
+        {
+            return await Entities.FirstOrDefaultAsync(s => s.Id.Equals(id));
         }
 
         /// <summary>
@@ -161,7 +242,7 @@ namespace Jeton.Data
 
                 var result = Entities.Add(entity);
 
-                DbContext.SaveChanges();
+                DbContext.Commit();
 
                 return result;
             }
@@ -170,6 +251,26 @@ namespace Jeton.Data
                 throw new Exception(GetFullErrorText(dbEx), dbEx);
             }
         }
+
+        public async Task<T> InsertAsync(T entity)
+        {
+            try
+            {
+                if (entity == null)
+                    throw new ArgumentNullException(nameof(entity));
+
+                var result = Entities.Add(entity);
+
+                await DbContext.CommitAsync();
+
+                return result;
+            }
+            catch (DbEntityValidationException dbEx)
+            {
+                throw new Exception(GetFullErrorText(dbEx), dbEx);
+            }
+        }
+
         /// <summary>
         /// Insert entities
         /// </summary>

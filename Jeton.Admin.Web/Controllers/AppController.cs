@@ -2,10 +2,10 @@
 using Jeton.Admin.Web.Models;
 using Jeton.Admin.Web.ViewModel;
 using Jeton.Core.Entities;
-using Jeton.Services.AppService;
 using System;
 using System.Linq;
 using System.Web.Mvc;
+using Jeton.Core.Interfaces.Services;
 
 namespace Jeton.Admin.Web.Controllers
 {
@@ -125,7 +125,7 @@ namespace Jeton.Admin.Web.Controllers
                 };
 
                 var app = _appService.Insert(newApp);
-                return RedirectToAction("Detail", new { id = app.AppID });
+                return RedirectToAction("Detail", new { id = app.Id });
             }
             catch (Exception ex)
             {

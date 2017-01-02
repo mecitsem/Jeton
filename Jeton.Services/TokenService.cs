@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Jeton.Core.Entities;
+using System.Threading.Tasks;
 using Jeton.Core.Common;
-using Jeton.Core.Helpers;
+using Jeton.Core.Entities;
+using Jeton.Core.Interfaces.Repositories;
+using Jeton.Core.Interfaces.Services;
 using Jeton.Core.Models;
-using Jeton.Data.Repositories.SettingRepo;
-using Jeton.Data.Repositories.TokenRepo;
 
-namespace Jeton.Services.TokenService
+namespace Jeton.Services
 {
     public class TokenService : ITokenService
     {
@@ -55,14 +55,14 @@ namespace Jeton.Services.TokenService
 
             var table = _tokenRepository.Table;
 
-            return table.FirstOrDefault(t => t.UserID.Equals(user.UserID));
+            return table.FirstOrDefault(t => t.UserId.Equals(user.Id));
         }
 
         public virtual Token GetTokenByUserId(Guid userId)
         {
             var table = _tokenRepository.Table;
 
-            return table.FirstOrDefault(t => t.UserID.Equals(userId));
+            return table.FirstOrDefault(t => t.UserId.Equals(userId));
         }
 
         public virtual IEnumerable<Token> GetTokens()
@@ -109,6 +109,97 @@ namespace Jeton.Services.TokenService
 
             _tokenRepository.Delete(token);
         }
+
+        public Task<bool> IsVerifiedAsync(string tokenKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> IsVerifiedAsync(Token token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> IsExpiredAsync(Token token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Token> GenerateAsync(User user, App app)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> IsExistAsync(string tokenKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> IsExistByUserAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> IsExistByAppAsync(App app)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Token>> GetTokensAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> GetTokensCountAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Token>> GetActiveTokensAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> GetActiveTokensCountAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Token> GetTokenByIdAsync(Guid tokenId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Token> GetTokenByKeyAsync(string tokenKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Token> GetTokenByUserIdAsync(Guid userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Token> GetTokenByUserAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Token> InsertAsync(Token token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(Token token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAsync(Token token)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
 
@@ -119,12 +210,12 @@ namespace Jeton.Services.TokenService
 
         public virtual bool IsExistByUser(User user)
         {
-            return user != null && _tokenRepository.TableNoTracking.Any(t => t.UserID.Equals(user.UserID));
+            return user != null && _tokenRepository.TableNoTracking.Any(t => t.UserId.Equals(user.Id));
         }
 
         public virtual bool IsExistByApp(App app)
         {
-            return app != null && _tokenRepository.TableNoTracking.Any(t => t.AppID.Equals(app.AppID));
+            return app != null && _tokenRepository.TableNoTracking.Any(t => t.Id.Equals(app.Id));
         }
 
         public virtual Token Generate(User user, App app)
@@ -162,7 +253,7 @@ namespace Jeton.Services.TokenService
             var payload = new Payload()
             {
                 Time = unixTimestamp,
-                RootAppId = app.AppID,
+                RootAppId = app.Id,
                 UserName = user.Name,
                 UserNameId = user.NameId,
                 Expire = unixExpstamp
@@ -176,7 +267,7 @@ namespace Jeton.Services.TokenService
             Token token;
             if (IsExistByUser(user) && IsExistByApp(app)) //Token isExist Update Token
             {
-                token = table.FirstOrDefault(t => t.UserID.Equals(user.UserID));
+                token = table.FirstOrDefault(t => t.UserId.Equals(user.Id));
                 if (token == null) return null;
                 token.TokenKey = tokenKey;
                 token.Expire = expire;
@@ -188,11 +279,11 @@ namespace Jeton.Services.TokenService
                 var newToken = new Token()
                 {
                     User = user,
-                    UserID = user.UserID,
+                    UserId = user.Id,
                     TokenKey = tokenKey,
                     Expire = expire,
                     App = app,
-                    AppID = app.AppID
+                    AppId = app.Id
                 };
                 token = _tokenRepository.Insert(newToken);
             }

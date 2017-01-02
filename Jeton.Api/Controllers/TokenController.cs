@@ -1,7 +1,4 @@
 ﻿using Jeton.Core.Common;
-using Jeton.Services.AppService;
-using Jeton.Services.TokenService;
-using Jeton.Services.UserService;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
@@ -11,6 +8,7 @@ using Jeton.Api.Extensions;
 using Jeton.Api.Models;
 using Jeton.Api.DTOs;
 using Jeton.Api.Filters;
+using Jeton.Core.Interfaces.Services;
 using NLog;
 
 namespace Jeton.Api.Controllers
@@ -190,7 +188,7 @@ namespace Jeton.Api.Controllers
 
                 var tokenResponse = new TokenResponse();
 
-                var user = _userService.GetUserById(token.UserID);
+                var user = _userService.GetUserById(token.UserId);
 
                 if (user == null)
                     throw new ArgumentNullException(nameof(user));

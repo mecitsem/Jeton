@@ -9,8 +9,6 @@ namespace Jeton.Core.Entities
 {
     public class Log
     {
-        [Key]
-        public int LogID { get; set; }
         public string Level { get; set; }
         public string Logger { get; set; }
         public string Message { get; set; }

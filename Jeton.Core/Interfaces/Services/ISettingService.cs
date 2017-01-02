@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Jeton.Core.Common;
 using Jeton.Core.Entities;
 
-namespace Jeton.Services.SettingService
+namespace Jeton.Core.Interfaces.Services
 {
     public interface ISettingService
     {
@@ -19,5 +16,15 @@ namespace Jeton.Services.SettingService
         void Update(Setting setting);
         void Delete(Guid settingId);
         IEnumerable<Setting> GetAllSettings();
+
+        Task<bool> IsExistAsync(string name);
+        Task<bool> IsExistAsync(Guid settingId);
+        Task<bool> IsExistAsync(Setting setting);
+        Task<Setting> GetSettingByIdAsync(Guid settingId);
+        Task<Setting> GetSettingByNameAsync(string name);
+        Task<Setting> InsertAsync(Setting setting);
+        Task UpdateAsync(Setting setting);
+        Task DeleteAsync(Guid settingId);
+        Task<IEnumerable<Setting>> GetAllSettingsAsync();
     }
 }

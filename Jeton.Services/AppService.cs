@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Jeton.Core.Entities;
 using Jeton.Core.Helpers;
-using Jeton.Data.Repositories.AppRepo;
+using Jeton.Core.Interfaces.Repositories;
+using Jeton.Core.Interfaces.Services;
 
-namespace Jeton.Services.AppService
+namespace Jeton.Services
 {
     public class AppService : IAppService
     {
@@ -75,9 +77,55 @@ namespace Jeton.Services.AppService
 
             _appRepository.Delete(app);
         }
+
+
+
         #endregion
 
+        public Task<bool> IsActiveAsync(App app)
+        {
+            throw new NotImplementedException();
+        }
 
+        public Task<string> GenerateAccessKeyAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> IsExistAsync(Guid appId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<App>> GetAppsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<App> GetAppByIdAsync(Guid appId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<App> GetAppByNameAsync(string appName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<App> InsertAsync(App app)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(App app)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAsync(Guid appId)
+        {
+            throw new NotImplementedException();
+        }
         public bool IsExist(Guid appId)
         {
             if (appId == null)
@@ -85,20 +133,24 @@ namespace Jeton.Services.AppService
 
             var table = _appRepository.Table;
 
-            return table.Any(a => a.AppID.Equals(appId));
+            return table.Any(a => a.Id.Equals(appId));
         }
 
         public string GenerateAccessKey()
         {
             return CryptoHelper.Encrypt(Guid.NewGuid().ToString(), ConfigHelper.GetPassPhrase());
         }
-
         public bool IsActive(App app)
         {
             if (app == null)
                 throw new ArgumentNullException(nameof(app));
 
-            var result = !(app.IsDeleted.HasValue && app.IsDeleted == true);
+            if (app.Id == default(Guid) || !_appRepository.IsExist(app))
+                throw new ArgumentException("This is not exist app");
+
+            var existedApp = GetAppById(app.Id);
+
+            var result = !(existedApp.IsDeleted.HasValue && existedApp.IsDeleted == true);
 
             return result;
         }

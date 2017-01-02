@@ -5,7 +5,7 @@ using AutoMapper;
 using Jeton.Admin.Web.Models;
 using Jeton.Admin.Web.ViewModel;
 using Jeton.Core.Entities;
-using Jeton.Services.SettingService;
+using Jeton.Core.Interfaces.Services;
 
 namespace Jeton.Admin.Web.Controllers
 {
@@ -53,7 +53,7 @@ namespace Jeton.Admin.Web.Controllers
                 };
 
                 var setting = _settingService.Insert(newSetting);
-                return RedirectToAction("Detail", new { id = setting.SettingID });
+                return RedirectToAction("Detail", new { id = setting.Id });
             }
             catch (Exception ex)
             {

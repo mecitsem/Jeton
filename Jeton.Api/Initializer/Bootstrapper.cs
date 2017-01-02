@@ -1,15 +1,11 @@
 ﻿using Jeton.Data.Infrastructure;
 using Jeton.Data.Infrastructure.Interfaces;
-using Jeton.Data.Repositories.AppRepo;
-using Jeton.Data.Repositories.TokenRepo;
-using Jeton.Data.Repositories.UserRepo;
-using Jeton.Services.AppService;
-using Jeton.Services.TokenService;
-using Jeton.Services.UserService;
 using Microsoft.Practices.Unity;
 using System.Web.Http;
-using Jeton.Data.Repositories.SettingRepo;
-using Jeton.Services.SettingService;
+using Jeton.Core.Interfaces.Repositories;
+using Jeton.Core.Interfaces.Services;
+using Jeton.Data.Repositories;
+using Jeton.Services;
 
 namespace Jeton.Api.Initializer
 {

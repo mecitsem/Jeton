@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using AutoMapper;
 using Jeton.Admin.Web.Models;
 using Jeton.Core.Entities;
-using Jeton.Services.AppService;
-using Jeton.Services.SettingService;
-using Jeton.Services.TokenService;
-using Jeton.Services.UserService;
 using System.Linq;
 using System.Web.Mvc;
+using Jeton.Core.Interfaces.Services;
 
 namespace Jeton.Admin.Web.Controllers
 {

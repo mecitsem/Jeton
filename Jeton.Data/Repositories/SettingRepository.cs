@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Jeton.Core.Common;
 using Jeton.Core.Entities;
 using Jeton.Core.Helpers;
+using Jeton.Core.Interfaces.Repositories;
+using Jeton.Data.Infrastructure;
 using Jeton.Data.Infrastructure.Interfaces;
 
-namespace Jeton.Data.Repositories.SettingRepo
+namespace Jeton.Data.Repositories
 {
     public class SettingRepository : RepositoryBase<Setting>, ISettingRepository
     {
@@ -35,7 +35,7 @@ namespace Jeton.Data.Repositories.SettingRepo
 
         public bool IsExist(Guid settingId)
         {
-            return DbContext.Settings.Any(s => s.SettingID.Equals(settingId));
+            return DbContext.Settings.Any(s => s.Id.Equals(settingId));
         }
 
         public bool IsExist(string name)
@@ -60,6 +60,31 @@ namespace Jeton.Data.Repositories.SettingRepo
         {
             return JetonEnumHelper.GetEnumValue<Constants.CheckExpireFrom>(DbContext.Settings.FirstOrDefault(
                  s => s.Name.Equals(Constants.Settings.CheckExpireFrom, StringComparison.OrdinalIgnoreCase))?.Value);
+        }
+
+        public Task<Setting> GetSettingByIdAsync(Guid settingId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Setting> GetSettingByNameAsync(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> IsExistAsync(Setting setting)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> IsExistAsync(Guid settingId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> IsExistAsync(string name)
+        {
+            throw new NotImplementedException();
         }
 
         public override Setting Insert(Setting entity)

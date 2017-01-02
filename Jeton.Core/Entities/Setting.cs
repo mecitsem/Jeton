@@ -9,11 +9,8 @@ using Jeton.Core.Common;
 
 namespace Jeton.Core.Entities
 {
-    public class Setting
+    public class Setting : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid SettingID { get; set; }
         public string Name { get; set; }
         public string Value { get; set; }
         public Constants.ValueType ValueType { get; set; }
@@ -21,5 +18,5 @@ namespace Jeton.Core.Entities
         public string Description { get; set; }
     }
 
-    
+
 }

@@ -1,10 +1,13 @@
-﻿using Jeton.Core.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Jeton.Core.Entities;
+using Jeton.Core.Interfaces.Repositories;
+using Jeton.Data.Infrastructure;
 using Jeton.Data.Infrastructure.Interfaces;
 
-namespace Jeton.Data.Repositories.TokenRepo
+namespace Jeton.Data.Repositories
 {
     public class TokenRepository : RepositoryBase<Token>, ITokenRepository
     {
@@ -28,6 +31,41 @@ namespace Jeton.Data.Repositories.TokenRepo
             return DbContext.Tokens.FirstOrDefault(t => t.TokenKey.Equals(tokenKey));
         }
 
+        public Task<bool> IsExistAsync(string tokenKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Token>> GetTokensAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Token>> GetLiveTokensAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Token> GetTokenByIdAsync(Guid tokenId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Token> GetTokenByUserIdAsync(Guid userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Token> GetTokenByUserAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Token> GetTokenByKeyAsync(string tokenKey)
+        {
+            throw new NotImplementedException();
+        }
+
         public Token GetTokenByUser(User user)
         {
             return DbContext.Tokens.FirstOrDefault(t => t.User.Equals(user));
@@ -35,7 +73,7 @@ namespace Jeton.Data.Repositories.TokenRepo
 
         public Token GetTokenByUserId(Guid userId)
         {
-            return DbContext.Tokens.FirstOrDefault(t => t.UserID.Equals(userId));
+            return DbContext.Tokens.FirstOrDefault(t => t.Id.Equals(userId));
         }
 
         public IEnumerable<Token> GetTokens()

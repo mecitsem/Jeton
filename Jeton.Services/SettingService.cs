@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Jeton.Core.Entities;
-using Jeton.Data.Repositories.SettingRepo;
-namespace Jeton.Services.SettingService
+using Jeton.Core.Interfaces.Repositories;
+using Jeton.Core.Interfaces.Services;
+
+namespace Jeton.Services
 {
     public class SettingService : ISettingService
     {
@@ -72,6 +73,51 @@ namespace Jeton.Services.SettingService
         public IEnumerable<Setting> GetAllSettings()
         {
             return _settingRepository.Table.ToList();
+        }
+
+        public Task<bool> IsExistAsync(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> IsExistAsync(Guid settingId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> IsExistAsync(Setting setting)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Setting> GetSettingByIdAsync(Guid settingId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Setting> GetSettingByNameAsync(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Setting> InsertAsync(Setting setting)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(Setting setting)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAsync(Guid settingId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Setting>> GetAllSettingsAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

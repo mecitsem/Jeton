@@ -10,9 +10,6 @@ namespace Jeton.Core.Entities
 {
     public class User : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid UserID { get; set; }
         public string Name { get; set; }
         public string NameId { get; set; }
     }
