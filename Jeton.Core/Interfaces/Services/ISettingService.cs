@@ -12,7 +12,7 @@ namespace Jeton.Core.Interfaces.Services
         bool IsExist(Setting setting);
         Setting GetSettingById(Guid settingId);
         Setting GetSettingByName(string name);
-        Setting Insert(Setting setting);
+        Setting Create(Setting setting);
         void Update(Setting setting);
         void Delete(Guid settingId);
         IEnumerable<Setting> GetAllSettings();
@@ -22,7 +22,7 @@ namespace Jeton.Core.Interfaces.Services
         Task<bool> IsExistAsync(Setting setting);
         Task<Setting> GetSettingByIdAsync(Guid settingId);
         Task<Setting> GetSettingByNameAsync(string name);
-        Task<Setting> InsertAsync(Setting setting);
+        Task<Setting> CreateAsync(Setting setting);
         Task UpdateAsync(Setting setting);
         Task DeleteAsync(Guid settingId);
         Task<IEnumerable<Setting>> GetAllSettingsAsync();

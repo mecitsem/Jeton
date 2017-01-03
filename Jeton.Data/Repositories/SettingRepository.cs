@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using Jeton.Core.Common;
@@ -12,87 +13,153 @@ namespace Jeton.Data.Repositories
 {
     public class SettingRepository : RepositoryBase<Setting>, ISettingRepository
     {
+        #region Ctor
         public SettingRepository(IDbFactory dbFactory)
-            : base(dbFactory) { }
-
-
-        public Setting GetSettingById(Guid settingId)
+            : base(dbFactory)
         {
-            return DbContext.Settings.Find(settingId);
+            
         }
+        #endregion
 
+        #region INSERT
+        #endregion
+
+        #region UPDATE
+        #endregion
+
+        #region DELETE
+        #endregion
+
+        #region SELECT
+        /// <summary>
+        /// Get setting by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public Setting GetSettingByName(string name)
         {
-            return DbContext.Settings.FirstOrDefault(
-                    s => string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
+            return Table.FirstOrDefault(s => string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
         }
-
-        public bool IsExist(Setting setting)
+        /// <summary>
+        /// Get setting by name async
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public async Task<Setting> GetSettingByNameAsync(string name)
         {
-            return DbContext.Settings.Any(
-                s => s.Name.Equals(setting.Name, StringComparison.OrdinalIgnoreCase));
+            return await Table.FirstOrDefaultAsync(s => string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
         }
-
-        public bool IsExist(Guid settingId)
-        {
-            return DbContext.Settings.Any(s => s.Id.Equals(settingId));
-        }
-
-        public bool IsExist(string name)
-        {
-            return DbContext.Settings.Any(
-                  s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-        }
-
+        /// <summary>
+        /// Get secretKey setting value
+        /// </summary>
+        /// <returns></returns>
         public string GetSecretKey()
         {
-            return DbContext.Settings.FirstOrDefault(
-                s => s.Name.Equals(Constants.Settings.SecretKey, StringComparison.OrdinalIgnoreCase))?.Value;
+            return Table.FirstOrDefault(s => s.Name.Equals(Constants.Settings.SecretKey, StringComparison.OrdinalIgnoreCase))?.Value;
         }
+        /// <summary>
+        /// Get secretKey setting value async
+        /// </summary>
+        /// <returns></returns>
+        public async Task<string> GetSecretKeyAsync()
+        {
+            var secretKey = await Table.FirstOrDefaultAsync(s => s.Name.Equals(Constants.Settings.SecretKey, StringComparison.OrdinalIgnoreCase));
 
+            return secretKey?.Value;
+        }
+        /// <summary>
+        /// Get token duration value
+        /// </summary>
+        /// <returns></returns>
         public int GetTokenDuration()
         {
-            return Convert.ToInt32(DbContext.Settings.FirstOrDefault(
-                s => s.Name.Equals(Constants.Settings.TokenDuration, StringComparison.OrdinalIgnoreCase))?.Value);
+            return Convert.ToInt32(Table.FirstOrDefault(s => s.Name.Equals(Constants.Settings.TokenDuration, StringComparison.OrdinalIgnoreCase))?.Value);
         }
+        /// <summary>
+        /// Get token duration value async
+        /// </summary>
+        /// <returns></returns>
+        public async Task<int> GetTokenDurationAsync()
+        {
+            var tokenDuration = await Table.FirstOrDefaultAsync(s => s.Name.Equals(Constants.Settings.TokenDuration, StringComparison.OrdinalIgnoreCase));
 
+            return Convert.ToInt32(tokenDuration?.Value);
+        }
+        /// <summary>
+        /// Get check expire from value
+        /// </summary>
+        /// <returns></returns>
         public Constants.CheckExpireFrom GetCheckExpireFrom()
         {
-            return JetonEnumHelper.GetEnumValue<Constants.CheckExpireFrom>(DbContext.Settings.FirstOrDefault(
-                 s => s.Name.Equals(Constants.Settings.CheckExpireFrom, StringComparison.OrdinalIgnoreCase))?.Value);
+            return JetonEnumHelper.GetEnumValue<Constants.CheckExpireFrom>(Table.FirstOrDefault(s => s.Name.Equals(Constants.Settings.CheckExpireFrom, StringComparison.OrdinalIgnoreCase))?.Value);
         }
-
-        public Task<Setting> GetSettingByIdAsync(Guid settingId)
+        /// <summary>
+        /// Get check expire from value async
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Constants.CheckExpireFrom> GetCheckExpireFromAsync()
         {
-            throw new NotImplementedException();
-        }
+            var cef = await Table.FirstOrDefaultAsync(s => s.Name.Equals(Constants.Settings.CheckExpireFrom, StringComparison.OrdinalIgnoreCase));
 
-        public Task<Setting> GetSettingByNameAsync(string name)
+            return JetonEnumHelper.GetEnumValue<Constants.CheckExpireFrom>(cef?.Value);
+        }
+        #endregion
+
+        /// <summary>
+        /// Check is exist by entity
+        /// </summary>
+        /// <param name="setting"></param>
+        /// <returns></returns>
+        public bool IsExist(Setting setting)
         {
-            throw new NotImplementedException();
+            return TableNoTracking.Any(s => s.Name.Equals(setting.Name, StringComparison.OrdinalIgnoreCase));
         }
-
-        public Task<bool> IsExistAsync(Setting setting)
+        /// <summary>
+        /// Check is exist by entity async
+        /// </summary>
+        /// <param name="setting"></param>
+        /// <returns></returns>
+        public async Task<bool> IsExistAsync(Setting setting)
         {
-            throw new NotImplementedException();
+            return await TableNoTracking.AnyAsync(s => s.Equals(setting));
         }
-
-        public Task<bool> IsExistAsync(Guid settingId)
+        /// <summary>
+        /// Check isExist by Id
+        /// </summary>
+        /// <param name="settingId"></param>
+        /// <returns></returns>
+        public bool IsExist(Guid settingId)
         {
-            throw new NotImplementedException();
+            return TableNoTracking.Any(s => s.Id.Equals(settingId));
         }
-
-        public Task<bool> IsExistAsync(string name)
+        /// <summary>
+        /// Check isExist by Id async
+        /// </summary>
+        /// <param name="settingId"></param>
+        /// <returns></returns>
+        public async Task<bool> IsExistAsync(Guid settingId)
         {
-            throw new NotImplementedException();
+            return await TableNoTracking.AnyAsync(s => s.Id.Equals(settingId));
         }
-
-        public override Setting Insert(Setting entity)
+        /// <summary>
+        /// Check isExist by name 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool IsExist(string name)
         {
-            if (IsExist(entity))
-                throw new ArgumentException("This setting already exists.");
-
-            return base.Insert(entity);
+            return TableNoTracking.Any(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
+        /// <summary>
+        /// Check isExist by name async
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public async Task<bool> IsExistAsync(string name)
+        {
+            return await TableNoTracking.AnyAsync(s => string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
+        }
+
+
     }
 }

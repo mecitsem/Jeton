@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using Jeton.Core.Common;
@@ -15,8 +16,7 @@ namespace Jeton.Services
         private readonly ITokenRepository _tokenRepository;
         private readonly ISettingRepository _settingRepository;
 
-        public TokenService(ITokenRepository tokenRepository,
-                            ISettingRepository settingRepository)
+        public TokenService(ITokenRepository tokenRepository, ISettingRepository settingRepository)
         {
             _tokenRepository = tokenRepository;
             _settingRepository = settingRepository;
@@ -110,49 +110,175 @@ namespace Jeton.Services
             _tokenRepository.Delete(token);
         }
 
-        public Task<bool> IsVerifiedAsync(string tokenKey)
+        public async Task<bool> IsVerifiedAsync(string tokenKey)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(tokenKey))
+                throw new ArgumentNullException(nameof(tokenKey));
+
+            var token = await GetTokenByKeyAsync(tokenKey);
+
+            if (token == null)
+                throw new ArgumentNullException(nameof(token));
+
+            //Check Token expired by Payload in TokenKey
+            var result = await IsVerifiedAsync(token);
+
+            return result;
         }
 
-        public Task<bool> IsVerifiedAsync(Token token)
+        public async Task<bool> IsVerifiedAsync(Token token)
         {
-            throw new NotImplementedException();
+            if (token == null)
+                throw new ArgumentNullException(nameof(token));
+
+            var secretKey = await _settingRepository.GetSecretKeyAsync();
+            var checkExpireFrom = await _settingRepository.GetCheckExpireFromAsync();
+            var tokenDuration = await _settingRepository.GetTokenDurationAsync();
+
+            if (string.IsNullOrWhiteSpace(secretKey))
+                throw new ArgumentNullException(nameof(secretKey));
+
+            var tokenManager = new TokenManager(secretKey)
+            {
+                CheckExpireFrom = checkExpireFrom,
+                TokenDuration = tokenDuration,
+            };
+
+            //Check Token expired by Payload in TokenKey
+            var result = tokenManager.IsVerified(token.TokenKey);
+
+            return result;
         }
 
-        public Task<bool> IsExpiredAsync(Token token)
+        public async Task<bool> IsExpiredAsync(Token token)
         {
-            throw new NotImplementedException();
+            if (token == null)
+                throw new ArgumentNullException(nameof(token));
+
+            var secretKey = await _settingRepository.GetSecretKeyAsync();
+            var checkExpireFrom = await _settingRepository.GetCheckExpireFromAsync();
+            var tokenDuration = await _settingRepository.GetTokenDurationAsync();
+
+            if (string.IsNullOrWhiteSpace(secretKey))
+                throw new ArgumentNullException(nameof(secretKey));
+
+            var tokenManager = new TokenManager(secretKey)
+            {
+                CheckExpireFrom = checkExpireFrom,
+                TokenDuration = tokenDuration,
+            };
+
+            //Check Token expired by Payload in TokenKey
+            var result = tokenManager.TokenIsExpired(token);
+
+            return result;
         }
 
-        public Task<Token> GenerateAsync(User user, App app)
+        public virtual async Task<Token> GenerateAsync(User user, App app)
         {
-            throw new NotImplementedException();
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            if (app == null)
+                throw new ArgumentNullException(nameof(app));
+
+            //Check App is Root
+            if (!app.IsRoot)
+                throw new ArgumentException("The app can't generate token.Becase it is not a root app.");
+
+            var secretKey = await _settingRepository.GetSecretKeyAsync();
+            var checkExpireFrom = await _settingRepository.GetCheckExpireFromAsync();
+            var tokenDuration = await _settingRepository.GetTokenDurationAsync();
+
+            if (string.IsNullOrWhiteSpace(secretKey))
+                throw new ArgumentNullException(nameof(secretKey));
+
+            var tokenManager = new TokenManager(secretKey)
+            {
+                CheckExpireFrom = checkExpireFrom,
+                TokenDuration = tokenDuration,
+            };
+
+
+            var time = tokenManager.Now;
+            var unixTimestamp = tokenManager.GetUnixTimeStamp(time);
+
+            var expire = tokenManager.GetExpire(time);
+            var unixExpstamp = tokenManager.GetUnixTimeStamp(expire);
+
+            var payload = new Payload()
+            {
+                Time = unixTimestamp,
+                RootAppId = app.Id,
+                UserName = user.Name,
+                UserNameId = user.NameId,
+                Expire = unixExpstamp
+            };
+
+            var tokenKey = tokenManager.GenerateTokenKey(payload);
+
+            var table = _tokenRepository.Table;
+
+
+            Token token;
+            if (IsExistByUser(user) && IsExistByApp(app)) //Token isExist Update Token
+            {
+                token = await _tokenRepository.GetTokenByUserAsync(user);
+                if (token == null) return null;
+                token.TokenKey = tokenKey;
+                token.Expire = expire;
+                await _tokenRepository.UpdateAsync(token);
+            }
+            else //Create Token
+            {
+
+                var newToken = new Token()
+                {
+                    User = user,
+                    UserId = user.Id,
+                    TokenKey = tokenKey,
+                    Expire = expire,
+                    App = app,
+                    AppId = app.Id
+                };
+                token = await _tokenRepository.InsertAsync(newToken);
+            }
+
+            return token;
         }
 
-        public Task<bool> IsExistAsync(string tokenKey)
+        public virtual Task<bool> IsExistAsync(string tokenKey)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(tokenKey))
+                throw new ArgumentNullException(nameof(tokenKey));
+
+            return _tokenRepository.IsExistAsync(tokenKey);
         }
 
-        public Task<bool> IsExistByUserAsync(User user)
+        public virtual async Task<bool> IsExistByUserAsync(User user)
         {
-            throw new NotImplementedException();
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            return await _tokenRepository.TableNoTracking.AnyAsync(t => t.UserId.Equals(user.Id));
         }
 
-        public Task<bool> IsExistByAppAsync(App app)
+        public virtual async Task<bool> IsExistByAppAsync(App app)
         {
-            throw new NotImplementedException();
+            if (app == null)
+                throw new ArgumentNullException(nameof(app));
+
+            return await _tokenRepository.TableNoTracking.AnyAsync(t => t.AppId.Equals(app.Id));
         }
 
-        public Task<IEnumerable<Token>> GetTokensAsync()
+        public virtual async Task<IEnumerable<Token>> GetTokensAsync()
         {
-            throw new NotImplementedException();
+            return await _tokenRepository.GetAllTokensAsync();
         }
 
-        public Task<int> GetTokensCountAsync()
+        public virtual async Task<int> GetTokensCountAsync()
         {
-            throw new NotImplementedException();
+            return await _tokenRepository.TableNoTracking.CountAsync();
         }
 
         public Task<IEnumerable<Token>> GetActiveTokensAsync()
@@ -205,6 +331,9 @@ namespace Jeton.Services
 
         public virtual bool IsExist(string tokenKey)
         {
+            if (string.IsNullOrWhiteSpace(tokenKey))
+                throw new ArgumentNullException(nameof(tokenKey));
+
             return _tokenRepository.TableNoTracking.Any(t => t.TokenKey.Equals(tokenKey));
         }
 
@@ -324,7 +453,7 @@ namespace Jeton.Services
 
             var token = GetTokenByKey(tokenKey);
 
-            if(token == null)
+            if (token == null)
                 throw new ArgumentNullException(nameof(token));
 
             //Check Token expired by Payload in TokenKey

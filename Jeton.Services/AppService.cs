@@ -82,49 +82,71 @@ namespace Jeton.Services
 
         #endregion
 
-        public Task<bool> IsActiveAsync(App app)
+        public async Task<bool> IsActiveAsync(App app)
         {
-            throw new NotImplementedException();
+            if (app == null)
+                throw new ArgumentNullException(nameof(app));
+
+            if (app.Id == default(Guid) || !_appRepository.IsExist(app))
+                throw new ArgumentException("This is not exist app");
+
+            var existedApp = await GetAppByIdAsync(app.Id);
+
+            var result = !(existedApp.IsDeleted.HasValue && existedApp.IsDeleted == true);
+
+            return result;
         }
 
-        public Task<string> GenerateAccessKeyAsync()
+        public async Task<bool> IsExistAsync(Guid appId)
         {
-            throw new NotImplementedException();
+            return await _appRepository.IsExistAsync(appId);
         }
 
-        public Task<bool> IsExistAsync(Guid appId)
+        public async Task<IEnumerable<App>> GetAppsAsync()
         {
-            throw new NotImplementedException();
+            return await _appRepository.GetAllAppsAsync();
         }
 
-        public Task<IEnumerable<App>> GetAppsAsync()
+        public async Task<App> GetAppByIdAsync(Guid appId)
         {
-            throw new NotImplementedException();
+            return await _appRepository.GetAppByIdAsync(appId);
         }
 
-        public Task<App> GetAppByIdAsync(Guid appId)
+        public async Task<App> GetAppByNameAsync(string appName)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(appName))
+                throw new ArgumentNullException(nameof(appName));
+
+            return await _appRepository.GetAppByNameAsync(appName);
         }
 
-        public Task<App> GetAppByNameAsync(string appName)
+        public async Task<App> InsertAsync(App app)
         {
-            throw new NotImplementedException();
+            if (app == null)
+                throw new ArgumentNullException(nameof(app));
+
+            return await _appRepository.InsertAsync(app);
         }
 
-        public Task<App> InsertAsync(App app)
+        public async Task UpdateAsync(App app)
         {
-            throw new NotImplementedException();
+            if (app == null)
+                throw new ArgumentNullException(nameof(app));
+
+            await _appRepository.UpdateAsync(app);
         }
 
-        public Task UpdateAsync(App app)
+        public async Task DeleteAsync(Guid appId)
         {
-            throw new NotImplementedException();
-        }
+            if (appId == null)
+                throw new ArgumentNullException(nameof(appId));
 
-        public Task DeleteAsync(Guid appId)
-        {
-            throw new NotImplementedException();
+            if (!IsExist(appId))
+                throw new ArgumentException("App is not exist");
+
+            var app = GetAppById(appId);
+
+            await _appRepository.DeleteAsync(app);
         }
         public bool IsExist(Guid appId)
         {
@@ -132,13 +154,18 @@ namespace Jeton.Services
                 throw new ArgumentNullException(nameof(appId));
 
             var table = _appRepository.Table;
-
+            
             return table.Any(a => a.Id.Equals(appId));
         }
 
         public string GenerateAccessKey()
         {
-            return CryptoHelper.Encrypt(Guid.NewGuid().ToString(), ConfigHelper.GetPassPhrase());
+            var passPhrase = ConfigHelper.GetPassPhrase();
+
+            if (passPhrase == null)
+                throw new ArgumentException("PassPhrase is null. Please configure passphrase");
+
+            return CryptoHelper.Encrypt(Guid.NewGuid().ToString(), passPhrase);
         }
         public bool IsActive(App app)
         {

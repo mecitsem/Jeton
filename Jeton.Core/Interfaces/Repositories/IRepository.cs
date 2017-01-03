@@ -94,9 +94,36 @@ namespace Jeton.Core.Interfaces.Repositories
         Task<T> GetByIdAsync(Guid id);
 
         /// <summary>
+        /// Get many entity by filter
+        /// </summary>
+        /// <param name="where"></param>
+        /// <returns></returns>
+        IEnumerable<T> GetMany(Expression<Func<T, bool>> where);
+
+        /// <summary>
+        /// Get many entity by filter async
+        /// </summary>
+        /// <param name="where"></param>
+        /// <returns></returns>
+        Task<IEnumerable<T>> GetManyAsync(Expression<Func<T, bool>> where);
+
+        /// <summary>
+        /// Get all entities
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<T> GetAll();
+        
+        /// <summary>
+        /// Get all entities async
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<T>> GetAllAsync();
+
+        /// <summary>
         /// Gets a table
         /// </summary>
         IQueryable<T> Table { get; }
+        
         /// <summary>
         /// Gets a table with "no tracking" enabled (EF feature) Use it only when you load record(s) only for read-only operations
         /// </summary>

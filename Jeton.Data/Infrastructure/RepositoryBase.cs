@@ -34,11 +34,12 @@ namespace Jeton.Data.Infrastructure
 
         #endregion
 
+        #region Ctor
         protected RepositoryBase(IDbFactory dbFactory)
         {
             DbFactory = dbFactory;
         }
-
+        #endregion
 
         #region Utilities
         /// <summary>
@@ -53,13 +54,116 @@ namespace Jeton.Data.Infrastructure
 
         #endregion
 
-        #region Implementaion
+        #region Methods
 
-        public Task InsertAsync(IEnumerable<T> entities)
+        #region INSERT
+        /// <summary>
+        /// Insert entity
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        public virtual T Insert(T entity)
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                if (entity == null)
+                    throw new ArgumentNullException(nameof(entity));
 
+                entity.Created = DateTime.UtcNow;
+                entity.Modified = DateTime.UtcNow;
+
+                var result = Entities.Add(entity);
+
+                DbContext.Commit();
+
+                return result;
+            }
+            catch (DbEntityValidationException dbEx)
+            {
+                throw new Exception(GetFullErrorText(dbEx), dbEx);
+            }
+        }
+        /// <summary>
+        /// Insert entity async
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public virtual async Task<T> InsertAsync(T entity)
+        {
+            try
+            {
+                if (entity == null)
+                    throw new ArgumentNullException(nameof(entity));
+
+                entity.Created = DateTime.UtcNow;
+                entity.Modified = DateTime.UtcNow;
+
+                var result = Entities.Add(entity);
+
+                await DbContext.CommitAsync();
+
+                return result;
+            }
+            catch (DbEntityValidationException dbEx)
+            {
+                throw new Exception(GetFullErrorText(dbEx), dbEx);
+            }
+        }
+        /// <summary>
+        /// Insert entities
+        /// </summary>
+        /// <param name="entities">Entities</param>
+        public virtual void Insert(IEnumerable<T> entities)
+        {
+            try
+            {
+                if (entities == null)
+                    throw new ArgumentNullException(nameof(entities));
+
+                foreach (var entity in entities)
+                {
+                    entity.Created = DateTime.UtcNow;
+                    entity.Modified = DateTime.UtcNow;
+                    Entities.Add(entity);
+                }
+
+
+                DbContext.Commit();
+            }
+            catch (DbEntityValidationException dbEx)
+            {
+                throw new Exception(GetFullErrorText(dbEx), dbEx);
+            }
+        }
+        /// <summary>
+        /// Insert entities async
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        public virtual async Task InsertAsync(IEnumerable<T> entities)
+        {
+            try
+            {
+                if (entities == null)
+                    throw new ArgumentNullException(nameof(entities));
+
+                foreach (var entity in entities)
+                {
+                    entity.Created = DateTime.UtcNow;
+                    entity.Modified = DateTime.UtcNow;
+                    Entities.Add(entity);
+                }
+              
+
+                await DbContext.CommitAsync();
+            }
+            catch (DbEntityValidationException dbEx)
+            {
+                throw new Exception(GetFullErrorText(dbEx), dbEx);
+            }
+        }
+        #endregion
+
+        #region UPDATE
         /// <summary>
         /// UPDATE
         /// </summary>
@@ -70,6 +174,8 @@ namespace Jeton.Data.Infrastructure
             {
                 if (entity == null)
                     throw new ArgumentNullException(nameof(entity));
+
+                entity.Modified = DateTime.UtcNow;
 
                 Entities.Attach(entity);
 
@@ -83,12 +189,14 @@ namespace Jeton.Data.Infrastructure
             }
         }
 
-        public async Task UpdateAsync(T entity)
+        public virtual async Task UpdateAsync(T entity)
         {
             try
             {
                 if (entity == null)
                     throw new ArgumentNullException(nameof(entity));
+
+                entity.Modified = DateTime.UtcNow;
 
                 Entities.Attach(entity);
 
@@ -101,9 +209,11 @@ namespace Jeton.Data.Infrastructure
                 throw new Exception(GetFullErrorText(dbEx), dbEx);
             }
         }
+        #endregion
 
+        #region DELETE
         /// <summary>
-        /// DELETE
+        /// Delete entity
         /// </summary>
         /// <param name="entity"></param>
         public virtual void Delete(T entity)
@@ -146,8 +256,12 @@ namespace Jeton.Data.Infrastructure
 
 
         }
-
-        public async Task DeleteAsync(T entity)
+        /// <summary>
+        /// Delete entity async
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public virtual async Task DeleteAsync(T entity)
         {
             try
             {
@@ -185,8 +299,6 @@ namespace Jeton.Data.Infrastructure
             }
 
         }
-
-
         /// <summary>
         /// DELETE MANY
         /// </summary>
@@ -198,15 +310,17 @@ namespace Jeton.Data.Infrastructure
                 Delete(obj);
         }
 
-        public async Task DeleteAsync(Expression<Func<T, bool>> @where)
+        public virtual async Task DeleteAsync(Expression<Func<T, bool>> @where)
         {
             var objects = Entities.Where<T>(where).AsEnumerable();
             foreach (var obj in objects)
                 await DeleteAsync(obj);
         }
+        #endregion
 
+        #region SELECT
         /// <summary>
-        /// GET
+        /// Get entity by Id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -214,8 +328,12 @@ namespace Jeton.Data.Infrastructure
         {
             return Entities.Find(id);
         }
-
-        public async Task<T> GetByIdAsync(Guid id)
+        /// <summary>
+        /// Get entity by Id async
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public virtual async Task<T> GetByIdAsync(Guid id)
         {
             return await Entities.FirstOrDefaultAsync(s => s.Id.Equals(id));
         }
@@ -229,73 +347,28 @@ namespace Jeton.Data.Infrastructure
         {
             return Entities.Where(where);
         }
-        /// <summary>
-        /// Insert entity
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        public virtual T Insert(T entity)
+
+        public virtual async Task<IEnumerable<T>> GetManyAsync(Expression<Func<T, bool>> @where)
         {
-            try
-            {
-                if (entity == null)
-                    throw new ArgumentNullException(nameof(entity));
-
-                var result = Entities.Add(entity);
-
-                DbContext.Commit();
-
-                return result;
-            }
-            catch (DbEntityValidationException dbEx)
-            {
-                throw new Exception(GetFullErrorText(dbEx), dbEx);
-            }
+            return await Entities.Where(where).ToListAsync();
         }
 
-        public async Task<T> InsertAsync(T entity)
+        public virtual IEnumerable<T> GetAll()
         {
-            try
-            {
-                if (entity == null)
-                    throw new ArgumentNullException(nameof(entity));
-
-                var result = Entities.Add(entity);
-
-                await DbContext.CommitAsync();
-
-                return result;
-            }
-            catch (DbEntityValidationException dbEx)
-            {
-                throw new Exception(GetFullErrorText(dbEx), dbEx);
-            }
+            return Entities.ToList();
         }
 
-        /// <summary>
-        /// Insert entities
-        /// </summary>
-        /// <param name="entities">Entities</param>
-        public virtual void Insert(IEnumerable<T> entities)
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
-            try
-            {
-                if (entities == null)
-                    throw new ArgumentNullException(nameof(entities));
-
-                foreach (var entity in entities)
-                    Entities.Add(entity);
-
-                DbContext.SaveChanges();
-            }
-            catch (DbEntityValidationException dbEx)
-            {
-                throw new Exception(GetFullErrorText(dbEx), dbEx);
-            }
+            return await Entities.ToListAsync();
         }
 
-        public IQueryable<T> Table => Entities;
+        #endregion
 
-        public IQueryable<T> TableNoTracking => Entities.AsNoTracking();
+
+        public virtual IQueryable<T> Table => Entities;
+
+        public virtual IQueryable<T> TableNoTracking => Entities.AsNoTracking();
 
         #endregion
 

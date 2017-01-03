@@ -52,7 +52,7 @@ namespace Jeton.Admin.Web.Controllers
                     ValueType = model.ValueType,
                 };
 
-                var setting = _settingService.Insert(newSetting);
+                var setting = _settingService.Create(newSetting);
                 return RedirectToAction("Detail", new { id = setting.Id });
             }
             catch (Exception ex)

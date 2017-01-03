@@ -7,20 +7,33 @@ namespace Jeton.Core.Interfaces.Repositories
 {
     public interface ITokenRepository: IRepository<Token>
     {
+        //Check isexist by tokenkey
         bool IsExist(string tokenKey);
-        IEnumerable<Token> GetTokens();
-        IEnumerable<Token> GetLiveTokens();
-        Token GetTokenById(Guid tokenId);
-        Token GetTokenByUserId(Guid userId);
-        Token GetTokenByUser(User user);
-        Token GetTokenByKey(string tokenKey);
-        //Async
         Task<bool> IsExistAsync(string tokenKey);
-        Task<IEnumerable<Token>> GetTokensAsync();
+
+        //Get all tokens
+        IEnumerable<Token> GetAllTokens();
+        Task<IEnumerable<Token>> GetAllTokensAsync();
+
+        //Get all live tokens
+        IEnumerable<Token> GetLiveTokens();
         Task<IEnumerable<Token>> GetLiveTokensAsync();
+
+        //Get token by Id
+        Token GetTokenById(Guid tokenId);
         Task<Token> GetTokenByIdAsync(Guid tokenId);
+
+        //Get token by userId
+        Token GetTokenByUserId(Guid userId);
         Task<Token> GetTokenByUserIdAsync(Guid userId);
+
+        //Get token by user
+        Token GetTokenByUser(User user);
         Task<Token> GetTokenByUserAsync(User user);
+
+        //Get token by tokenkey
+        Token GetTokenByKey(string tokenKey);
         Task<Token> GetTokenByKeyAsync(string tokenKey);
+   
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using Jeton.Core.Entities;
@@ -15,78 +16,103 @@ namespace Jeton.Data.Repositories
         {
         }
 
-        public IEnumerable<User> GetActiveUsers()
-        {
-            return DbContext.Tokens.Where(t => t.Expire > DateTime.Now).Select(u => u.User);
-        }
+        #region INSERT
+        #endregion
 
-        public Task<bool> IsExistAsync(string nameId)
-        {
-            throw new NotImplementedException();
-        }
+        #region UPDATE
 
-        public Task<User> GetUserByIdAsync(Guid userId)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
 
-        public Task<User> GetUserByNameAsync(string name)
-        {
-            throw new NotImplementedException();
-        }
+        #region DELETE
+        #endregion
 
-        public Task<User> GetUserByNameIdAsync(string nameId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<User>> GetUsersAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<User>> GetActiveUsersAsync()
-        {
-            throw new NotImplementedException();
-        }
-
+        #region SELECT
+        /// <summary>
+        /// Get user by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public User GetUserById(Guid userId)
         {
-            return DbContext.Users.Find(userId);
+            return base.GetById(userId);
         }
-
+        /// <summary>
+        /// Get user by Id async
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<User> GetUserByIdAsync(Guid userId)
+        {
+            return await base.GetByIdAsync(userId);
+        }
+        /// <summary>
+        /// Get user by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public User GetUserByName(string name)
         {
-            return DbContext.Users.FirstOrDefault(u => u.Name.Equals(name));
+            return Table.FirstOrDefault(u => u.Name.Equals(name));
         }
-
+        /// <summary>
+        /// Get user by name async
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public async Task<User> GetUserByNameAsync(string name)
+        {
+            return await Table.FirstOrDefaultAsync(u => string.Equals(name, u.Name, StringComparison.OrdinalIgnoreCase));
+        }
+        /// <summary>
+        /// Get user by nameId
+        /// </summary>
+        /// <param name="nameId"></param>
+        /// <returns></returns>
         public User GetUserByNameId(string nameId)
         {
-            return DbContext.Users.FirstOrDefault(u => u.NameId.Equals(nameId));
+            return Table.FirstOrDefault(u => u.NameId.Equals(nameId));
         }
-
-        public IEnumerable<User> GetUsers()
+        /// <summary>
+        /// Get user by nameId async
+        /// </summary>
+        /// <param name="nameId"></param>
+        /// <returns></returns>
+        public async Task<User> GetUserByNameIdAsync(string nameId)
         {
-            return DbContext.Users;
+            return await Table.FirstOrDefaultAsync(u => string.Equals(nameId, u.NameId, StringComparison.OrdinalIgnoreCase));
         }
+        /// <summary>
+        /// Get all users 
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<User> GetAllUsers()
+        {
+            return Table.ToList();
+        }
+        /// <summary>
+        /// Get all users async
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await Table.ToListAsync();
+        }
+        #endregion
 
         public bool IsExist(string nameId)
         {
-            return DbContext.Users.Any(u => u.NameId.Equals(nameId));
+            return TableNoTracking.Any(u => string.Equals(u.NameId, nameId, StringComparison.OrdinalIgnoreCase));
         }
 
-        public override void Update(User entity)
+        public async Task<bool> IsExistAsync(string nameId)
         {
-            entity.Modified = DateTime.Now;
-            base.Update(entity);
+            return await TableNoTracking.AnyAsync(u => string.Equals(nameId, u.NameId, StringComparison.OrdinalIgnoreCase));
         }
 
-        public override User Insert(User entity)
-        {
-            var now = DateTime.Now;
-            entity.Created = now;
-            entity.Modified = now;
-            return base.Insert(entity);
-        }
+     
+
+
+
+
     }
 }

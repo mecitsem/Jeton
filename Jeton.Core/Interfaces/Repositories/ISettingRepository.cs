@@ -6,21 +6,32 @@ namespace Jeton.Core.Interfaces.Repositories
 {
     public interface ISettingRepository:IRepository<Setting>
     {
-        //Sync
-        Setting GetSettingById(Guid settingId);
+        //Get setting by name
         Setting GetSettingByName(string name);
-        bool IsExist(Setting setting);
-        bool IsExist(Guid settingId);
-        bool IsExist(string name);
-        string GetSecretKey();
-        int GetTokenDuration();
-        Constants.CheckExpireFrom GetCheckExpireFrom();
-
-        //Async
-        Task<Setting> GetSettingByIdAsync(Guid settingId);
         Task<Setting> GetSettingByNameAsync(string name);
+
+        //Check isExist setting
+        bool IsExist(Setting setting);
         Task<bool> IsExistAsync(Setting setting);
+
+        //Check isExist by Id
+        bool IsExist(Guid settingId);
         Task<bool> IsExistAsync(Guid settingId);
+
+        //Check isExist by name
+        bool IsExist(string name);
         Task<bool> IsExistAsync(string name);
+
+        //Get secret key
+        string GetSecretKey();
+        Task<string> GetSecretKeyAsync();
+
+        //Get token duration
+        int GetTokenDuration();
+        Task<int> GetTokenDurationAsync();
+
+        //Get check epire form
+        Constants.CheckExpireFrom GetCheckExpireFrom();
+        Task<Constants.CheckExpireFrom> GetCheckExpireFromAsync();
     }
 }

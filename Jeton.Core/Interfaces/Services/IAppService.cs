@@ -7,24 +7,46 @@ namespace Jeton.Core.Interfaces.Services
 {
     public interface IAppService
     {
+        //IsActive
         bool IsActive(App app);
-        string GenerateAccessKey();
-        bool IsExist(Guid appId);
-        IEnumerable<App> GetApps();
-        App GetAppById(Guid appId);
-        App GetAppByName(string appName);
-        App Insert(App app);
-        void Update(App app);
-        void Delete(Guid appId);
-
         Task<bool> IsActiveAsync(App app);
-        Task<string> GenerateAccessKeyAsync();
+        
+        //IsExist
+        bool IsExist(Guid appId);
         Task<bool> IsExistAsync(Guid appId);
+        
+        //GetApps
+        IEnumerable<App> GetApps();
         Task<IEnumerable<App>> GetAppsAsync();
+        
+        //GetAppById
+        App GetAppById(Guid appId);
         Task<App> GetAppByIdAsync(Guid appId);
+        
+        //GetAppByName
+        App GetAppByName(string appName);
         Task<App> GetAppByNameAsync(string appName);
+        
+        //Insert
+        App Insert(App app);
         Task<App> InsertAsync(App app);
+        
+        //Update
+        void Update(App app);
         Task UpdateAsync(App app);
+        
+        //Delete
+        void Delete(Guid appId);
         Task DeleteAsync(Guid appId);
+
+        //Generate AccessKey
+        string GenerateAccessKey();
+
+ 
+    
+       
+       
+  
+      
     }
 }
