@@ -150,7 +150,14 @@ namespace Jeton.Data.Repositories
             return await TableNoTracking.AnyAsync(t => string.Equals(tokenKey, t.TokenKey));
         }
 
+        public bool IsExist(Token token)
+        {
+            return TableNoTracking.Any(t => t.Id.Equals(token.Id));
+        }
 
-
+        public async Task<bool> IsExistAsync(Token token)
+        {
+            return await TableNoTracking.AnyAsync(t => t.Id.Equals(token.Id));
+        }
     }
 }

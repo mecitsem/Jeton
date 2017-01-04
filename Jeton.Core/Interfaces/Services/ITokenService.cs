@@ -7,42 +7,59 @@ namespace Jeton.Core.Interfaces.Services
 {
     public interface ITokenService
     {
-        bool IsVerified(string tokenKey);
-        bool IsVerified(Token token);
-        bool IsExpired(Token token);
-        Token Generate(User user, App app);
-        bool IsExist(string tokenKey);
-        bool IsExistByUser(User user);
-        bool IsExistByApp(App app);
-        IEnumerable<Token> GetTokens();
-        int GetTokensCount();
-        IEnumerable<Token> GetActiveTokens();
-        int GetActiveTokensCount();
-        Token GetTokenById(Guid tokenId);
-        Token GetTokenByKey(string tokenKey);
-        Token GetTokenByUserId(Guid userId);
-        Token GetTokenByUser(User user);
-        Token Insert(Token token);
-        void Update(Token token);
-        void Delete(Token token);
+        Token Create(Token token);
+        Task<Token> CreateAsync(Token token);
 
-        Task<bool> IsVerifiedAsync(string tokenKey);
-        Task<bool> IsVerifiedAsync(Token token);
-        Task<bool> IsExpiredAsync(Token token);
-        Task<Token> GenerateAsync(User user, App app);
-        Task<bool> IsExistAsync(string tokenKey);
-        Task<bool> IsExistByUserAsync(User user);
-        Task<bool> IsExistByAppAsync(App app);
-        Task<IEnumerable<Token>> GetTokensAsync();
-        Task<int> GetTokensCountAsync();
-        Task<IEnumerable<Token>> GetActiveTokensAsync();
-        Task<int> GetActiveTokensCountAsync();
-        Task<Token> GetTokenByIdAsync(Guid tokenId);
-        Task<Token> GetTokenByKeyAsync(string tokenKey);
-        Task<Token> GetTokenByUserIdAsync(Guid userId);
-        Task<Token> GetTokenByUserAsync(User user);
-        Task<Token> InsertAsync(Token token);
+        void Update(Token token);
         Task UpdateAsync(Token token);
+
+        void Delete(Token token);
         Task DeleteAsync(Token token);
+
+        IEnumerable<Token> GetAllTokens();
+        Task<IEnumerable<Token>> GetAllTokensAsync();
+
+        int GetTokensCount();
+        Task<int> GetTokensCountAsync();
+
+        IEnumerable<Token> GetActiveTokens();
+        Task<IEnumerable<Token>> GetActiveTokensAsync();
+
+        int GetActiveTokensCount();
+        Task<int> GetActiveTokensCountAsync();
+
+        Token GetTokenById(Guid tokenId);
+        Task<Token> GetTokenByIdAsync(Guid tokenId);
+
+        Token GetTokenByKey(string tokenKey);
+        Task<Token> GetTokenByKeyAsync(string tokenKey);
+
+        Token GetTokenByUserId(Guid userId);
+        Task<Token> GetTokenByUserIdAsync(Guid userId);
+
+        Token GetTokenByUser(User user);
+        Task<Token> GetTokenByUserAsync(User user);
+
+        bool IsVerified(string tokenKey);
+        Task<bool> IsVerifiedAsync(string tokenKey);
+
+        bool IsVerified(Token token);
+        Task<bool> IsVerifiedAsync(Token token);
+
+        bool IsExpired(Token token);
+        Task<bool> IsExpiredAsync(Token token);
+
+        Token Generate(User user, App app);
+        Task<Token> GenerateAsync(User user, App app);
+
+        bool IsExist(string tokenKey);
+        Task<bool> IsExistAsync(string tokenKey);
+
+        bool IsExistByUser(User user);
+        Task<bool> IsExistByUserAsync(User user);
+
+        bool IsExistByApp(App app);
+        Task<bool> IsExistByAppAsync(App app);
+
     }
 }

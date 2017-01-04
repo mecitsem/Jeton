@@ -7,9 +7,6 @@ namespace Jeton.Core.Interfaces.Repositories
 {
     public interface ITokenRepository: IRepository<Token>
     {
-        //Check isexist by tokenkey
-        bool IsExist(string tokenKey);
-        Task<bool> IsExistAsync(string tokenKey);
 
         //Get all tokens
         IEnumerable<Token> GetAllTokens();
@@ -34,6 +31,13 @@ namespace Jeton.Core.Interfaces.Repositories
         //Get token by tokenkey
         Token GetTokenByKey(string tokenKey);
         Task<Token> GetTokenByKeyAsync(string tokenKey);
-   
+
+        //Check isexist by tokenkey
+        bool IsExist(string tokenKey);
+        Task<bool> IsExistAsync(string tokenKey);
+
+        //Check isexist by token
+        bool IsExist(Token token);
+        Task<bool> IsExistAsync(Token token);
     }
 }

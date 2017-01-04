@@ -11,12 +11,14 @@ namespace Jeton.Services
 {
     public class SettingService : ISettingService
     {
+        #region Ctor
         private readonly ISettingRepository _settingRepository;
 
         public SettingService(ISettingRepository settingRepository)
         {
             _settingRepository = settingRepository;
         }
+        #endregion
 
         #region CREATE
         /// <summary>
@@ -29,6 +31,9 @@ namespace Jeton.Services
             if (setting == null)
                 throw new ArgumentNullException(nameof(setting));
 
+            if (_settingRepository.IsExist(setting))
+                throw new ArgumentException("Setting is already exist");
+
             return _settingRepository.Insert(setting);
         }
         /// <summary>
@@ -36,17 +41,20 @@ namespace Jeton.Services
         /// </summary>
         /// <param name="setting"></param>
         /// <returns></returns>
-        public Task<Setting> CreateAsync(Setting setting)
+        public async Task<Setting> CreateAsync(Setting setting)
         {
             if (setting == null)
                 throw new ArgumentNullException(nameof(setting));
 
-            return _settingRepository.InsertAsync(setting);
+            if (await _settingRepository.IsExistAsync(setting))
+                throw new ArgumentException("Setting is already exist");
+
+            return await _settingRepository.InsertAsync(setting);
         }
         #endregion
 
         #region READ
-        
+
         /// <summary>
         /// Get setting by Id
         /// </summary>
@@ -54,7 +62,22 @@ namespace Jeton.Services
         /// <returns></returns>
         public Setting GetSettingById(Guid settingId)
         {
+            if (settingId == null)
+                throw new ArgumentNullException(nameof(settingId));
+
             return _settingRepository.GetById(settingId);
+        }
+        /// <summary>
+        /// Get setting by Id async
+        /// </summary>
+        /// <param name="settingId"></param>
+        /// <returns></returns>
+        public async Task<Setting> GetSettingByIdAsync(Guid settingId)
+        {
+            if (settingId == null)
+                throw new ArgumentNullException(nameof(settingId));
+
+            return await _settingRepository.GetByIdAsync(settingId);
         }
         /// <summary>
         /// Get setting by name
@@ -69,24 +92,6 @@ namespace Jeton.Services
             return _settingRepository.GetSettingByName(name);
         }
         /// <summary>
-        /// Get all settings
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<Setting> GetAllSettings()
-        {
-            return _settingRepository.Table.ToList();
-        }
-        
-        /// <summary>
-        /// Get setting by Id async
-        /// </summary>
-        /// <param name="settingId"></param>
-        /// <returns></returns>
-        public async Task<Setting> GetSettingByIdAsync(Guid settingId)
-        {
-            return await _settingRepository.GetByIdAsync(settingId);
-        }
-        /// <summary>
         /// Get setting by name async
         /// </summary>
         /// <param name="name"></param>
@@ -98,13 +103,22 @@ namespace Jeton.Services
 
             return await _settingRepository.GetSettingByNameAsync(name);
         }
+
+        /// <summary>
+        /// Get all settings
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Setting> GetAllSettings()
+        {
+            return _settingRepository.GetAll();
+        }
         /// <summary>
         /// Get all settings async
         /// </summary>
         /// <returns></returns>
         public async Task<IEnumerable<Setting>> GetAllSettingsAsync()
         {
-            return await _settingRepository.Table.ToListAsync();
+            return await _settingRepository.GetAllAsync();
         }
         #endregion
 
@@ -118,6 +132,9 @@ namespace Jeton.Services
             if (setting == null)
                 throw new ArgumentNullException(nameof(setting));
 
+            if (!_settingRepository.IsExist(setting))
+                throw new ArgumentException("Setting is not exist");
+
             _settingRepository.Update(setting);
         }
         /// <summary>
@@ -125,12 +142,15 @@ namespace Jeton.Services
         /// </summary>
         /// <param name="setting"></param>
         /// <returns></returns>
-        public Task UpdateAsync(Setting setting)
+        public async Task UpdateAsync(Setting setting)
         {
             if (setting == null)
                 throw new ArgumentNullException(nameof(setting));
 
-            return _settingRepository.UpdateAsync(setting);
+            if (!await _settingRepository.IsExistAsync(setting))
+                throw new ArgumentException("Setting is not exist");
+
+            await _settingRepository.UpdateAsync(setting);
         }
         #endregion
 
@@ -161,7 +181,7 @@ namespace Jeton.Services
             if (settingId == null)
                 throw new ArgumentNullException(nameof(settingId));
 
-            if (!IsExist(settingId))
+            if (!_settingRepository.IsExist(settingId))
                 throw new ArgumentException("App is not exist");
 
             var setting = await GetSettingByIdAsync(settingId);
@@ -177,25 +197,10 @@ namespace Jeton.Services
         /// <returns></returns>
         public bool IsExist(string name)
         {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentNullException(nameof(name));
+
             return _settingRepository.IsExist(name);
-        }
-        /// <summary>
-        /// Check setting is exist by Id
-        /// </summary>
-        /// <param name="settingId"></param>
-        /// <returns></returns>
-        public bool IsExist(Guid settingId)
-        {
-            return _settingRepository.IsExist(settingId);
-        }
-        /// <summary>
-        /// Check setting is exist by entity
-        /// </summary>
-        /// <param name="setting"></param>
-        /// <returns></returns>
-        public bool IsExist(Setting setting)
-        {
-            return _settingRepository.IsExist(setting);
         }
         /// <summary>
         /// Check setting is exist by name async
@@ -209,6 +214,20 @@ namespace Jeton.Services
 
             return await _settingRepository.IsExistAsync(name);
         }
+
+        /// <summary>
+        /// Check setting is exist by Id
+        /// </summary>
+        /// <param name="settingId"></param>
+        /// <returns></returns>
+        public bool IsExist(Guid settingId)
+        {
+            if (settingId == null)
+                throw new ArgumentNullException(nameof(settingId));
+
+            return _settingRepository.IsExist(settingId);
+        }
+
         /// <summary>
         /// Check setting is exist by Id async
         /// </summary>
@@ -216,7 +235,22 @@ namespace Jeton.Services
         /// <returns></returns>
         public async Task<bool> IsExistAsync(Guid settingId)
         {
+            if (settingId == null)
+                throw new ArgumentNullException(nameof(settingId));
+
             return await _settingRepository.IsExistAsync(settingId);
+        }
+        /// <summary>
+        /// Check setting is exist by entity
+        /// </summary>
+        /// <param name="setting"></param>
+        /// <returns></returns>
+        public bool IsExist(Setting setting)
+        {
+            if (setting == null)
+                throw new ArgumentNullException(nameof(setting));
+
+            return _settingRepository.IsExist(setting);
         }
         /// <summary>
         /// Check setting is exist by entity async
