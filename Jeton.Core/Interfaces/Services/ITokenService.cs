@@ -7,17 +7,6 @@ namespace Jeton.Core.Interfaces.Services
 {
     public interface ITokenService
     {
-        Token Create(Token token);
-        Task<Token> CreateAsync(Token token);
-
-        void Update(Token token);
-        Task UpdateAsync(Token token);
-
-        void Delete(Token token);
-        Task DeleteAsync(Token token);
-
-        IEnumerable<Token> GetAllTokens();
-        Task<IEnumerable<Token>> GetAllTokensAsync();
 
         int GetTokensCount();
         Task<int> GetTokensCountAsync();
@@ -27,9 +16,6 @@ namespace Jeton.Core.Interfaces.Services
 
         int GetActiveTokensCount();
         Task<int> GetActiveTokensCountAsync();
-
-        Token GetTokenById(Guid tokenId);
-        Task<Token> GetTokenByIdAsync(Guid tokenId);
 
         Token GetTokenByKey(string tokenKey);
         Task<Token> GetTokenByKeyAsync(string tokenKey);

@@ -63,13 +63,21 @@ namespace Jeton.Core.Interfaces.Repositories
         /// </summary>
         /// <param name="entity"></param>
         Task DeleteAsync(T entity);
-
+        /// <summary>
+        /// Marks an entity to be removed
+        /// </summary>
+        /// <param name="id"></param>
+        void Delete(Guid id);
+        /// <summary>
+        /// Marks an entity to be removed
+        /// </summary>
+        /// <param name="id"></param>
+        Task DeleteAsync(Guid id);
         /// <summary>
         /// Delete many entity by linq expression query
         /// </summary>
         /// <param name="where"></param>
         void Delete(Expression<Func<T, bool>> where);
-
         /// <summary>
         /// Delete many entity by linq expression query async
         /// </summary>
@@ -129,5 +137,31 @@ namespace Jeton.Core.Interfaces.Repositories
         /// </summary>
         IQueryable<T> TableNoTracking { get; }
         #endregion
+
+        /// <summary>
+        /// Check entity
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        bool IsExist(T entity);
+        /// <summary>
+        /// Check entity async
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        Task<bool> IsExistAsync(T entity);
+        /// <summary>
+        /// Check entity
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        bool IsExist(Guid id);
+        /// <summary>
+        /// Check entity async
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<bool> IsExistAsync(Guid id);
+
     }
 }

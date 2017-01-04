@@ -7,22 +7,15 @@ namespace Jeton.Core.Interfaces.Services
 {
     public interface IUserService
     {
-        bool IsExist(string nameId);
-        IEnumerable<User> GetUsers();
-        User GetUserById(Guid userId);
-        User GetUserByName(string name);
-        User GetUserByNameId(string nameId);
-        User Insert(User user);
-        void Update(User user);
-        void Delete(User user);
 
-        Task<bool> IsExistAsync(string nameId);
-        Task<IEnumerable<User>> GetUsersAsync();
-        Task<User> GetUserByIdAsync(Guid userId);
+        User GetUserByName(string name);
         Task<User> GetUserByNameAsync(string name);
+
+        User GetUserByNameId(string nameId);
         Task<User> GetUserByNameIdAsync(string nameId);
-        Task<User> InsertAsync(User user);
-        Task UpdateAsync(User user);
-        Task DeleteAsync(User user);
+
+        bool IsExist(string nameId);
+        Task<bool> IsExistAsync(string nameId);
+
     }
 }

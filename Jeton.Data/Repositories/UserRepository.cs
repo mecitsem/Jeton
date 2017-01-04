@@ -10,7 +10,7 @@ using Jeton.Data.Infrastructure.Interfaces;
 
 namespace Jeton.Data.Repositories
 {
-    public class UserRepository : RepositoryBase<User>, IUserRepository
+    public class UserRepository : BaseRepository<User>, IUserRepository
     {
         public UserRepository(IDbFactory dbFactory) : base(dbFactory)
         {

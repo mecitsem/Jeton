@@ -12,7 +12,7 @@ using Jeton.Data.Infrastructure.Interfaces;
 
 namespace Jeton.Data.Infrastructure
 {
-    public partial class RepositoryBase<T> : IRepository<T> where T : class, IEntity
+    public partial class BaseRepository<T> : IRepository<T> where T : class, IEntity
     {
         #region Properties
         private JetonDbContext _dataContext;
@@ -35,7 +35,7 @@ namespace Jeton.Data.Infrastructure
         #endregion
 
         #region Ctor
-        protected RepositoryBase(IDbFactory dbFactory)
+        protected BaseRepository(IDbFactory dbFactory)
         {
             DbFactory = dbFactory;
         }
@@ -152,7 +152,7 @@ namespace Jeton.Data.Infrastructure
                     entity.Modified = DateTime.UtcNow;
                     Entities.Add(entity);
                 }
-              
+
 
                 await DbContext.CommitAsync();
             }
@@ -299,6 +299,21 @@ namespace Jeton.Data.Infrastructure
             }
 
         }
+
+        public virtual void Delete(Guid id)
+        {
+            var entity = GetById(id);
+
+            Delete(entity);
+        }
+
+        public virtual async Task DeleteAsync(Guid id)
+        {
+            var entity = await GetByIdAsync(id);
+
+            await DeleteAsync(entity);
+        }
+
         /// <summary>
         /// DELETE MANY
         /// </summary>
@@ -347,17 +362,27 @@ namespace Jeton.Data.Infrastructure
         {
             return Entities.Where(where);
         }
-
+        /// <summary>
+        /// Get many by filter
+        /// </summary>
+        /// <param name="where"></param>
+        /// <returns></returns>
         public virtual async Task<IEnumerable<T>> GetManyAsync(Expression<Func<T, bool>> @where)
         {
             return await Entities.Where(where).ToListAsync();
         }
-
+        /// <summary>
+        /// Get all
+        /// </summary>
+        /// <returns></returns>
         public virtual IEnumerable<T> GetAll()
         {
             return Entities.ToList();
         }
-
+        /// <summary>
+        /// Get all async
+        /// </summary>
+        /// <returns></returns>
         public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             return await Entities.ToListAsync();
@@ -365,10 +390,52 @@ namespace Jeton.Data.Infrastructure
 
         #endregion
 
-
+        /// <summary>
+        /// Get entities
+        /// </summary>
         public virtual IQueryable<T> Table => Entities;
 
+        /// <summary>
+        /// Get entities only readonly operations for performance
+        /// </summary>
         public virtual IQueryable<T> TableNoTracking => Entities.AsNoTracking();
+
+        /// <summary>
+        /// Is exist
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public virtual bool IsExist(T entity)
+        {
+            return Entities.AsNoTracking().Any(e => e.Id.Equals(entity.Id));
+        }
+        /// <summary>
+        /// Is exist async
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> IsExistAsync(T entity)
+        {
+            return await Entities.AsNoTracking().AnyAsync(e => e.Id.Equals(entity.Id));
+        }
+        /// <summary>
+        /// Is exist check by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool IsExist(Guid id)
+        {
+            return Entities.AsNoTracking().Any(e => e.Id.Equals(id));
+        }
+        /// <summary>
+        /// Is exist check by Id async
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<bool> IsExistAsync(Guid id)
+        {
+            return await Entities.AsNoTracking().AnyAsync(e => e.Id.Equals(id));
+        }
 
         #endregion
 

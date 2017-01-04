@@ -10,7 +10,7 @@ using Jeton.Data.Infrastructure.Interfaces;
 
 namespace Jeton.Data.Repositories
 {
-    public class AppRepository : RepositoryBase<App>, IAppRepository
+    public class AppRepository : BaseRepository<App>, IAppRepository
     {
         public AppRepository(IDbFactory dbFactory) : base(dbFactory)
         {
@@ -127,44 +127,6 @@ namespace Jeton.Data.Repositories
         }
         #endregion
 
-
-        /// <summary>
-        /// Is exist check by Id
-        /// </summary>
-        /// <param name="appId"></param>
-        /// <returns></returns>
-        public bool IsExist(Guid appId)
-        {
-            return TableNoTracking.Any(a => a.Id.Equals(appId));
-        }
-        /// <summary>
-        /// Is exist check by Id async
-        /// </summary>
-        /// <param name="appId"></param>
-        /// <returns></returns>
-        public async Task<bool> IsExistAsync(Guid appId)
-        {
-            return await TableNoTracking.AnyAsync(a => a.Id.Equals(appId));
-        }
-
-        /// <summary>
-        /// Is exist check by entity
-        /// </summary>
-        /// <param name="app"></param>
-        /// <returns></returns>
-        public bool IsExist(App app)
-        {
-            return TableNoTracking.Any(a => a.Id.Equals(app.Id) && a.Name.Equals(app.Name, StringComparison.OrdinalIgnoreCase));
-        }
-        /// <summary>
-        /// Is exist check by entity async
-        /// </summary>
-        /// <param name="app"></param>
-        /// <returns></returns>
-        public async Task<bool> IsExistAsync(App app)
-        {
-            return await TableNoTracking.AnyAsync(a => a.Id.Equals(app.Id) && a.Name.Equals(app.Name, StringComparison.OrdinalIgnoreCase));
-        }
 
         /// <summary>
         /// Is exist check by name

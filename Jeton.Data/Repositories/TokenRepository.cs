@@ -11,7 +11,7 @@ using Jeton.Data.Infrastructure.Interfaces;
 
 namespace Jeton.Data.Repositories
 {
-    public class TokenRepository : RepositoryBase<Token>, ITokenRepository
+    public class TokenRepository : BaseRepository<Token>, ITokenRepository
     {
         #region Ctor
         public TokenRepository(IDbFactory dbFactory) : base(dbFactory)
@@ -150,14 +150,5 @@ namespace Jeton.Data.Repositories
             return await TableNoTracking.AnyAsync(t => string.Equals(tokenKey, t.TokenKey));
         }
 
-        public bool IsExist(Token token)
-        {
-            return TableNoTracking.Any(t => t.Id.Equals(token.Id));
-        }
-
-        public async Task<bool> IsExistAsync(Token token)
-        {
-            return await TableNoTracking.AnyAsync(t => t.Id.Equals(token.Id));
-        }
     }
 }

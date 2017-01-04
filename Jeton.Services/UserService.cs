@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Jeton.Core.Entities;
 using Jeton.Core.Interfaces.Repositories;
@@ -8,126 +7,94 @@ using Jeton.Core.Interfaces.Services;
 
 namespace Jeton.Services
 {
-    public class UserService : IUserService
+    public class UserService : BaseService<User>, IUserService
     {
         private readonly IUserRepository _userRepository;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository) : base(userRepository)
         {
             _userRepository = userRepository;
         }
 
         #region CREATE
-        public User Insert(User user)
-        {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
-
-            return _userRepository.Insert(user);
-        }
+        
         #endregion
 
-        #region READ
-        public User GetUserById(Guid userId)
-        {
-            if (userId == null)
-                throw new ArgumentNullException(nameof(userId));
-
-            return _userRepository.GetById(userId);
-        }
-
+        #region GET
+       
+        /// <summary>
+        /// Get user by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public User GetUserByName(string name)
         {
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name));
 
-            var table = _userRepository.Table;
-
-            return table.FirstOrDefault(u => u.Name.Equals(name));
+            return _userRepository.GetUserByName(name);
         }
+        /// <summary>
+        /// Get user by name async
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public async Task<User> GetUserByNameAsync(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentNullException(nameof(name));
 
+            return await _userRepository.GetUserByNameAsync(name);
+        }
+        /// <summary>
+        /// Get user by nameId
+        /// </summary>
+        /// <param name="nameId"></param>
+        /// <returns></returns>
         public User GetUserByNameId(string nameId)
         {
             if (string.IsNullOrEmpty(nameId))
                 throw new ArgumentNullException(nameof(nameId));
 
-            var table = _userRepository.Table;
-
-            return table.FirstOrDefault(u => u.NameId.Equals(nameId));
+            return _userRepository.GetUserByNameId(nameId);
         }
-
-        public IEnumerable<User> GetUsers()
+        /// <summary>
+        /// Get user by nameId async
+        /// </summary>
+        /// <param name="nameId"></param>
+        /// <returns></returns>
+        public async Task<User> GetUserByNameIdAsync(string nameId)
         {
-            return _userRepository.Table.ToList();
+            if (string.IsNullOrEmpty(nameId))
+                throw new ArgumentNullException(nameof(nameId));
+
+            return await _userRepository.GetUserByNameIdAsync(nameId);
         }
+        
         #endregion
 
         #region UPDATE
-        public void Update(User user)
-        {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
 
-            _userRepository.Update(user);
-        }
         #endregion
 
         #region DELETE
-        public void Delete(User user)
-        {
-            _userRepository.Delete(user);
-        }
-
-        public Task<bool> IsExistAsync(string nameId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<User>> GetUsersAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<User> GetUserByIdAsync(Guid userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<User> GetUserByNameAsync(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<User> GetUserByNameIdAsync(string nameId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<User> InsertAsync(User user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateAsync(User user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteAsync(User user)
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion
 
 
         public bool IsExist(string nameId)
         {
-            if (string.IsNullOrEmpty(nameId))
+            if (string.IsNullOrWhiteSpace(nameId))
                 throw new ArgumentNullException(nameof(nameId));
-            var table = _userRepository.TableNoTracking;
 
-            return table.Any(u => u.NameId.Equals(nameId));
+            return _userRepository.IsExist(nameId);
+        }
+
+        public async Task<bool> IsExistAsync(string nameId)
+        {
+            if (string.IsNullOrWhiteSpace(nameId))
+                throw new ArgumentNullException(nameof(nameId));
+
+            return await _userRepository.IsExistAsync(nameId);
         }
     }
 }

@@ -75,7 +75,7 @@ namespace Jeton.Api.Controllers
 
 
                 //Get APP
-                var app = _appService.GetAppById(_appId);
+                var app = _appService(_appId);
 
                 //Check app is active
                 if (!_appService.IsActive(app))

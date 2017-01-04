@@ -93,7 +93,7 @@
     <Compile Include="Repositories\SettingRepository.cs" />
     <Compile Include="Repositories\TokenRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
-    <Compile Include="Infrastructure\RepositoryBase.cs" />
+    <Compile Include="Infrastructure\BaseRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

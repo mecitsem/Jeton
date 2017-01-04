@@ -11,7 +11,7 @@ using Jeton.Data.Infrastructure.Interfaces;
 
 namespace Jeton.Data.Repositories
 {
-    public class SettingRepository : RepositoryBase<Setting>, ISettingRepository
+    public class SettingRepository : BaseRepository<Setting>, ISettingRepository
     {
         #region Ctor
         public SettingRepository(IDbFactory dbFactory)
@@ -105,42 +105,7 @@ namespace Jeton.Data.Repositories
         }
         #endregion
 
-        /// <summary>
-        /// Check is exist by entity
-        /// </summary>
-        /// <param name="setting"></param>
-        /// <returns></returns>
-        public bool IsExist(Setting setting)
-        {
-            return TableNoTracking.Any(s => s.Name.Equals(setting.Name, StringComparison.OrdinalIgnoreCase));
-        }
-        /// <summary>
-        /// Check is exist by entity async
-        /// </summary>
-        /// <param name="setting"></param>
-        /// <returns></returns>
-        public async Task<bool> IsExistAsync(Setting setting)
-        {
-            return await TableNoTracking.AnyAsync(s => s.Equals(setting));
-        }
-        /// <summary>
-        /// Check isExist by Id
-        /// </summary>
-        /// <param name="settingId"></param>
-        /// <returns></returns>
-        public bool IsExist(Guid settingId)
-        {
-            return TableNoTracking.Any(s => s.Id.Equals(settingId));
-        }
-        /// <summary>
-        /// Check isExist by Id async
-        /// </summary>
-        /// <param name="settingId"></param>
-        /// <returns></returns>
-        public async Task<bool> IsExistAsync(Guid settingId)
-        {
-            return await TableNoTracking.AnyAsync(s => s.Id.Equals(settingId));
-        }
+
         /// <summary>
         /// Check isExist by name 
         /// </summary>

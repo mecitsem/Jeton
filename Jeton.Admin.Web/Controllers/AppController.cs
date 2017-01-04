@@ -24,7 +24,7 @@ namespace Jeton.Admin.Web.Controllers
         {
             ViewBag.AppStatus = active.HasValue ? (active.Value ? "Active" : "Inactive") : "All";
             var mapper = _config.CreateMapper();
-            var appList = _appService.GetApps().AsEnumerable().
+            var appList = _appService.().AsEnumerable().
                             Where(a => !active.HasValue || (active.Value ?
                                 !a.IsDeleted.HasValue || (a.IsDeleted.Value == false) :
                                 a.IsDeleted.HasValue && a.IsDeleted.Value)).Select(a => mapper.Map<AppModel>(a)).ToList();

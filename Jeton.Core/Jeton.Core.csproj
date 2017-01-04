@@ -80,6 +80,7 @@
     <Compile Include="Interfaces\Repositories\ITokenRepository.cs" />
     <Compile Include="Interfaces\Repositories\IUserRepository.cs" />
     <Compile Include="Interfaces\Services\IAppService.cs" />
+    <Compile Include="Interfaces\Services\IBaseService.cs" />
     <Compile Include="Interfaces\Services\ISettingService.cs" />
     <Compile Include="Interfaces\Services\ITokenService.cs" />
     <Compile Include="Interfaces\Services\IUserService.cs" />

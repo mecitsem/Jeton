@@ -11,75 +11,23 @@ using Jeton.Core.Models;
 
 namespace Jeton.Services
 {
-    public class TokenService : ITokenService
+    public class TokenService : BaseService<Token>, ITokenService
     {
         private readonly ITokenRepository _tokenRepository;
         private readonly ISettingRepository _settingRepository;
 
-        public TokenService(ITokenRepository tokenRepository, ISettingRepository settingRepository)
+        public TokenService(ITokenRepository tokenRepository, ISettingRepository settingRepository) : base(tokenRepository)
         {
             _tokenRepository = tokenRepository;
             _settingRepository = settingRepository;
         }
 
         #region CREATE
-        /// <summary>
-        /// Create token
-        /// </summary>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        public Token Create(Token token)
-        {
-            if (string.IsNullOrWhiteSpace(token?.TokenKey))
-                throw new ArgumentNullException(nameof(token));
 
-            if (_tokenRepository.IsExist(token.TokenKey))
-                throw new ArgumentException("Tokendkey is already exist");
-
-            return _tokenRepository.Insert(token);
-        }
-        /// <summary>
-        /// Crate token async
-        /// </summary>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        public async Task<Token> CreateAsync(Token token)
-        {
-            if (string.IsNullOrWhiteSpace(token?.TokenKey))
-                throw new ArgumentNullException(nameof(token));
-
-            if (await _tokenRepository.IsExistAsync(token.TokenKey))
-                throw new ArgumentException("Tokendkey is already exist");
-
-            return await _tokenRepository.InsertAsync(token);
-        }
         #endregion
 
-        #region READ
-        /// <summary>
-        /// Get token by Id
-        /// </summary>
-        /// <param name="tokenId"></param>
-        /// <returns></returns>
-        public Token GetTokenById(Guid tokenId)
-        {
-            if (tokenId == default(Guid))
-                throw new ArgumentNullException(nameof(tokenId));
-
-            return _tokenRepository.GetById(tokenId);
-        }
-        /// <summary>
-        /// Get token by Id async
-        /// </summary>
-        /// <param name="tokenId"></param>
-        /// <returns></returns>
-        public async Task<Token> GetTokenByIdAsync(Guid tokenId)
-        {
-            if (tokenId == default(Guid))
-                throw new ArgumentNullException(nameof(tokenId));
-
-            return await _tokenRepository.GetByIdAsync(tokenId);
-        }
+        #region GET
+        
         /// <summary>
         /// Get token by tokenkey
         /// </summary>
@@ -152,22 +100,7 @@ namespace Jeton.Services
         {
             return await _tokenRepository.GetTokenByUserIdAsync(userId);
         }
-        /// <summary>
-        /// Get all tokens
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<Token> GetAllTokens()
-        {
-            return _tokenRepository.GetAllTokens();
-        }
-        /// <summary>
-        /// Get all tokens async
-        /// </summary>
-        /// <returns></returns>
-        public async Task<IEnumerable<Token>> GetAllTokensAsync()
-        {
-            return await _tokenRepository.GetAllTokensAsync();
-        }
+       
         /// <summary>
         /// Get active tokens
         /// </summary>
@@ -214,70 +147,10 @@ namespace Jeton.Services
         #endregion
 
         #region UPDATE
-        /// <summary>
-        /// Update token
-        /// </summary>
-        /// <param name="token"></param>
-        public void Update(Token token)
-        {
-            if (token == null)
-                throw new ArgumentNullException(nameof(token));
 
-            if (!_tokenRepository.IsExist(token))
-                throw new ArgumentException("Token is not exist");
-
-            _tokenRepository.Update(token);
-        }
-        /// <summary>
-        /// Update token async
-        /// </summary>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        public async Task UpdateAsync(Token token)
-        {
-            if (token == null)
-                throw new ArgumentNullException(nameof(token));
-
-            if (!await _tokenRepository.IsExistAsync(token))
-                throw new ArgumentException("Token is not exist");
-
-            await _tokenRepository.UpdateAsync(token);
-        }
         #endregion
 
         #region DELETE
-        /// <summary>
-        /// Delete token
-        /// </summary>
-        /// <param name="token"></param>
-        public void Delete(Token token)
-        {
-            if (token == null)
-                throw new ArgumentNullException(nameof(token));
-
-            if (!_tokenRepository.IsExist(token))
-                throw new ArgumentException("Token is not exist");
-
-            _tokenRepository.Delete(token);
-        }
-        /// <summary>
-        /// Delete token async
-        /// </summary>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        public async Task DeleteAsync(Token token)
-        {
-            if (token == null)
-                throw new ArgumentNullException(nameof(token));
-
-            if (!await _tokenRepository.IsExistAsync(token))
-                throw new ArgumentException("Token is not exist");
-
-            await _tokenRepository.DeleteAsync(token);
-        }
-
-
-
         #endregion
 
         public bool IsVerified(string tokenKey)
@@ -597,7 +470,6 @@ namespace Jeton.Services
             return await _tokenRepository.TableNoTracking.AnyAsync(t => t.AppId.Equals(app.Id));
         }
 
-
         public int GetTokensCount()
         {
             return _tokenRepository.TableNoTracking.Count();
@@ -606,7 +478,6 @@ namespace Jeton.Services
         {
             return await _tokenRepository.TableNoTracking.CountAsync();
         }
-
 
         public int GetActiveTokensCount()
         {
