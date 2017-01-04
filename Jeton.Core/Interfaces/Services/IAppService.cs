@@ -27,9 +27,9 @@ namespace Jeton.Core.Interfaces.Services
         App GetAppByName(string appName);
         Task<App> GetAppByNameAsync(string appName);
         
-        //Insert
-        App Insert(App app);
-        Task<App> InsertAsync(App app);
+        //Create
+        App Create(App app);
+        Task<App> CreateAsync(App app);
         
         //Update
         void Update(App app);
