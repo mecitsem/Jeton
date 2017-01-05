@@ -5,7 +5,7 @@ using Jeton.Core.Entities;
 
 namespace Jeton.Core.Interfaces.Services
 {
-    public interface ITokenService
+    public interface ITokenService:IBaseService<Token>
     {
 
         int GetTokensCount();

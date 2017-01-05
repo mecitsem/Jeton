@@ -55,18 +55,6 @@ namespace Jeton.Data.Repositories
         #endregion
 
         #region UPDATE
-        public override void Update(App entity)
-        {
-            entity.Modified = DateTime.UtcNow;
-            base.Update(entity);
-        }
-
-        public override async Task UpdateAsync(App entity)
-        {
-            entity.Modified = DateTime.UtcNow;
-            await base.UpdateAsync(entity);
-        }
-
         #endregion
 
         #region DELETE
@@ -98,7 +86,7 @@ namespace Jeton.Data.Repositories
         /// <returns></returns>
         public App GetAppByName(string appName)
         {
-            return Table.FirstOrDefault(a => a.Name.Equals(appName, StringComparison.OrdinalIgnoreCase));
+            return Table.AsEnumerable().FirstOrDefault(a => a.Name.Equals(appName));
         }
         /// <summary>
         /// Get app by name async
@@ -107,7 +95,7 @@ namespace Jeton.Data.Repositories
         /// <returns></returns>
         public async Task<App> GetAppByNameAsync(string appName)
         {
-            return await Table.FirstOrDefaultAsync(a => string.Equals(a.Name, appName, StringComparison.OrdinalIgnoreCase));
+            return await Table.FirstOrDefaultAsync(a => string.Equals(a.Name, appName));
         }
         /// <summary>
         /// Get all apps
@@ -135,7 +123,7 @@ namespace Jeton.Data.Repositories
         /// <returns></returns>
         public bool IsExistByName(string appName)
         {
-            return TableNoTracking.Any(a => a.Name.Equals(appName, StringComparison.OrdinalIgnoreCase));
+            return TableNoTracking.Any(a => a.Name.Equals(appName));
         }
         /// <summary>
         /// Is exist check by name async
@@ -144,7 +132,7 @@ namespace Jeton.Data.Repositories
         /// <returns></returns>
         public async Task<bool> IsExistByNameAsync(string appName)
         {
-            return await TableNoTracking.AnyAsync(a => a.Name.Equals(appName, StringComparison.OrdinalIgnoreCase));
+            return await TableNoTracking.AnyAsync(a => a.Name.Equals(appName));
         }
 
        

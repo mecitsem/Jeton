@@ -2,6 +2,7 @@
 using Jeton.Admin.Web.Models;
 using Jeton.Core.Entities;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using Jeton.Core.Interfaces.Services;
 
@@ -18,10 +19,10 @@ namespace Jeton.Admin.Web.Controllers
         }
 
         // GET: Token
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             var mapper = _config.CreateMapper();
-            var tokenList = _tokenService.GetTokens().AsEnumerable().Select(t => mapper.Map<TokenModel>(t)).ToList();
+            var tokenList = (await _tokenService.GetAllAsync()).Select(t => mapper.Map<TokenModel>(t)).ToList();
             return View(tokenList);
         }
     }

@@ -7,7 +7,9 @@ using Jeton.Core.Common;
 using Jeton.Core.Entities;
 using Jeton.Core.Interfaces.Repositories;
 using Jeton.Core.Interfaces.Services;
+using Jeton.Core.Managers;
 using Jeton.Core.Models;
+using Jeton.Jwt.Core;
 
 namespace Jeton.Services
 {
@@ -27,7 +29,7 @@ namespace Jeton.Services
         #endregion
 
         #region GET
-        
+
         /// <summary>
         /// Get token by tokenkey
         /// </summary>
@@ -100,27 +102,14 @@ namespace Jeton.Services
         {
             return await _tokenRepository.GetTokenByUserIdAsync(userId);
         }
-       
+
         /// <summary>
         /// Get active tokens
         /// </summary>
         /// <returns></returns>
         public virtual IEnumerable<Token> GetActiveTokens()
         {
-            var secretKey = _settingRepository.GetSecretKey();
-            var checkExpireFrom = _settingRepository.GetCheckExpireFrom();
-            var tokenDuration = _settingRepository.GetTokenDuration();
-
-            if (string.IsNullOrWhiteSpace(secretKey))
-                throw new ArgumentNullException(nameof(secretKey));
-
-            var tokenManager = new TokenManager(secretKey)
-            {
-                CheckExpireFrom = checkExpireFrom,
-                TokenDuration = tokenDuration,
-            };
-
-            return _tokenRepository.Table.Where(t => !tokenManager.TokenIsExpired(t)).ToList();
+            return _tokenRepository.Table.Where(t => !this.IsExpired(t)).ToList();
         }
         /// <summary>
         /// Get active tokens async
@@ -128,20 +117,7 @@ namespace Jeton.Services
         /// <returns></returns>
         public async Task<IEnumerable<Token>> GetActiveTokensAsync()
         {
-            var secretKey = await _settingRepository.GetSecretKeyAsync();
-            var checkExpireFrom = await _settingRepository.GetCheckExpireFromAsync();
-            var tokenDuration = await _settingRepository.GetTokenDurationAsync();
-
-            if (string.IsNullOrWhiteSpace(secretKey))
-                throw new ArgumentNullException(nameof(secretKey));
-
-            var tokenManager = new TokenManager(secretKey)
-            {
-                CheckExpireFrom = checkExpireFrom,
-                TokenDuration = tokenDuration,
-            };
-
-            return await _tokenRepository.Table.Where(t => !tokenManager.TokenIsExpired(t)).ToListAsync();
+            return await _tokenRepository.Table.Where(t => !this.IsExpired(t)).ToListAsync();
         }
 
         #endregion
@@ -203,7 +179,7 @@ namespace Jeton.Services
             };
 
             //Check Token expired by Payload in TokenKey
-            var result = tokenManager.IsVerified(token.TokenKey);
+            var result = JetonUtility.IsVerified(token.TokenKey, secretKey);
 
             return result;
         }
@@ -226,7 +202,7 @@ namespace Jeton.Services
             };
 
             //Check Token expired by Payload in TokenKey
-            var result = tokenManager.IsVerified(token.TokenKey);
+            var result = JetonUtility.IsVerified(token.TokenKey, secretKey);
 
             return result;
         }
@@ -249,9 +225,22 @@ namespace Jeton.Services
                 TokenDuration = tokenDuration,
             };
 
-            //Check Token expired by Payload in TokenKey
-            var result = tokenManager.TokenIsExpired(token);
+            if (!token.Expire.HasValue)
+                throw new ArgumentException("Token expire is null");
 
+            bool result;
+
+            switch (tokenManager.CheckExpireFrom)
+            {
+                case Constants.CheckExpireFrom.Database:
+                    result = JetonUtility.IsExpired(token.Expire.Value);
+                    break;
+                case Constants.CheckExpireFrom.Token:
+                    result = JetonUtility.TokenIsExpired(token.TokenKey, tokenDuration, secretKey);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             return result;
         }
         public async Task<bool> IsExpiredAsync(Token token)
@@ -272,9 +261,22 @@ namespace Jeton.Services
                 TokenDuration = tokenDuration,
             };
 
-            //Check Token expired by Payload in TokenKey
-            var result = tokenManager.TokenIsExpired(token);
+            if (!token.Expire.HasValue)
+                throw new ArgumentException("Token expire is null");
 
+            bool result;
+
+            switch (tokenManager.CheckExpireFrom)
+            {
+                case Constants.CheckExpireFrom.Database:
+                    result = JetonUtility.IsExpired(token.Expire.Value);
+                    break;
+                case Constants.CheckExpireFrom.Token:
+                    result = JetonUtility.TokenIsExpired(token.TokenKey, tokenDuration, secretKey);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             return result;
         }
 
@@ -304,11 +306,11 @@ namespace Jeton.Services
             };
 
 
-            var time = tokenManager.Now;
-            var unixTimestamp = tokenManager.GetUnixTimeStamp(time);
+            var time = Constants.Now;
+            var unixTimestamp = JetonUtility.GetUnixTimeStamp(time);
 
             var expire = tokenManager.GetExpire(time);
-            var unixExpstamp = tokenManager.GetUnixTimeStamp(expire);
+            var unixExpstamp = JetonUtility.GetUnixTimeStamp(expire);
 
             var payload = new Payload()
             {
@@ -377,11 +379,11 @@ namespace Jeton.Services
             };
 
 
-            var time = tokenManager.Now;
-            var unixTimestamp = tokenManager.GetUnixTimeStamp(time);
+            var time = Constants.Now;
+            var unixTimestamp = JetonUtility.GetUnixTimeStamp(time);
 
             var expire = tokenManager.GetExpire(time);
-            var unixExpstamp = tokenManager.GetUnixTimeStamp(expire);
+            var unixExpstamp = JetonUtility.GetUnixTimeStamp(expire);
 
             var payload = new Payload()
             {
@@ -481,38 +483,16 @@ namespace Jeton.Services
 
         public int GetActiveTokensCount()
         {
-            var secretKey = _settingRepository.GetSecretKey();
-            var checkExpireFrom = _settingRepository.GetCheckExpireFrom();
-            var tokenDuration = _settingRepository.GetTokenDuration();
-
-            if (string.IsNullOrWhiteSpace(secretKey))
-                throw new ArgumentNullException(nameof(secretKey));
-
-            var tokenManager = new TokenManager(secretKey)
-            {
-                CheckExpireFrom = checkExpireFrom,
-                TokenDuration = tokenDuration,
-            };
-
-            return _tokenRepository.TableNoTracking.Count(t => !tokenManager.TokenIsExpired(t));
+            return _tokenRepository.TableNoTracking.Count(t => !IsExpired(t));
         }
         public async Task<int> GetActiveTokensCountAsync()
         {
-            var secretKey = await _settingRepository.GetSecretKeyAsync();
-            var checkExpireFrom = await _settingRepository.GetCheckExpireFromAsync();
-            var tokenDuration = await _settingRepository.GetTokenDurationAsync();
-
-            if (string.IsNullOrWhiteSpace(secretKey))
-                throw new ArgumentNullException(nameof(secretKey));
-
-            var tokenManager = new TokenManager(secretKey)
-            {
-                CheckExpireFrom = checkExpireFrom,
-                TokenDuration = tokenDuration,
-            };
-
-            return await _tokenRepository.TableNoTracking.CountAsync(t => !tokenManager.TokenIsExpired(t));
+            return (await _tokenRepository.TableNoTracking.Where(t => !this.IsExpired(t)).ToListAsync()).Count;
         }
+
+
+
+
 
 
 

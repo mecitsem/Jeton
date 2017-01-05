@@ -4,6 +4,7 @@ using AutoMapper;
 using Jeton.Admin.Web.Models;
 using Jeton.Core.Entities;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using Jeton.Core.Interfaces.Services;
 
@@ -13,9 +14,9 @@ namespace Jeton.Admin.Web.Controllers
     //[Authorize]
     public class HomeController : Controller
     {
-        private readonly MapperConfiguration _settingMapperConfiguration = new MapperConfiguration(cfg => cfg.CreateMap<Setting, SettingModel>());
-        private readonly MapperConfiguration _tokenMapperConfiguration = new MapperConfiguration(cfg => cfg.CreateMap<Token, TokenModel>());
-        private readonly MapperConfiguration _appMapperConfiguration = new MapperConfiguration(cfg => cfg.CreateMap<App, AppModel>());
+        private readonly MapperConfiguration _settingMapperConfiguration = new MapperConfiguration(cfg => cfg.CreateMap<Setting, SettingModel>().ReverseMap());
+        private readonly MapperConfiguration _tokenMapperConfiguration = new MapperConfiguration(cfg => cfg.CreateMap<Token, TokenModel>().ReverseMap());
+        private readonly MapperConfiguration _appMapperConfiguration = new MapperConfiguration(cfg => cfg.CreateMap<App, AppModel>().ReverseMap());
 
         private readonly IAppService _appService;
         private readonly ITokenService _tokenService;
@@ -30,18 +31,18 @@ namespace Jeton.Admin.Web.Controllers
             _settingService = settingService;
         }
 
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
 
             #region Top Bar Count Items        
 
-            BindTopBarCounts();
+            await BindTopBarCountsAsync();
 
             #endregion
 
             #region Essential Settings
 
-            BindSettings();
+            await BindSettingsAsync();
 
             #endregion
 
@@ -49,30 +50,31 @@ namespace Jeton.Admin.Web.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetApps()
+        public async Task<JsonResult> GetApps()
         {
-            IEnumerable<AppModel> apps;
+            IEnumerable<AppModel> apps = null;
             try
             {
                 var appMapper = _appMapperConfiguration.CreateMapper();
-                apps = _appService.GetApps().AsEnumerable().Select(t => appMapper.Map<AppModel>(t)).ToList();
+                var allApps = await _appService.GetAllAsync();
+                apps = allApps.Select(t => appMapper.Map<AppModel>(t)).ToList();
             }
-            catch (Exception)
+            catch
             {
-
-                throw;
+                // ignored
             }
             return Json(apps, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
-        public JsonResult GetTokens()
+        public async Task<JsonResult> GetTokens()
         {
             IEnumerable<TokenModel> tokens;
             try
             {
                 var tokenMapper = _tokenMapperConfiguration.CreateMapper();
-                tokens = _tokenService.GetTokens().AsEnumerable().Select(t => tokenMapper.Map<TokenModel>(t)).ToList();
+                var allTokens = await _tokenService.GetAllAsync();
+                tokens = allTokens.Select(t => tokenMapper.Map<TokenModel>(t)).ToList();
 
             }
             catch (Exception)
@@ -85,13 +87,13 @@ namespace Jeton.Admin.Web.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetTokenActivity()
+        public async Task<JsonResult> GetTokenActivity()
         {
 
             try
             {
-                var apps = _appService.GetApps();
-                var tokens = _tokenService.GetTokens();
+                //var apps = await _appService.GetAllAsync();
+                var tokens = await _tokenService.GetAllAsync();
                 return Json(tokens, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -102,46 +104,41 @@ namespace Jeton.Admin.Web.Controllers
         }
 
 
-
-        private void BindTopBarCounts()
+        [NonAction]
+        private async Task BindTopBarCountsAsync()
         {
             try
             {
                 //App Count
-                ViewBag.AppCount = _appService.GetApps().Count(a => !a.IsDeleted.HasValue || (a.IsDeleted == false));
+                ViewBag.AppCount = (await _appService.GetAllAsync()).Count(a => !a.IsDeleted.HasValue || (a.IsDeleted == false));
 
                 //Active Token Count
-                ViewBag.TokenCount = _tokenService.GetActiveTokensCount();
+                ViewBag.TokenCount = await _tokenService.GetActiveTokensCountAsync();
 
                 //User Count
-                ViewBag.UserCount = _userService.GetUsers().Count();
+                ViewBag.UserCount = (await _userService.GetAllAsync()).Count();
             }
-            catch (Exception)
+            catch
             {
-
-                throw;
+                // ignored
             }
-
         }
 
-        private void BindSettings()
+        [NonAction]
+        private async Task BindSettingsAsync()
         {
             try
             {
                 var settingMapper = _settingMapperConfiguration.CreateMapper();
-                var essentialSettings = _settingService.GetAllSettings()
-                                                        .AsEnumerable()
-                                                        .Where(s => s.IsEssential)
+                var essentialSettings = (await _settingService.GetAllAsync()).Where(s => s.IsEssential)
                                                         .Select(s => settingMapper.Map<SettingModel>(s))
                                                         .ToList();
                 ViewBag.Settings = essentialSettings;
             }
-            catch (Exception)
+            catch
             {
-
-                throw;
+                // ignored
             }
-
         }
 
 

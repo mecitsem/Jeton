@@ -8,7 +8,7 @@ namespace Jeton.Admin.Web.Models
 {
     public class SettingModel
     {
-        public Guid SettingID { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Value { get; set; }
         public Constants.ValueType ValueType { get; set; }

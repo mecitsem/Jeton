@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
 using Jeton.Admin.Web.Models;
@@ -11,8 +12,8 @@ namespace Jeton.Admin.Web.Controllers
 {
     public class SettingsController : Controller
     {
-        private readonly MapperConfiguration _config = new MapperConfiguration(cfg => cfg.CreateMap<Setting, SettingModel>());
-        private readonly MapperConfiguration _configModel = new MapperConfiguration(cfg => cfg.CreateMap<Setting, SettingViewModel>());
+        private readonly MapperConfiguration _config = new MapperConfiguration(cfg => cfg.CreateMap<Setting, SettingModel>().ReverseMap());
+        private readonly MapperConfiguration _configModel = new MapperConfiguration(cfg => cfg.CreateMap<Setting, SettingViewModel>().ReverseMap());
         private readonly ISettingService _settingService;
 
         public SettingsController(ISettingService settingService)
@@ -21,10 +22,10 @@ namespace Jeton.Admin.Web.Controllers
         }
 
         // GET: Settings
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             var mapper = _config.CreateMapper();
-            var settings = _settingService.GetAllSettings().AsEnumerable().Select(s => mapper.Map<SettingModel>(s)).ToList();
+            var settings = (await _settingService.GetAllAsync()).Select(s => mapper.Map<SettingModel>(s)).ToList();
             return View(settings);
         }
 
@@ -36,12 +37,12 @@ namespace Jeton.Admin.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(SettingViewModel model)
+        public async Task<ActionResult> Create(SettingViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            if (_settingService.IsExist(model.Name))
+            if (await _settingService.IsExistAsync(model.Name))
                 throw new ArgumentException("This setting is already exists.");
             try
             {
@@ -52,7 +53,7 @@ namespace Jeton.Admin.Web.Controllers
                     ValueType = model.ValueType,
                 };
 
-                var setting = _settingService.Create(newSetting);
+                var setting = await _settingService.CreateAsync(newSetting);
                 return RedirectToAction("Detail", new { id = setting.Id });
             }
             catch (Exception ex)
@@ -66,16 +67,16 @@ namespace Jeton.Admin.Web.Controllers
         #endregion
 
         #region DETEAIL
-        public ActionResult Detail(string id)
+        public async Task<ActionResult> Detail(string id)
         {
             Guid settingId;
-            if (string.IsNullOrEmpty(id) || !Guid.TryParse(id, out settingId))
+            if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out settingId))
                 return View();
 
-            if (!_settingService.IsExist(settingId))
+            if (!await _settingService.IsExistAsync(settingId))
                 return View();
 
-            var setting = _settingService.GetSettingById(settingId);
+            var setting = await _settingService.GetByIdAsync(settingId);
 
             var mapper = _configModel.CreateMapper();
 
@@ -86,40 +87,40 @@ namespace Jeton.Admin.Web.Controllers
         #endregion
 
         #region EDIT
-        public ActionResult Edit(string id)
+        public async Task<ActionResult> Edit(string id)
         {
             Guid settingId;
-            if (string.IsNullOrEmpty(id) || !Guid.TryParse(id, out settingId))
+            if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out settingId))
                 return HttpNotFound("SettingId is null or it's not a Guid.");
 
-            if (!_settingService.IsExist(settingId))
+            if (!await _settingService.IsExistAsync(settingId))
                 return HttpNotFound("Setting is not exist.");
 
             var mapper = _configModel.CreateMapper();
-            var setting = mapper.Map<SettingViewModel>(_settingService.GetSettingById(settingId));
+            var setting = mapper.Map<SettingViewModel>(await _settingService.GetByIdAsync(settingId));
 
             return View(setting);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(SettingViewModel model)
+        public async Task<ActionResult> Edit(SettingViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            if (!_settingService.IsExist(model.SettingID))
+            if (!_settingService.IsExist(model.Id))
                 return HttpNotFound("Setting is not exist.");
 
             try
             {
-                var setting = _settingService.GetSettingById(model.SettingID);
+                var setting = await _settingService.GetByIdAsync(model.Id);
 
                 setting.Value = model.Value;
                 setting.ValueType = model.ValueType;
                 setting.Description = model.Description;
 
-                _settingService.Update(setting);
+                await _settingService.UpdateAsync(setting);
 
                 return RedirectToAction("Index", "Settings");
             }
@@ -135,24 +136,24 @@ namespace Jeton.Admin.Web.Controllers
 
         #region DELETE
 
-        public ActionResult Delete(string id)
+        public async Task<ActionResult> Delete(string id)
         {
             Guid settingId;
-            if (string.IsNullOrEmpty(id) || !Guid.TryParse(id, out settingId))
+            if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out settingId))
                 return HttpNotFound("SettingId is null or it's not a Guid.");
 
-            if (!_settingService.IsExist(settingId))
+            if (!await _settingService.IsExistAsync(settingId))
                 return HttpNotFound("Setting is not exist.");
 
             var mapper = _configModel.CreateMapper();
-            var setting = mapper.Map<SettingViewModel>(_settingService.GetSettingById(settingId));
+            var setting = mapper.Map<SettingViewModel>(await _settingService.GetByIdAsync(settingId));
 
             return View(setting);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(Guid id)
+        public async Task<ActionResult> Delete(Guid id)
         {
             try
             {
@@ -161,12 +162,12 @@ namespace Jeton.Admin.Web.Controllers
                     if (!_settingService.IsExist(id))
                         return HttpNotFound("Setting is not exist.");
 
-                    var setting = _settingService.GetSettingById(id);
+                    var setting = await _settingService.GetByIdAsync(id);
 
                     if (setting.IsEssential)
                         return new HttpStatusCodeResult(403, "This setting is essential. You can not delete it.");
 
-                    _settingService.Delete(id);
+                    await _settingService.DeleteAsync(id);
                 }
             }
             catch (Exception ex)

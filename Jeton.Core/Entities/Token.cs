@@ -12,11 +12,14 @@ namespace Jeton.Core.Entities
     {
         public string TokenKey { get; set; }
         public DateTime? Expire { get; set; }
-
+        
         public Guid UserId { get; set; }
+        [ForeignKey("UserId")]
         public virtual User User { get; set; }
 
+
         public Guid AppId { get; set; }
+        [ForeignKey("AppId")]
         public virtual App App { get; set; }
     }
 }

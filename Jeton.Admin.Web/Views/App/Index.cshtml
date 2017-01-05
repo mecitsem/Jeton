@@ -56,15 +56,15 @@
 
                             <tr class="odd gradeX">
                                 <td class="text-center">
-                                    <a class="btn btn-info" href="@Url.Action("Detail", "App", new { Id = item.AppId })"><i class="fa fa-list"></i></a>
+                                    <a class="btn btn-info" href="@Url.Action("Detail", "App", new { Id = item.Id })"><i class="fa fa-list"></i></a>
                                 </td>
                                 <td>
                                     <div class="row">
                                         <div class="col-md-10">
-                                            <input class="form-control input-sm" style="width:100%;" type="text" placeholder="" readonly value="@item.AppId">
+                                            <input class="form-control input-sm" style="width:100%;" type="text" placeholder="" readonly value="@item.Id">
                                         </div>
                                         <div class="col-md-push-2">
-                                            <a class="btn btn-default btn-sm" onclick="copyToClipboard('@item.AppId')" data-toggle="tooltip" data-placement="top" title="Copy to clipboard"><i class="fa fa-copy"></i></a>
+                                            <a class="btn btn-default btn-sm" onclick="copyToClipboard('@item.Id')" data-toggle="tooltip" data-placement="top" title="Copy to clipboard"><i class="fa fa-copy"></i></a>
                                         </div>
                                     </div>
                                 </td>

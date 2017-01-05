@@ -2,6 +2,7 @@
 using Jeton.Admin.Web.Models;
 using Jeton.Core.Entities;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using Jeton.Core.Interfaces.Services;
 
@@ -18,10 +19,10 @@ namespace Jeton.Admin.Web.Controllers
         }
 
         // GET: User
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             var mapper = _config.CreateMapper();
-            var userList = _userService.GetUsers().AsEnumerable().Select(a => mapper.Map<UserModel>(a)).ToList();
+            var userList =(await _userService.GetAllAsync()).Select(a => mapper.Map<UserModel>(a)).ToList();
             return View(userList);
         }
     }

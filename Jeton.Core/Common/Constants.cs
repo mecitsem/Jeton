@@ -1,4 +1,6 @@
-﻿namespace Jeton.Core.Common
+﻿using System;
+
+namespace Jeton.Core.Common
 {
     public class Constants
     {
@@ -6,7 +8,8 @@
         public const string AccessKey = "AccessKey";
         public const string UserName = "UserName";
         public const string UserNameId = "UserNameId";
-
+        public static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+        public static readonly DateTime Now = DateTime.UtcNow;
 
         public class Settings
         {
@@ -15,6 +18,11 @@
             public const string TokenDuration = "token_duration";
         }
 
+
+        public class Security
+        {
+            public static readonly string SaltString = "Jeton";
+        }
 
         public enum AppSettings
         {
@@ -33,6 +41,15 @@
             String = 1,
             Datetime = 2,
             Boolean = 3,
+        }
+
+        public enum HashAlgorithm
+        {
+            MD5,
+            SHA1,
+            SHA256,
+            SHA384,
+            SHA512
         }
     }
 }

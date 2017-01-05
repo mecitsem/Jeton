@@ -41,10 +41,10 @@
                                 <td>
                                     <div class="row">
                                         <div class="col-md-10">
-                                            <input class="form-control" style="width:100%;" type="text" placeholder="" readonly value="@item.TokenID">  
+                                            <input class="form-control" style="width:100%;" type="text" placeholder="" readonly value="@item.Id">  
                                         </div>
                                         <div class="col-md-push-2">
-                                            <a class="btn btn-default btn-sm" onclick="copyToClipboard('@item.TokenID')" data-toggle="tooltip" data-placement="top" title="Copy to clipboard"><i class="fa fa-copy"></i></a>
+                                            <a class="btn btn-default btn-sm" onclick="copyToClipboard('@item.Id')" data-toggle="tooltip" data-placement="top" title="Copy to clipboard"><i class="fa fa-copy"></i></a>
                                         </div>
                                     </div>
                                 </td>
@@ -90,7 +90,7 @@
                                 </td>
                                 <td class="center">@item.Expire (UTC)</td>
                                 <td>
-                                    <a href="@Url.Action("Detail","App",new { id = item.AppID })" class="btn btn-info">Detail</a>
+                                    <a href="@Url.Action("Detail","App",new { id = item.AppId })" class="btn btn-info">Detail</a>
                                 </td>
                             </tr>
                         }

@@ -5,7 +5,7 @@ using Jeton.Core.Entities;
 
 namespace Jeton.Core.Interfaces.Services
 {
-    public interface IUserService
+    public interface IUserService : IBaseService<User>
     {
 
         User GetUserByName(string name);

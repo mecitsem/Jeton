@@ -10,7 +10,7 @@ namespace Jeton.Admin.Web.ViewModel
     public class SettingViewModel
     {
         [ScaffoldColumn(false)]
-        public Guid SettingID { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [StringLength(100)]

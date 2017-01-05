@@ -5,7 +5,7 @@ using Jeton.Core.Entities;
 
 namespace Jeton.Core.Interfaces.Services
 {
-    public interface IAppService
+    public interface IAppService : IBaseService<App>
     {
 
         //GetAppByName

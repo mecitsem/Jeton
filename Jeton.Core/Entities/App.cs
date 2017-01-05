@@ -13,9 +13,16 @@ namespace Jeton.Core.Entities
     /// </summary>
     public class App : BaseEntity
     {
+        public App()
+        {
+            this.Tokens = new HashSet<Token>();
+        }
+
         public string AccessKey { get; set; }
         public string Name { get; set; }
         public bool IsRoot { get; set; }
 
+
+        public virtual ICollection<Token> Tokens { get; private set; }
     }
 }

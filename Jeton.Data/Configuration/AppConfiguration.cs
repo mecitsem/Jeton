@@ -8,9 +8,9 @@ namespace Jeton.Data.Configuration
         public AppConfiguration()
         {
             ToTable("Apps");
+            HasKey(a => a.Id);
             Property(a => a.Name).IsRequired().HasMaxLength(255);
-            Property(a => a.AccessKey).HasMaxLength(5000);
-            
+            Property(a => a.AccessKey).HasMaxLength(4000);
         }
     }
 }

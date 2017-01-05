@@ -7,11 +7,11 @@ namespace Jeton.Admin.Web.Models
 {
     public class AppModel
     {
-        public Guid AppId { get; set; }
+        public Guid Id { get; set; }
         public string AccessKey { get; set; }
         public string Name { get; set; }
         public DateTime Created { get; set; }
-        public DateTime? Modified { get; set; }
+        public DateTime Modified { get; set; }
         public bool IsRoot { get; set; }
         public bool IsDeleted { get; set; }
     }

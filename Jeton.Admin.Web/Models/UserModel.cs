@@ -7,7 +7,7 @@ namespace Jeton.Admin.Web.Models
 {
     public class UserModel
     {
-        public Guid UserId { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string NameId { get; set; }
         public string Created { get; set; }

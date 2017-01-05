@@ -1,37 +1,23 @@
-using System.Runtime.CompilerServices;
-using Jeton.Data.DbContext;
+using Jeton.Core.Common;
+using Jeton.Core.Entities;
 
 namespace Jeton.Data.Migrations
 {
-    using Core.Common;
-    using Core.Entities;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<JetonDbContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<Jeton.Data.DbContext.JetonDbContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(JetonDbContext context)
+        protected override void Seed(Jeton.Data.DbContext.JetonDbContext context)
         {
             //  This method will be called after migrating to the latest version.
-
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
-
 
             var secretKey = new Setting()
             {
@@ -40,7 +26,8 @@ namespace Jeton.Data.Migrations
                 ValueType = Constants.ValueType.String,
                 IsEssential = true
             };
-            if (!context.Settings.Any(s => s.Name.Equals(secretKey.Name, StringComparison.OrdinalIgnoreCase)))
+
+            if (!context.Settings.Any(s => s.Name.Equals(secretKey.Name)))
                 context.Settings.Add(secretKey);
 
             var checkExpireFrom = new Setting()
@@ -50,7 +37,7 @@ namespace Jeton.Data.Migrations
                 ValueType = Constants.ValueType.Integer,
                 IsEssential = true
             };
-            if (!context.Settings.Any(s => s.Name.Equals(checkExpireFrom.Name, StringComparison.OrdinalIgnoreCase)))
+            if (!context.Settings.Any(s => s.Name.Equals(checkExpireFrom.Name)))
                 context.Settings.Add(checkExpireFrom);
             var tokenDuration = new Setting()
             {
@@ -59,11 +46,11 @@ namespace Jeton.Data.Migrations
                 ValueType = Constants.ValueType.Integer,
                 IsEssential = true
             };
-            if (!context.Settings.Any(s => s.Name.Equals(tokenDuration.Name, StringComparison.OrdinalIgnoreCase)))
+
+            if (!context.Settings.Any(s => s.Name.Equals(tokenDuration.Name)))
                 context.Settings.Add(tokenDuration);
+
             context.SaveChanges();
-
-
         }
     }
 }

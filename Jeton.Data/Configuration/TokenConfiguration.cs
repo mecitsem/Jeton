@@ -8,8 +8,8 @@ namespace Jeton.Data.Configuration
         public TokenConfiguration()
         {
             ToTable("Tokes");
-            Property(t => t.TokenKey).IsRequired().HasMaxLength(5000);
-            
+            HasKey(t => t.Id);
+            Property(t => t.TokenKey).IsRequired().HasMaxLength(4000);
         }
     }
 }

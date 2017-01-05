@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Jeton.Core.Entities
 {
-    public class Log
+    public class Log : BaseEntity
     {
         public string Level { get; set; }
         public string Logger { get; set; }

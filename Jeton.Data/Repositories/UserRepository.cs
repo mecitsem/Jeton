@@ -61,7 +61,7 @@ namespace Jeton.Data.Repositories
         /// <returns></returns>
         public async Task<User> GetUserByNameAsync(string name)
         {
-            return await Table.FirstOrDefaultAsync(u => string.Equals(name, u.Name, StringComparison.OrdinalIgnoreCase));
+            return await Table.FirstOrDefaultAsync(u => string.Equals(name, u.Name));
         }
         /// <summary>
         /// Get user by nameId
@@ -79,7 +79,7 @@ namespace Jeton.Data.Repositories
         /// <returns></returns>
         public async Task<User> GetUserByNameIdAsync(string nameId)
         {
-            return await Table.FirstOrDefaultAsync(u => string.Equals(nameId, u.NameId, StringComparison.OrdinalIgnoreCase));
+            return await Table.FirstOrDefaultAsync(u => string.Equals(nameId, u.NameId));
         }
         /// <summary>
         /// Get all users 
@@ -101,12 +101,12 @@ namespace Jeton.Data.Repositories
 
         public bool IsExist(string nameId)
         {
-            return TableNoTracking.Any(u => string.Equals(u.NameId, nameId, StringComparison.OrdinalIgnoreCase));
+            return TableNoTracking.Any(u => string.Equals(u.NameId, nameId));
         }
 
         public async Task<bool> IsExistAsync(string nameId)
         {
-            return await TableNoTracking.AnyAsync(u => string.Equals(nameId, u.NameId, StringComparison.OrdinalIgnoreCase));
+            return await TableNoTracking.AnyAsync(u => string.Equals(nameId, u.NameId));
         }
 
      

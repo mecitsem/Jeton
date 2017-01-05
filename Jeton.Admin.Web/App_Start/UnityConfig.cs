@@ -47,12 +47,14 @@ namespace Jeton.Admin.Web
             container.RegisterType<IDbFactory, DbFactory>();
 
             //Repository
+            container.RegisterType(typeof(IRepository<>), typeof(BaseRepository<>));
             container.RegisterType<IAppRepository, AppRepository>();
             container.RegisterType<ITokenRepository, TokenRepository>();
             container.RegisterType<IUserRepository, UserRepository>();
             container.RegisterType<ISettingRepository, SettingRepository>();
 
             //Services
+            container.RegisterType(typeof(IBaseService<>), typeof(BaseService<>));
             container.RegisterType<IAppService, AppService>();
             container.RegisterType<ITokenService, TokenService>();
             container.RegisterType<IUserService, UserService>();

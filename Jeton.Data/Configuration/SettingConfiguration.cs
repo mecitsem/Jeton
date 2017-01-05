@@ -15,9 +15,10 @@ namespace Jeton.Data.Configuration
         public SettingConfiguration()
         {
             ToTable("Settings");
-            Property(i => i.Name).IsRequired().HasMaxLength(255);
-            Property(i => i.Value).IsOptional();
-            Property(i => i.Description).IsOptional().HasMaxLength(500);
+            HasKey(s => s.Id);
+            Property(s => s.Name).IsRequired().HasMaxLength(255);
+            Property(s => s.Value).IsOptional();
+            Property(s => s.Description).IsOptional().HasMaxLength(500);
         }
 
 

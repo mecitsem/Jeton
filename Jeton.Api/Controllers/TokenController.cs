@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
 using Jeton.Api.Extensions;
@@ -34,7 +35,7 @@ namespace Jeton.Api.Controllers
         [ActionName("Generate")]
         [CheckModelForNull]
         [HttpPost]
-        public IHttpActionResult GenerateToken([FromUri] string appId, [FromBody] UserModel userModel)
+        public async Task<IHttpActionResult> GenerateToken([FromUri] string appId, [FromBody] UserModel userModel)
         {
             IHttpActionResult response;
             try
@@ -45,7 +46,7 @@ namespace Jeton.Api.Controllers
                 //Check AppId
                 if (string.IsNullOrEmpty(appId) || !Guid.TryParse(appId, out _appId) || _appId.Equals(default(Guid)))
                 {
-                 
+
                     return BadRequest("AppId is null or not Guid format");
                 }
 
@@ -69,16 +70,16 @@ namespace Jeton.Api.Controllers
                 #region Check App
 
                 //Check App is Exist
-                if (!_appService.IsExist(_appId))
+                if (!await _appService.IsExistAsync(_appId))
                     return BadRequest("AppId is invalid. Please register your app");
 
 
 
                 //Get APP
-                var app = _appService(_appId);
+                var app = await _appService.GetByIdAsync(_appId);
 
                 //Check app is active
-                if (!_appService.IsActive(app))
+                if (!await _appService.IsActiveAsync(app))
                     return NotFound();
 
                 //Check Access Key
@@ -93,8 +94,8 @@ namespace Jeton.Api.Controllers
                 #region Check User
 
                 //Get User
-                var user = _userService.GetUserByNameId(userModel.UserNameId) ??
-                                          _userService.Insert(new Core.Entities.User()
+                var user = await _userService.GetUserByNameIdAsync(userModel.UserNameId) ??
+                                          await _userService.CreateAsync(new Core.Entities.User()
                                           {
                                               Name = userModel.UserName,
                                               NameId = userModel.UserNameId,
@@ -103,8 +104,8 @@ namespace Jeton.Api.Controllers
                 #endregion
 
                 //Generate Token
-                var token = _tokenService.Generate(user, app);
-                var tokenDto = new TokenDTO()
+                var token = await _tokenService.GenerateAsync(user, app);
+                var tokenDto = new TokenDto()
                 {
                     TokenKey = token.TokenKey
                 };
@@ -123,7 +124,7 @@ namespace Jeton.Api.Controllers
         [ActionName("Check")]
         [CheckModelForNull]
         [HttpPost]
-        public IHttpActionResult CheckToken([FromUri] string appId, [FromBody] TokenModel tokenModel)
+        public async Task<IHttpActionResult> CheckToken([FromUri] string appId, [FromBody] TokenModel tokenModel)
         {
             IHttpActionResult response;
             try
@@ -154,15 +155,15 @@ namespace Jeton.Api.Controllers
                 #region Check App
 
                 //Check App is Exist
-                if (!_appService.IsExist(_appId))
+                if (!await _appService.IsExistAsync(_appId))
                     return BadRequest("AppId is invalid. Please register your app.");
 
 
                 //Get APP
-                var app = _appService.GetAppById(_appId);
+                var app = await _appService.GetByIdAsync(_appId);
 
                 //Check app is active
-                if (!_appService.IsActive(app))
+                if (!await _appService.IsActiveAsync(app))
                     return NotFound();
 
                 //Check Access Key
@@ -171,24 +172,24 @@ namespace Jeton.Api.Controllers
 
                 #endregion
 
-                if (!_tokenService.IsExist(tokenModel.TokenKey))
+                if (!await _tokenService.IsExistAsync(tokenModel.TokenKey))
                     return BadRequest("TokenKey is not exist.");
 
-                var token = _tokenService.GetTokenByKey(tokenModel.TokenKey);
+                var token = await _tokenService.GetTokenByKeyAsync(tokenModel.TokenKey);
 
                 //Verify
-                if (!_tokenService.IsVerified(token))
+                if (!await _tokenService.IsVerifiedAsync(token))
                     return BadRequest("Signature invalid.");
 
                 //Check Expire
-                var isExpired = _tokenService.IsExpired(token);
+                var isExpired = await _tokenService.IsExpiredAsync(token);
 
                 if (isExpired)
                     return BadRequest("Token is expired");
 
                 var tokenResponse = new TokenResponse();
 
-                var user = _userService.GetUserById(token.UserId);
+                var user = await _userService.GetByIdAsync(token.UserId);
 
                 if (user == null)
                     throw new ArgumentNullException(nameof(user));

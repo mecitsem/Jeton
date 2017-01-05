@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Jeton.Core.Common;
 using Jeton.Core.Entities;
 using Jeton.Core.Helpers;
 using Jeton.Core.Interfaces.Repositories;
 using Jeton.Core.Interfaces.Services;
+using Jeton.Core.Managers;
 
 namespace Jeton.Services
 {
@@ -112,12 +114,7 @@ namespace Jeton.Services
         /// <returns></returns>
         public string GenerateAccessKey()
         {
-            var passPhrase = ConfigHelper.GetPassPhrase();
-
-            if (passPhrase == null)
-                throw new ArgumentException("PassPhrase is null. Please configure passphrase");
-
-            return CryptoHelper.Encrypt(Guid.NewGuid().ToString(), passPhrase);
+            return AccessKeyManager.Generate(Guid.NewGuid().ToString());
         }
 
     }

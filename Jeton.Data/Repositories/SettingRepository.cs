@@ -38,7 +38,7 @@ namespace Jeton.Data.Repositories
         /// <returns></returns>
         public Setting GetSettingByName(string name)
         {
-            return Table.FirstOrDefault(s => string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
+            return Table.FirstOrDefault(s => string.Equals(s.Name, name));
         }
         /// <summary>
         /// Get setting by name async
@@ -47,7 +47,7 @@ namespace Jeton.Data.Repositories
         /// <returns></returns>
         public async Task<Setting> GetSettingByNameAsync(string name)
         {
-            return await Table.FirstOrDefaultAsync(s => string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
+            return await Table.FirstOrDefaultAsync(s => string.Equals(s.Name, name));
         }
         /// <summary>
         /// Get secretKey setting value
@@ -55,7 +55,7 @@ namespace Jeton.Data.Repositories
         /// <returns></returns>
         public string GetSecretKey()
         {
-            return Table.FirstOrDefault(s => s.Name.Equals(Constants.Settings.SecretKey, StringComparison.OrdinalIgnoreCase))?.Value;
+            return Table.FirstOrDefault(s => s.Name.Equals(Constants.Settings.SecretKey))?.Value;
         }
         /// <summary>
         /// Get secretKey setting value async
@@ -63,7 +63,7 @@ namespace Jeton.Data.Repositories
         /// <returns></returns>
         public async Task<string> GetSecretKeyAsync()
         {
-            var secretKey = await Table.FirstOrDefaultAsync(s => s.Name.Equals(Constants.Settings.SecretKey, StringComparison.OrdinalIgnoreCase));
+            var secretKey = await Table.FirstOrDefaultAsync(s => s.Name.Equals(Constants.Settings.SecretKey));
 
             return secretKey?.Value;
         }
@@ -73,7 +73,7 @@ namespace Jeton.Data.Repositories
         /// <returns></returns>
         public int GetTokenDuration()
         {
-            return Convert.ToInt32(Table.FirstOrDefault(s => s.Name.Equals(Constants.Settings.TokenDuration, StringComparison.OrdinalIgnoreCase))?.Value);
+            return Convert.ToInt32(Table.FirstOrDefault(s => s.Name.Equals(Constants.Settings.TokenDuration))?.Value);
         }
         /// <summary>
         /// Get token duration value async
@@ -81,7 +81,7 @@ namespace Jeton.Data.Repositories
         /// <returns></returns>
         public async Task<int> GetTokenDurationAsync()
         {
-            var tokenDuration = await Table.FirstOrDefaultAsync(s => s.Name.Equals(Constants.Settings.TokenDuration, StringComparison.OrdinalIgnoreCase));
+            var tokenDuration = await Table.FirstOrDefaultAsync(s => s.Name.Equals(Constants.Settings.TokenDuration));
 
             return Convert.ToInt32(tokenDuration?.Value);
         }
@@ -91,7 +91,7 @@ namespace Jeton.Data.Repositories
         /// <returns></returns>
         public Constants.CheckExpireFrom GetCheckExpireFrom()
         {
-            return JetonEnumHelper.GetEnumValue<Constants.CheckExpireFrom>(Table.FirstOrDefault(s => s.Name.Equals(Constants.Settings.CheckExpireFrom, StringComparison.OrdinalIgnoreCase))?.Value);
+            return JetonEnumHelper.GetEnumValue<Constants.CheckExpireFrom>(Table.FirstOrDefault(s => s.Name.Equals(Constants.Settings.CheckExpireFrom))?.Value);
         }
         /// <summary>
         /// Get check expire from value async
@@ -99,7 +99,7 @@ namespace Jeton.Data.Repositories
         /// <returns></returns>
         public async Task<Constants.CheckExpireFrom> GetCheckExpireFromAsync()
         {
-            var cef = await Table.FirstOrDefaultAsync(s => s.Name.Equals(Constants.Settings.CheckExpireFrom, StringComparison.OrdinalIgnoreCase));
+            var cef = await Table.FirstOrDefaultAsync(s => s.Name.Equals(Constants.Settings.CheckExpireFrom));
 
             return JetonEnumHelper.GetEnumValue<Constants.CheckExpireFrom>(cef?.Value);
         }
@@ -113,7 +113,7 @@ namespace Jeton.Data.Repositories
         /// <returns></returns>
         public bool IsExist(string name)
         {
-            return TableNoTracking.Any(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            return TableNoTracking.Any(s => s.Name.Equals(name));
         }
         /// <summary>
         /// Check isExist by name async
@@ -122,7 +122,7 @@ namespace Jeton.Data.Repositories
         /// <returns></returns>
         public async Task<bool> IsExistAsync(string name)
         {
-            return await TableNoTracking.AnyAsync(s => string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
+            return await TableNoTracking.AnyAsync(s => string.Equals(s.Name, name));
         }
 
 

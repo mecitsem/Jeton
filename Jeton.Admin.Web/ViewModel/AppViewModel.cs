@@ -10,7 +10,7 @@ namespace Jeton.Admin.Web.ViewModel
     public class AppViewModel
     {
         [ScaffoldColumn(false)]
-        public Guid AppId { get; set; }
+        public Guid Id { get; set; }
 
         [DisplayName("Access Key")]
         public string AccessKey { get; set; }

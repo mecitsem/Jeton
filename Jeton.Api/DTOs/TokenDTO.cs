@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Jeton.Api.DTOs
 {
-    public class TokenDTO
+    public class TokenDto
     {
         public string TokenKey { get; set; }
     }

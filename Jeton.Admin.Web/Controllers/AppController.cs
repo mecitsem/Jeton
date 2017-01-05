@@ -4,6 +4,7 @@ using Jeton.Admin.Web.ViewModel;
 using Jeton.Core.Entities;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using Jeton.Core.Interfaces.Services;
 
@@ -12,51 +13,52 @@ namespace Jeton.Admin.Web.Controllers
     public class AppController : Controller
     {
         private readonly IAppService _appService;
-        private readonly MapperConfiguration _config = new MapperConfiguration(cfg => cfg.CreateMap<App, AppModel>());
-        private readonly MapperConfiguration _configModel = new MapperConfiguration(cfg => cfg.CreateMap<App, AppViewModel>());
+        private readonly MapperConfiguration _config = new MapperConfiguration(cfg => cfg.CreateMap<App, AppModel>().ReverseMap());
+        private readonly MapperConfiguration _configModel = new MapperConfiguration(cfg => cfg.CreateMap<App, AppViewModel>().ReverseMap());
+
         public AppController(IAppService appService)
         {
             _appService = appService;
         }
 
         // GET: App
-        public ActionResult Index(bool? active)
+        public async Task<ActionResult> Index(bool? active)
         {
             ViewBag.AppStatus = active.HasValue ? (active.Value ? "Active" : "Inactive") : "All";
             var mapper = _config.CreateMapper();
-            var appList = _appService.().AsEnumerable().
-                            Where(a => !active.HasValue || (active.Value ?
-                                !a.IsDeleted.HasValue || (a.IsDeleted.Value == false) :
+            var apps = await _appService.GetAllAsync();
+            var appList = apps.Where(a => !active.HasValue || (active.Value ? !a.IsDeleted.HasValue || (a.IsDeleted.Value == false) :
                                 a.IsDeleted.HasValue && a.IsDeleted.Value)).Select(a => mapper.Map<AppModel>(a)).ToList();
+
             return View(appList);
         }
 
-        public ActionResult Detail(string id)
+        public async Task<ActionResult> Detail(string id)
         {
             Guid appId;
-            if (string.IsNullOrEmpty(id) || !Guid.TryParse(id, out appId))
+            if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out appId))
                 return View();
 
-            if (!_appService.IsExist(appId))
+            if (!await _appService.IsExistAsync(appId))
                 return View();
 
             var mapper = _config.CreateMapper();
-            var app = mapper.Map<AppModel>(_appService.GetAppById(appId));
+            var app = mapper.Map<AppModel>(await _appService.GetByIdAsync(appId));
 
             return View(app);
         }
 
-        public ActionResult Edit(string id)
+        public async Task<ActionResult> Edit(string id)
         {
             Guid appId;
-            if (string.IsNullOrEmpty(id) || !Guid.TryParse(id, out appId))
+            if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out appId))
                 return HttpNotFound("AppId is null or it's not a Guid.");
 
-            if (!_appService.IsExist(appId))
+            if (!await _appService.IsExistAsync(appId))
                 return HttpNotFound("AppId is not exist.");
 
             var mapper = _configModel.CreateMapper();
-            var app = mapper.Map<AppViewModel>(_appService.GetAppById(appId));
+            var app = mapper.Map<AppViewModel>(await _appService.GetByIdAsync(appId));
 
             return View(app);
 
@@ -64,17 +66,17 @@ namespace Jeton.Admin.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "AppId, AccessKey, Name, IsRoot")] AppViewModel model)
+        public async Task<ActionResult> Edit([Bind(Include = "Id, AccessKey, Name, IsRoot")] AppViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            if (!_appService.IsExist(model.AppId))
+            if (!await _appService.IsExistAsync(model.Id))
                 return View(model);
             try
             {
                 //Get App
-                var app = _appService.GetAppById(model.AppId);
+                var app = await _appService.GetByIdAsync(model.Id);
 
                 //Fields
                 app.AccessKey = model.AccessKey;
@@ -82,7 +84,7 @@ namespace Jeton.Admin.Web.Controllers
                 app.IsRoot = model.IsRoot;
 
                 //Update
-                _appService.Update(app);
+                await _appService.UpdateAsync(app);
 
                 return RedirectToAction("Index", "App");
             }
@@ -110,7 +112,7 @@ namespace Jeton.Admin.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(AppViewModel model)
+        public async Task<ActionResult> Create(AppViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -124,7 +126,7 @@ namespace Jeton.Admin.Web.Controllers
                     IsRoot = model.IsRoot
                 };
 
-                var app = _appService.Insert(newApp);
+                var app = await _appService.CreateAsync(newApp);
                 return RedirectToAction("Detail", new { id = app.Id });
             }
             catch (Exception ex)
@@ -140,19 +142,19 @@ namespace Jeton.Admin.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ChangeStatus(string id)
+        public async Task<ActionResult> ChangeStatus(string id)
         {
             Guid appId;
-            if (string.IsNullOrEmpty(id) || !Guid.TryParse(id, out appId))
+            if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out appId))
                 return HttpNotFound("AppId is null or it's not a Guid.");
 
             if (!_appService.IsExist(appId))
                 return HttpNotFound("AppId is not exist.");
             try
             {
-                var app = _appService.GetAppById(appId);
+                var app = await _appService.GetByIdAsync(appId);
                 app.IsDeleted = !app.IsDeleted ?? true;
-                _appService.Update(app);
+                await _appService.UpdateAsync(app);
             }
             catch (Exception ex)
             {

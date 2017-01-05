@@ -7,13 +7,13 @@ namespace Jeton.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Jeton_Mig : IMigrationMetadata
+    public sealed partial class MigFirst : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Jeton_Mig));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(MigFirst));
         
         string IMigrationMetadata.Id
         {
-            get { return "201611111048376_Jeton_Mig"; }
+            get { return "201701050954290_MigFirst"; }
         }
         
         string IMigrationMetadata.Source

@@ -8,6 +8,7 @@ namespace Jeton.Data.Configuration
         public UserConfiguration()
         {
             ToTable("Users");
+            HasKey(u => u.Id);
             Property(u => u.Name).IsRequired().HasMaxLength(255);
             Property(u => u.NameId).IsRequired().HasMaxLength(255);
         }

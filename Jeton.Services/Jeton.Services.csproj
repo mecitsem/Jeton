@@ -81,6 +81,10 @@
       <Project>{96CCBD96-E2D0-404E-A1D2-703299E68BA1}</Project>
       <Name>Jeton.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Jeton.Jwt.Core\Jeton.Jwt.Core.csproj">
+      <Project>{2EAAE9C8-25AF-4A0A-8E5D-224327ADE38C}</Project>
+      <Name>Jeton.Jwt.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

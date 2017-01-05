@@ -13,6 +13,7 @@ namespace Jeton.Data.Configuration
         public LogConfiguration()
         {
             ToTable("Logs");
+            HasKey(l => l.Id);
             Property(l => l.Level).HasMaxLength(100);
             Property(l => l.Logger).HasMaxLength(100);
             Property(l => l.MachineName).HasMaxLength(100);

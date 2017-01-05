@@ -7,16 +7,18 @@
     <!-- /.panel-heading -->
     <div class="panel-body">
         <div class="list-group">
-            @foreach (var setting in Model)
+            @if (Model != null && Model.Any())
             {
-                <a href="#" class="list-group-item" data-container="body" data-toggle="popover" data-placement="top" data-content="@setting.Description">
-                    <i class="fa fa-arrow-circle-right fa-fw"></i> @setting.Name
-                    <span class="pull-right text-muted small">
-                        <em>@setting.Value</em>
-                    </span>
-                </a>
+                foreach (var setting in Model)
+                {
+                    <a href="#" class="list-group-item" data-container="body" data-toggle="popover" data-placement="top" data-content="@setting.Description">
+                        <i class="fa fa-arrow-circle-right fa-fw"></i> @setting.Name
+                        <span class="pull-right text-muted small">
+                            <em>@setting.Value</em>
+                        </span>
+                    </a>
+                }
             }
-
         </div>
         <!-- /.list-group -->
         <a href="@Url.Action("Index","Settings")" class="btn btn-default btn-block">View All Settings</a>

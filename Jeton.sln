@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jeton.Jwt.Core", "Jeton.Jwt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jeton.Jwt.Core.Tests", "Jeton.Jwt.Core.Tests\Jeton.Jwt.Core.Tests.csproj", "{8D1381E3-C8DE-4C20-B44A-EF154FEAC4A0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jeton.Api.Tests", "Jeton.Api.Tests\Jeton.Api.Tests.csproj", "{3AB3A4C0-D29D-4486-851E-D8B788381E81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{8D1381E3-C8DE-4C20-B44A-EF154FEAC4A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D1381E3-C8DE-4C20-B44A-EF154FEAC4A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D1381E3-C8DE-4C20-B44A-EF154FEAC4A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3AB3A4C0-D29D-4486-851E-D8B788381E81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AB3A4C0-D29D-4486-851E-D8B788381E81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AB3A4C0-D29D-4486-851E-D8B788381E81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AB3A4C0-D29D-4486-851E-D8B788381E81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -72,5 +78,6 @@ Global
 		{AB89FD56-8F70-4670-A4E1-02B3E3592DFC} = {871B6680-C902-4E88-9A27-53389C2A0826}
 		{2EAAE9C8-25AF-4A0A-8E5D-224327ADE38C} = {0BDDF66E-5C37-494E-B72B-4D34812EFD67}
 		{8D1381E3-C8DE-4C20-B44A-EF154FEAC4A0} = {871B6680-C902-4E88-9A27-53389C2A0826}
+		{3AB3A4C0-D29D-4486-851E-D8B788381E81} = {871B6680-C902-4E88-9A27-53389C2A0826}
 	EndGlobalSection
 EndGlobal

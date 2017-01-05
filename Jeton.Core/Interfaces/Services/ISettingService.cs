@@ -5,7 +5,7 @@ using Jeton.Core.Entities;
 
 namespace Jeton.Core.Interfaces.Services
 {
-    public interface ISettingService
+    public interface ISettingService : IBaseService<Setting>
     {
 
         //GET by name

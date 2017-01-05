@@ -60,14 +60,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseEntity.cs" />
+    <Compile Include="Managers\AccessKeyManager.cs" />
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Common\JetonExtensions.cs" />
+    <Compile Include="Common\JetonUtility.cs" />
     <Compile Include="Entities\Log.cs" />
     <Compile Include="Entities\Setting.cs" />
     <Compile Include="Entities\Token.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Entities\App.cs" />
-    <Compile Include="Common\TokenManager.cs" />
+    <Compile Include="Managers\TokenManager.cs" />
     <Compile Include="Helpers\ConfigHelper.cs" />
     <Compile Include="Helpers\CryptoHelper.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />

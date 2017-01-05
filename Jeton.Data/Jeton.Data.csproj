@@ -79,13 +79,9 @@
     <Compile Include="Infrastructure\Disposable.cs" />
     <Compile Include="Infrastructure\Interfaces\IDbFactory.cs" />
     <Compile Include="DbContext\JetonDbContext.cs" />
-    <Compile Include="Migrations\201611111048376_Jeton_Mig.cs" />
-    <Compile Include="Migrations\201611111048376_Jeton_Mig.Designer.cs">
-      <DependentUpon>201611111048376_Jeton_Mig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611111110125_Jeton_Mig1.cs" />
-    <Compile Include="Migrations\201611111110125_Jeton_Mig1.Designer.cs">
-      <DependentUpon>201611111110125_Jeton_Mig1.cs</DependentUpon>
+    <Compile Include="Migrations\201701050954290_MigFirst.cs" />
+    <Compile Include="Migrations\201701050954290_MigFirst.Designer.cs">
+      <DependentUpon>201701050954290_MigFirst.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -106,11 +102,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201611111048376_Jeton_Mig.resx">
-      <DependentUpon>201611111048376_Jeton_Mig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611111110125_Jeton_Mig1.resx">
-      <DependentUpon>201611111110125_Jeton_Mig1.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201701050954290_MigFirst.resx">
+      <DependentUpon>201701050954290_MigFirst.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

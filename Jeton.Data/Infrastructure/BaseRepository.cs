@@ -5,6 +5,7 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Jeton.Core.Common;
 using Jeton.Core.Interfaces;
 using Jeton.Core.Interfaces.Repositories;
 using Jeton.Data.DbContext;
@@ -68,8 +69,8 @@ namespace Jeton.Data.Infrastructure
                 if (entity == null)
                     throw new ArgumentNullException(nameof(entity));
 
-                entity.Created = DateTime.UtcNow;
-                entity.Modified = DateTime.UtcNow;
+                entity.Created = Constants.Now;
+                entity.Modified = Constants.Now;
 
                 var result = Entities.Add(entity);
 
@@ -94,8 +95,8 @@ namespace Jeton.Data.Infrastructure
                 if (entity == null)
                     throw new ArgumentNullException(nameof(entity));
 
-                entity.Created = DateTime.UtcNow;
-                entity.Modified = DateTime.UtcNow;
+                entity.Created = Constants.Now;
+                entity.Modified = Constants.Now;
 
                 var result = Entities.Add(entity);
 
@@ -121,8 +122,8 @@ namespace Jeton.Data.Infrastructure
 
                 foreach (var entity in entities)
                 {
-                    entity.Created = DateTime.UtcNow;
-                    entity.Modified = DateTime.UtcNow;
+                    entity.Created = Constants.Now;
+                    entity.Modified = Constants.Now;
                     Entities.Add(entity);
                 }
 
@@ -148,8 +149,8 @@ namespace Jeton.Data.Infrastructure
 
                 foreach (var entity in entities)
                 {
-                    entity.Created = DateTime.UtcNow;
-                    entity.Modified = DateTime.UtcNow;
+                    entity.Created = Constants.Now;
+                    entity.Modified = Constants.Now;
                     Entities.Add(entity);
                 }
 
@@ -175,7 +176,7 @@ namespace Jeton.Data.Infrastructure
                 if (entity == null)
                     throw new ArgumentNullException(nameof(entity));
 
-                entity.Modified = DateTime.UtcNow;
+                entity.Modified = Constants.Now;
 
                 Entities.Attach(entity);
 
@@ -196,7 +197,7 @@ namespace Jeton.Data.Infrastructure
                 if (entity == null)
                     throw new ArgumentNullException(nameof(entity));
 
-                entity.Modified = DateTime.UtcNow;
+                entity.Modified = Constants.Now;
 
                 Entities.Attach(entity);
 

@@ -72,7 +72,7 @@ namespace Jeton.Data.Repositories
         /// <returns></returns>
         public IEnumerable<Token> GetLiveTokens()
         {
-            return Table.Where(t => t.Expire > DateTime.UtcNow).ToList();
+            return Table.Where(t => t.Expire > Constants.Now).ToList();
         }
         /// <summary>
         /// Get live tokens by db async
@@ -80,7 +80,7 @@ namespace Jeton.Data.Repositories
         /// <returns></returns>
         public async Task<IEnumerable<Token>> GetLiveTokensAsync()
         {
-            return await Table.Where(t => t.Expire > DateTime.UtcNow).ToListAsync();
+            return await Table.Where(t => t.Expire > Constants.Now).ToListAsync();
         }
         /// <summary>
         /// Get token by tokenKey
