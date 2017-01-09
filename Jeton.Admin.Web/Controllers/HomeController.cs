@@ -36,8 +36,11 @@ namespace Jeton.Admin.Web.Controllers
 
             #region Top Bar Count Items        
 
-            await BindTopBarCountsAsync();
+            await AppCountAsync();
+            await TokenCountAsync();
+            await UserCountAsync();
 
+           
             #endregion
 
             #region Essential Settings
@@ -105,16 +108,25 @@ namespace Jeton.Admin.Web.Controllers
 
 
         [NonAction]
-        private async Task BindTopBarCountsAsync()
+        private async Task AppCountAsync()
         {
             try
             {
                 //App Count
                 ViewBag.AppCount = (await _appService.GetAllAsync()).Count(a => !a.IsDeleted.HasValue || (a.IsDeleted == false));
+            }
+            catch
+            {
+                // ignored
+            }
+        }
 
-                //Active Token Count
-                ViewBag.TokenCount = await _tokenService.GetActiveTokensCountAsync();
 
+        [NonAction]
+        private async Task UserCountAsync()
+        {
+            try
+            {
                 //User Count
                 ViewBag.UserCount = (await _userService.GetAllAsync()).Count();
             }
@@ -123,6 +135,21 @@ namespace Jeton.Admin.Web.Controllers
                 // ignored
             }
         }
+
+        [NonAction]
+        private async Task TokenCountAsync()
+        {
+            try
+            {
+                //Active Token Count
+                ViewBag.TokenCount = await _tokenService.GetActiveTokensCountAsync();
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
 
         [NonAction]
         private async Task BindSettingsAsync()
