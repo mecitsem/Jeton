@@ -60,6 +60,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseEntity.cs" />
+    <Compile Include="Interfaces\Repositories\ILogRepository.cs" />
+    <Compile Include="Interfaces\Services\ILogService.cs" />
     <Compile Include="Managers\AccessKeyManager.cs" />
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Common\JetonExtensions.cs" />

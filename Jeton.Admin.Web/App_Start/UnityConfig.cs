@@ -52,13 +52,15 @@ namespace Jeton.Admin.Web
             container.RegisterType<ITokenRepository, TokenRepository>();
             container.RegisterType<IUserRepository, UserRepository>();
             container.RegisterType<ISettingRepository, SettingRepository>();
-
+            container.RegisterType<ILogRepository, LogRepository>();
+            
             //Services
             container.RegisterType(typeof(IBaseService<>), typeof(BaseService<>));
             container.RegisterType<IAppService, AppService>();
             container.RegisterType<ITokenService, TokenService>();
             container.RegisterType<IUserService, UserService>();
             container.RegisterType<ISettingService, SettingService>();
+            container.RegisterType<ILogService, LogService>();
         }
     }
 }

@@ -8,14 +8,14 @@ using Jeton.Jwt.Core;
 
 namespace Jeton.Core.Common
 {
-    public class JetonUtility
+    public static class JetonUtility
     {
-        public static int GetUnixTimeStamp(DateTime dateTime)
+        public static int GetUnixTimeStamp(this DateTime dateTime)
         {
             return (int)Math.Round((dateTime - Constants.UnixEpoch).TotalSeconds);
         }
 
-        public static bool IsExpired(DateTime expire)
+        public static bool IsExpired(this DateTime expire)
         {
             var nowUnixTimestamp = GetUnixTimeStamp(Constants.Now);
             var expireUnixTimestamp = GetUnixTimeStamp(expire);
@@ -49,7 +49,7 @@ namespace Jeton.Core.Common
                 if (payload == null)
                     throw new ArgumentNullException(nameof(payload));
 
-                var nowUnixTimestamp = JetonUtility.GetUnixTimeStamp(Constants.Now);
+                var nowUnixTimestamp = Constants.Now.GetUnixTimeStamp();
 
                 result = nowUnixTimestamp > payload.Expire;
             }

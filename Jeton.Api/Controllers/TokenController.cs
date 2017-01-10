@@ -16,16 +16,18 @@ namespace Jeton.Api.Controllers
 {
     public class TokenController : ApiController
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+    
         private readonly ITokenService _tokenService;
         private readonly IAppService _appService;
         private readonly IUserService _userService;
+        private readonly ILogService _logService;
 
-        public TokenController(IAppService appService, ITokenService tokenService, IUserService userService)
+        public TokenController(IAppService appService, ITokenService tokenService, IUserService userService,ILogService logService)
         {
             _appService = appService;
             _tokenService = tokenService;
             _userService = userService;
+            _logService = logService;
         }
 
 

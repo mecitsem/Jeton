@@ -3,6 +3,7 @@ using Jeton.Data.Infrastructure;
 using Jeton.Data.Infrastructure.Interfaces;
 using Microsoft.Practices.Unity;
 using System.Web.Http;
+using Jeton.Api.Handlers;
 using Jeton.Core.Interfaces.Repositories;
 using Jeton.Core.Interfaces.Services;
 using Jeton.Data.Repositories;
@@ -24,10 +25,11 @@ namespace Jeton.Api.Initializer
 
             //Repository
             container.RegisterType(typeof(IRepository<>), typeof(BaseRepository<>));
-            container.RegisterType<IAppRepository, AppRepository>(new HierarchicalLifetimeManager());
-            container.RegisterType<ITokenRepository, TokenRepository>(new HierarchicalLifetimeManager());
-            container.RegisterType<IUserRepository, UserRepository>(new HierarchicalLifetimeManager());
-            container.RegisterType<ISettingRepository, SettingRepository>(new HierarchicalLifetimeManager());
+            container.RegisterType<IAppRepository, AppRepository>();
+            container.RegisterType<ITokenRepository, TokenRepository>();
+            container.RegisterType<IUserRepository, UserRepository>();
+            container.RegisterType<ISettingRepository, SettingRepository>();
+            container.RegisterType<ILogRepository, LogRepository>();
 
             //Services
             container.RegisterType(typeof(IBaseService<>), typeof(BaseService<>));
@@ -35,7 +37,11 @@ namespace Jeton.Api.Initializer
             container.RegisterType<ITokenService, TokenService>();
             container.RegisterType<IUserService, UserService>();
             container.RegisterType<ISettingService, SettingService>();
+            container.RegisterType<ILogService, LogService>();
 
+
+            //DelegationHandlers
+            GlobalConfiguration.Configuration.MessageHandlers.Add(new LogHandler(container.Resolve<ILogService>()));
 
             config.DependencyResolver = new UnityResolver(container);
 

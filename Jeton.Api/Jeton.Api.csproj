@@ -159,7 +159,6 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
-    <Compile Include="App_Start\LoggingConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\HelpPage\ApiDescriptionExtensions.cs" />
@@ -199,7 +198,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Handlers\LoggerDelegatingHandler.cs" />
+    <Compile Include="Handlers\LogHandler.cs" />
     <Compile Include="Initializer\Bootstrapper.cs" />
     <Compile Include="Initializer\UnityResolver.cs" />
     <Compile Include="Models\TokenModel.cs" />

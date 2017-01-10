@@ -10,7 +10,7 @@ namespace Jeton.Core.Common
         public const string UserNameId = "UserNameId";
         public static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
         public static readonly DateTime Now = DateTime.UtcNow;
-
+        public static readonly string Application = "Jeton";
         public class Settings
         {
             public const string SecretKey = "secret_key";

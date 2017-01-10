@@ -22,13 +22,14 @@ namespace Jeton.Admin.Web.Controllers
         private readonly ITokenService _tokenService;
         private readonly IUserService _userService;
         private readonly ISettingService _settingService;
-
-        public HomeController(IAppService appService, ITokenService tokenService, IUserService userService, ISettingService settingService)
+        private readonly ILogService _logService;
+        public HomeController(IAppService appService, ITokenService tokenService, IUserService userService, ISettingService settingService,ILogService logService)
         {
             _appService = appService;
             _tokenService = tokenService;
             _userService = userService;
             _settingService = settingService;
+            _logService = logService;
         }
 
         public async Task<ActionResult> Index()
@@ -39,7 +40,7 @@ namespace Jeton.Admin.Web.Controllers
             await AppCountAsync();
             await TokenCountAsync();
             await UserCountAsync();
-
+            await LogsCountAsync();
            
             #endregion
 
@@ -145,6 +146,18 @@ namespace Jeton.Admin.Web.Controllers
                 ViewBag.TokenCount = await _tokenService.GetActiveTokensCountAsync();
             }
             catch
+            {
+                // ignored
+            }
+        }
+
+        private async Task LogsCountAsync()
+        {
+            try
+            {
+                ViewBag.DailyLogsCount = await _logService.GetDailyLogsCountAsync();
+            }
+            catch 
             {
                 // ignored
             }

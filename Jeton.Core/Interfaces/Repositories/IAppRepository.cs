@@ -15,14 +15,6 @@ namespace Jeton.Core.Interfaces.Repositories
         App GetAppById(Guid appId);
         Task<App> GetAppByIdAsync(Guid appId);
 
-        //Check isExist by appId
-        bool IsExist(Guid appId);
-        Task<bool> IsExistAsync(Guid appId);
-
-        //Check isExist by entity
-        bool IsExist(App app);
-        Task<bool> IsExistAsync(App app);
-
         //Check isExist by name
         bool IsExistByName(string appName);
         Task<bool> IsExistByNameAsync(string appName);

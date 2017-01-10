@@ -14,9 +14,12 @@ namespace Jeton.Data.Configuration
         {
             ToTable("Logs");
             HasKey(l => l.Id);
-            Property(l => l.Level).HasMaxLength(100);
-            Property(l => l.Logger).HasMaxLength(100);
-            Property(l => l.MachineName).HasMaxLength(100);
+            Property(l => l.Application).HasMaxLength(200);
+            Property(l => l.Machine).HasMaxLength(100);
+            Property(l => l.ResponseContentType).HasMaxLength(100);
+            Property(l => l.RequestMethod).HasMaxLength(50);
+            Property(l => l.RequestIpAddress).HasMaxLength(50);
+            Property(l => l.ResponseContentType).HasMaxLength(100);
         }
     }
 }

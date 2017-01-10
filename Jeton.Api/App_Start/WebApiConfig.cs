@@ -1,5 +1,4 @@
-﻿using Jeton.Api.App_Start;
-using Jeton.Api.Initializer;
+﻿using Jeton.Api.Initializer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +15,6 @@ namespace Jeton.Api
             // Initialization of Unity container
             Bootstrapper.Initialise(config);
             
-            //Logging
-            LoggingConfig.Init(config);
 
 
             // Web API routes
