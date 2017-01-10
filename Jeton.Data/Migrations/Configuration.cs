@@ -30,15 +30,6 @@ namespace Jeton.Data.Migrations
             if (!context.Settings.Any(s => s.Name.Equals(secretKey.Name)))
                 context.Settings.Add(secretKey);
 
-            var checkExpireFrom = new Setting()
-            {
-                Name = Constants.Settings.CheckExpireFrom,
-                Value = ((int)Constants.CheckExpireFrom.Database).ToString(),
-                ValueType = Constants.ValueType.Integer,
-                IsEssential = true
-            };
-            if (!context.Settings.Any(s => s.Name.Equals(checkExpireFrom.Name)))
-                context.Settings.Add(checkExpireFrom);
             var tokenDuration = new Setting()
             {
                 Name = Constants.Settings.TokenDuration,

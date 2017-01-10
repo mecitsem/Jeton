@@ -16,7 +16,6 @@ namespace Jeton.Core.Managers
 
         public TokenManager(string secretKey)
         {
-            CheckExpireFrom = Constants.CheckExpireFrom.Database;
             TokenDuration = Constants.TokenLiveDuration;
             SecretKey = secretKey;
         }
@@ -35,9 +34,6 @@ namespace Jeton.Core.Managers
                 _tokenDuration = value;
             }
         }
-
-        public Constants.CheckExpireFrom CheckExpireFrom { get; set; }
-
         #endregion
 
 
@@ -58,7 +54,7 @@ namespace Jeton.Core.Managers
             //Now
             var now = Constants.Now;
             var time = now.ToString(CultureInfo.InvariantCulture);
-            var expire = GetExpire(now);
+            var expire = CalculateExpireDateTime(now);
             //Random Uniqe Key
             var guid = Guid.NewGuid();
             var key = guid.ToString();
@@ -80,7 +76,7 @@ namespace Jeton.Core.Managers
             return token;
         }
 
-        public DateTime GetExpire(DateTime time)
+        public DateTime CalculateExpireDateTime(DateTime time)
         {
             return TokenHelper.CalculateExpire(TokenDuration, time);
         }
@@ -91,7 +87,66 @@ namespace Jeton.Core.Managers
         }
 
 
+        public bool IsExpired(DateTime expireDateTime)
+        {
+            return expireDateTime.IsExpired();
+        }
 
-       
+        /// <summary>
+        /// Check token alive
+        /// </summary>
+        /// <param name="timeDuration"></param>
+        /// <param name="tokenKey"></param>
+        /// <param name="secretKey"></param>
+        /// <returns></returns>
+        public bool IsExpired(string tokenKey, int timeDuration, string secretKey)
+        {
+            bool result;
+
+            if (string.IsNullOrWhiteSpace(tokenKey))
+                throw new ArgumentNullException(nameof(tokenKey));
+
+            if (string.IsNullOrWhiteSpace(secretKey))
+                throw new ArgumentNullException(nameof(secretKey));
+
+            try
+            {
+                //Verify Token
+                if (!IsVerified(tokenKey, secretKey)) return true;
+
+                var payload = JsonWebToken.DecodeToObject<Payload>(tokenKey, secretKey);
+
+                if (payload == null)
+                    throw new ArgumentNullException(nameof(payload));
+
+                var nowUnixTimestamp = Constants.Now.GetUnixTimeStamp();
+
+                result = nowUnixTimestamp > payload.Expire;
+            }
+            catch (Exception ex)
+            {
+                //TODO:Log
+                //Token is not verified
+                result = true;
+            }
+            return result;
+        }
+
+        public bool IsVerified(string tokenKey, string secretKey)
+        {
+            bool result;
+            try
+            {
+                JsonWebToken.DecodeToObject<Payload>(tokenKey, secretKey);
+                result = true;
+            }
+            catch
+            {
+                result = false;
+            }
+            return result;
+        }
+
+
     }
 }

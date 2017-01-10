@@ -14,7 +14,6 @@ namespace Jeton.Core.Common
         public class Settings
         {
             public const string SecretKey = "secret_key";
-            public const string CheckExpireFrom = "check_expire_from";
             public const string TokenDuration = "token_duration";
         }
 
@@ -27,12 +26,6 @@ namespace Jeton.Core.Common
         public enum AppSettings
         {
             PassPhrase
-        }
-
-        public enum CheckExpireFrom
-        {
-            Database = 0,
-            Token = 1
         }
 
         public enum ValueType

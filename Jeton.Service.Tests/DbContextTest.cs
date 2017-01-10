@@ -29,17 +29,7 @@ namespace Jeton.Service.Tests
                 if (!context.Settings.Any(s => s.Name.Equals(secretKey.Name)))
                     context.Settings.Add(secretKey);
 
-                var checkExpireFrom = new Setting()
-                {
-                    Name = Constants.Settings.CheckExpireFrom,
-                    Value = ((int)Constants.CheckExpireFrom.Database).ToString(),
-                    ValueType = Constants.ValueType.Integer,
-                    IsEssential = true,
-                    Created = DateTime.UtcNow,
-                    Modified = DateTime.UtcNow,
-                };
-                if (!context.Settings.Any(s => s.Name.Equals(checkExpireFrom.Name)))
-                    context.Settings.Add(checkExpireFrom);
+      
                 var tokenDuration = new Setting()
                 {
                     Name = Constants.Settings.TokenDuration,

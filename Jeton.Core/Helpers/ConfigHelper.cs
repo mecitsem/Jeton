@@ -6,18 +6,6 @@ namespace Jeton.Core.Helpers
 {
     public class ConfigHelper
     {
-        private const string AppSettingsPrefix = "jeton";
-
-        public static string GetPassPhrase()
-        {
-            var passPhrase = GetAppSettingsValue(Constants.AppSettings.PassPhrase);
-
-            if (string.IsNullOrEmpty(passPhrase))
-                throw new ArgumentException("passPhrase is null. Please check config file.");
-
-            return passPhrase;
-        }
-
         /// <summary>
         /// Key Format [prefix]:[keyName] For exp: <add key="jeton:PassPhrase" value="" />
         /// </summary>
@@ -25,7 +13,7 @@ namespace Jeton.Core.Helpers
         /// <returns></returns>
         public static string GetAppSettingsValue(Constants.AppSettings appSettingsKey)
         {
-            return ConfigurationManager.AppSettings[$"{AppSettingsPrefix}:{appSettingsKey}"];
+            return ConfigurationManager.AppSettings[$"{Constants.Application.ToLowerInvariant()}:{appSettingsKey}"];
         }
     }
 }

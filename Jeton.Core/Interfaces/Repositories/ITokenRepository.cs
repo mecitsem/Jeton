@@ -36,8 +36,5 @@ namespace Jeton.Core.Interfaces.Repositories
         bool IsExist(string tokenKey);
         Task<bool> IsExistAsync(string tokenKey);
 
-        //Check isexist by token
-        bool IsExist(Token token);
-        Task<bool> IsExistAsync(Token token);
     }
 }

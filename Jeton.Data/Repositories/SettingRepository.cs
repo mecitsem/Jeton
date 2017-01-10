@@ -85,24 +85,6 @@ namespace Jeton.Data.Repositories
 
             return Convert.ToInt32(tokenDuration?.Value);
         }
-        /// <summary>
-        /// Get check expire from value
-        /// </summary>
-        /// <returns></returns>
-        public Constants.CheckExpireFrom GetCheckExpireFrom()
-        {
-            return JetonEnumHelper.GetEnumValue<Constants.CheckExpireFrom>(Table.FirstOrDefault(s => s.Name.Equals(Constants.Settings.CheckExpireFrom))?.Value);
-        }
-        /// <summary>
-        /// Get check expire from value async
-        /// </summary>
-        /// <returns></returns>
-        public async Task<Constants.CheckExpireFrom> GetCheckExpireFromAsync()
-        {
-            var cef = await Table.FirstOrDefaultAsync(s => s.Name.Equals(Constants.Settings.CheckExpireFrom));
-
-            return JetonEnumHelper.GetEnumValue<Constants.CheckExpireFrom>(cef?.Value);
-        }
         #endregion
 
 
