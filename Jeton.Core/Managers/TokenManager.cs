@@ -55,17 +55,10 @@ namespace Jeton.Core.Managers
             var now = Constants.Now;
             var time = now.ToString(CultureInfo.InvariantCulture);
             var expire = CalculateExpireDateTime(now);
-            //Random Uniqe Key
-            var guid = Guid.NewGuid();
-            var key = guid.ToString();
-
-
 
             var extraheaders = new Dictionary<string, object>()
             {
                 {"time",time },
-                {"guid", key},
-                {"rootappId", payload.RootAppId },
                 {"exp",expire }
             };
 

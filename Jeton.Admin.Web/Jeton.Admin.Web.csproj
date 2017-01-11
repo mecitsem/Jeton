@@ -173,6 +173,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\AutoMapperConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -180,6 +181,7 @@
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Controllers\AppController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LogController.cs" />
     <Compile Include="Controllers\SettingsController.cs" />
     <Compile Include="Controllers\TokenController.cs" />
     <Compile Include="Controllers\ToolsController.cs" />
@@ -188,6 +190,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AppModel.cs" />
+    <Compile Include="Models\LogModel.cs" />
     <Compile Include="Models\SettingModel.cs" />
     <Compile Include="Models\TokenModel.cs" />
     <Compile Include="Models\UserModel.cs" />
@@ -206,6 +209,7 @@
     <Content Include="Content\dist\js\sb-admin-2.min.js" />
     <Content Include="Content\img\logo.ico" />
     <Content Include="Content\img\logo.png" />
+    <Content Include="Content\jjsonviewer.css" />
     <Content Include="Content\vendor\bootstrap-social\bootstrap-social.css" />
     <Content Include="Content\vendor\bootstrap\css\bootstrap.css" />
     <Content Include="Content\vendor\bootstrap\css\bootstrap.min.css" />
@@ -353,6 +357,7 @@
     <None Include="Properties\PublishProfiles\JetonAdmin.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jeton_custom.js" />
+    <Content Include="Scripts\jjsonviewer.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -394,6 +399,8 @@
     <Content Include="Views\Shared\_PartialTokenChart.cshtml" />
     <Content Include="Views\Shared\_PartialAppActivityChart.cshtml" />
     <Content Include="Views\Shared\_PartialAppStatusChart.cshtml" />
+    <Content Include="Views\Log\Index.cshtml" />
+    <Content Include="Views\Log\Daily.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

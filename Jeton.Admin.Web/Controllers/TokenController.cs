@@ -11,7 +11,7 @@ namespace Jeton.Admin.Web.Controllers
     public class TokenController : Controller
     {
         private readonly ITokenService _tokenService;
-        private readonly MapperConfiguration _config = new MapperConfiguration(cfg => cfg.CreateMap<Token, TokenModel>());
+
 
         public TokenController(ITokenService tokenService)
         {
@@ -21,8 +21,8 @@ namespace Jeton.Admin.Web.Controllers
         // GET: Token
         public async Task<ActionResult> Index()
         {
-            var mapper = _config.CreateMapper();
-            var tokenList = (await _tokenService.GetAllAsync()).Select(t => mapper.Map<TokenModel>(t)).ToList();
+            
+            var tokenList = (await _tokenService.GetActiveTokensAsync()).OrderByDescending(o => o.Created).Select(Mapper.Map<TokenModel>).ToList();
             return View(tokenList);
         }
     }

@@ -1,0 +1,276 @@
+﻿
+@model IEnumerable<Jeton.Admin.Web.Models.LogModel>
+
+@{
+    ViewBag.Title = "Daily Logs";
+}
+@section Styles{
+    <link href="@Url.Content("~/Content/jjsonviewer.css")" rel="stylesheet" />
+    <style type="text/css">
+        .close { float: left !important; font-size: inherit !important; font-weight: inherit !important; line-height: inherit !important; -ms-opacity: 1 !important; opacity: 1 !important; }
+        .the-table { table-layout: fixed; word-wrap: break-word; }
+    </style>
+}
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            Logs
+        </h1>
+    </div>
+</div>
+
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Daily Logs
+            </div>
+            <div class="panel-body">
+                <table id="logdatatable" class="table table-hover the-table table-striped table-responsive">
+                    <thead>
+                        <tr>
+                            <th>
+                                Created
+                            </th>
+                            <th>
+                                Machine
+                            </th>
+                            <th>
+                                Request IP Address
+                            </th>
+                            <th>
+                                Request Method
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr data-rowid="@item.Id" class="@Html.Raw(item.ResponseStatusCode != 200 ? "danger" : string.Empty)">
+                                <td>
+                                    @item.Created
+                                </td>
+                                <td>
+                                    @item.Machine
+                                </td>
+                                <td>
+                                    @item.RequestIpAddress
+                                </td>
+                                <td>
+                                    @item.RequestMethod
+                                </td>
+                                <td>
+                                    @item.ResponseStatusCode
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- /.col-lg-6 -->
+
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div id="log_detail_panel" class="panel">
+            <div class="panel-heading">
+                Log Detail
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                Request
+                            </div>
+                            <div class="panel-body">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Properties</th>
+                                            <th>
+                                                Values
+                                            </th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th>Application</th>
+                                            <td><span id="req_application"></span></td>
+
+                                        </tr>
+                                        <tr>
+                                            <th>Machine</th>
+                                            <td><span id="req_machine"></span></td>
+
+                                        </tr>
+                                        <tr>
+                                            <th>IP Address</th>
+                                            <td>
+                                                <span id="req_ipaddress"></span>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                            <th>Content Type</th>
+                                            <td><span id="req_contenttype"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Content Body</th>
+                                            <td><span id="req_contentbody"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Uri</th>
+                                            <td><span id="req_uri"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Method</th>
+                                            <td><span id="req_method"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Route Template</th>
+                                            <td><span id="req_routetemplate"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Route Data</th>
+                                            <td><span id="req_routedata"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Headers</th>
+                                            <td><span id="req_headers"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Timestamp</th>
+                                            <td><span id="req_timestamp"></span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-warning">
+                            <div class="panel-heading">
+                                Response
+                            </div>
+                            <div class="panel-body">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Properties</th>
+                                            <th>
+                                                Values
+                                            </th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th>Content Type</th>
+                                            <td><span id="res_contenttype"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Content Body</th>
+                                            <td><span id="res_contentbody"></span></td>
+                                        </tr>
+
+                                        <tr>
+                                            <th>Status Code</th>
+                                            <td><span id="res_statuscode"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Headers</th>
+                                            <td><span id="res_responseheaders"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Timestamp</th>
+                                            <td><span id="res_timestamp"></span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="@Url.Content("~/Scripts/jjsonviewer.js")"></script>
+    <script type="text/javascript">
+
+        var selected = [];
+
+        $(document).ready(function () {
+            $('#logdatatable').DataTable({
+                responsive: true,
+                "scrollY": "400px",
+                "scrollCollapse": true,
+                "paging": false
+            });
+            $('#logdatatable tbody tr').on('click', function (e) {
+                var id = $(this).data("rowid");
+                var index = $.inArray(id, selected);
+
+                if (index === -1) {
+                    selected.push(id);
+                } else {
+                    selected.splice(index, 1);
+                }
+
+                $(this).toggleClass(' success');
+                GetLogDetail(id);
+                $(this).toggleClass(' warning').fadeIn(2000);
+            });
+        });
+
+
+        function GetLogDetail(rowid) {
+            var logId = rowid;
+
+            $.getJSON("@Url.Action("GetLogDetail","Log")", { "id": logId }, function (data) {
+                if (data == null) return false;
+
+                //Request Info
+                $("#req_application").text(data.Application);
+                $("#req_machine").text(data.Machine);
+                $("#req_ipaddress").text(data.RequestIpAddress);
+                $("#req_contenttype").text(data.RequestContentType);
+                if (data.RequestContentBody !== "")
+                    $("#req_contentbody").jJsonViewer(data.RequestContentBody);
+                $("#req_uri").text(data.RequestUri);
+                $("#req_method").text(data.RequestMethod);
+                $("#req_routetemplate").text(data.RequestRouteTemplate);
+                if (data.RequestRouteData !== "")
+                    $("#req_routedata").jJsonViewer(data.RequestRouteData);
+                if (data.RequestHeaders !== "")
+                    $("#req_headers").jJsonViewer(data.RequestHeaders);
+                $("#req_timestamp").text(new Date(parseInt(data.RequestTimestamp.replace("/Date(", "").replace(")/", ""), 10)));
+                //Response Info
+                $("#res_contenttype").text(data.ResponseContentType);
+                if (data.ResponseContentBody !== "")
+                    $("#res_contentbody").jJsonViewer(data.ResponseContentBody);
+                $("#res_statuscode").text(data.ResponseStatusCode);
+                if (data.ResponseHeaders !== "")
+                    $("#res_responseheaders").jJsonViewer(data.ResponseHeaders);
+                $("#res_timestamp").text(new Date(data.ResponseTimestamp));
+
+
+
+            });
+        }
+
+    </script>
+}

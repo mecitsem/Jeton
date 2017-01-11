@@ -14,9 +14,6 @@ namespace Jeton.Admin.Web.Controllers
     //[Authorize]
     public class HomeController : Controller
     {
-        private readonly MapperConfiguration _settingMapperConfiguration = new MapperConfiguration(cfg => cfg.CreateMap<Setting, SettingModel>().ReverseMap());
-        private readonly MapperConfiguration _tokenMapperConfiguration = new MapperConfiguration(cfg => cfg.CreateMap<Token, TokenModel>().ReverseMap());
-        private readonly MapperConfiguration _appMapperConfiguration = new MapperConfiguration(cfg => cfg.CreateMap<App, AppModel>().ReverseMap());
 
         private readonly IAppService _appService;
         private readonly ITokenService _tokenService;
@@ -59,9 +56,8 @@ namespace Jeton.Admin.Web.Controllers
             IEnumerable<AppModel> apps = null;
             try
             {
-                var appMapper = _appMapperConfiguration.CreateMapper();
                 var allApps = await _appService.GetAllAsync();
-                apps = allApps.Select(t => appMapper.Map<AppModel>(t)).ToList();
+                apps = allApps.Select(Mapper.Map<AppModel>).ToList();
             }
             catch
             {
@@ -76,9 +72,9 @@ namespace Jeton.Admin.Web.Controllers
             IEnumerable<TokenModel> tokens;
             try
             {
-                var tokenMapper = _tokenMapperConfiguration.CreateMapper();
+            
                 var allTokens = await _tokenService.GetAllAsync();
-                tokens = allTokens.Select(t => tokenMapper.Map<TokenModel>(t)).ToList();
+                tokens = allTokens.Select(Mapper.Map<TokenModel>).ToList();
 
             }
             catch (Exception)
@@ -169,9 +165,9 @@ namespace Jeton.Admin.Web.Controllers
         {
             try
             {
-                var settingMapper = _settingMapperConfiguration.CreateMapper();
+        
                 var essentialSettings = (await _settingService.GetAllAsync()).Where(s => s.IsEssential)
-                                                        .Select(s => settingMapper.Map<SettingModel>(s))
+                                                        .Select(Mapper.Map<SettingModel>)
                                                         .ToList();
                 ViewBag.Settings = essentialSettings;
             }

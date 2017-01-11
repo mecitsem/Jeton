@@ -12,8 +12,7 @@ namespace Jeton.Admin.Web.Controllers
 {
     public class SettingsController : Controller
     {
-        private readonly MapperConfiguration _config = new MapperConfiguration(cfg => cfg.CreateMap<Setting, SettingModel>().ReverseMap());
-        private readonly MapperConfiguration _configModel = new MapperConfiguration(cfg => cfg.CreateMap<Setting, SettingViewModel>().ReverseMap());
+
         private readonly ISettingService _settingService;
 
         public SettingsController(ISettingService settingService)
@@ -24,8 +23,8 @@ namespace Jeton.Admin.Web.Controllers
         // GET: Settings
         public async Task<ActionResult> Index()
         {
-            var mapper = _config.CreateMapper();
-            var settings = (await _settingService.GetAllAsync()).Select(s => mapper.Map<SettingModel>(s)).ToList();
+          
+            var settings = (await _settingService.GetAllAsync()).Select(Mapper.Map<SettingModel>).ToList();
             return View(settings);
         }
 
@@ -78,9 +77,9 @@ namespace Jeton.Admin.Web.Controllers
 
             var setting = await _settingService.GetByIdAsync(settingId);
 
-            var mapper = _configModel.CreateMapper();
+ 
 
-            var model = mapper.Map<SettingViewModel>(setting);
+            var model = Mapper.Map<SettingViewModel>(setting);
 
             return View(model);
         }
@@ -96,8 +95,7 @@ namespace Jeton.Admin.Web.Controllers
             if (!await _settingService.IsExistAsync(settingId))
                 return HttpNotFound("Setting is not exist.");
 
-            var mapper = _configModel.CreateMapper();
-            var setting = mapper.Map<SettingViewModel>(await _settingService.GetByIdAsync(settingId));
+            var setting = Mapper.Map<SettingViewModel>(await _settingService.GetByIdAsync(settingId));
 
             return View(setting);
         }
@@ -145,8 +143,8 @@ namespace Jeton.Admin.Web.Controllers
             if (!await _settingService.IsExistAsync(settingId))
                 return HttpNotFound("Setting is not exist.");
 
-            var mapper = _configModel.CreateMapper();
-            var setting = mapper.Map<SettingViewModel>(await _settingService.GetByIdAsync(settingId));
+     
+            var setting = Mapper.Map<SettingViewModel>(await _settingService.GetByIdAsync(settingId));
 
             return View(setting);
         }

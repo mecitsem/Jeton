@@ -13,8 +13,7 @@ namespace Jeton.Admin.Web.Controllers
     public class AppController : Controller
     {
         private readonly IAppService _appService;
-        private readonly MapperConfiguration _config = new MapperConfiguration(cfg => cfg.CreateMap<App, AppModel>().ReverseMap());
-        private readonly MapperConfiguration _configModel = new MapperConfiguration(cfg => cfg.CreateMap<App, AppViewModel>().ReverseMap());
+      
 
         public AppController(IAppService appService)
         {
@@ -25,10 +24,9 @@ namespace Jeton.Admin.Web.Controllers
         public async Task<ActionResult> Index(bool? active)
         {
             ViewBag.AppStatus = active.HasValue ? (active.Value ? "Active" : "Inactive") : "All";
-            var mapper = _config.CreateMapper();
             var apps = await _appService.GetAllAsync();
             var appList = apps.Where(a => !active.HasValue || (active.Value ? !a.IsDeleted.HasValue || (a.IsDeleted.Value == false) :
-                                a.IsDeleted.HasValue && a.IsDeleted.Value)).Select(a => mapper.Map<AppModel>(a)).ToList();
+                                a.IsDeleted.HasValue && a.IsDeleted.Value)).Select(Mapper.Map<AppModel>).ToList();
 
             return View(appList);
         }
@@ -42,8 +40,7 @@ namespace Jeton.Admin.Web.Controllers
             if (!await _appService.IsExistAsync(appId))
                 return View();
 
-            var mapper = _config.CreateMapper();
-            var app = mapper.Map<AppModel>(await _appService.GetByIdAsync(appId));
+            var app = Mapper.Map<AppModel>(await _appService.GetByIdAsync(appId));
 
             return View(app);
         }
@@ -57,8 +54,7 @@ namespace Jeton.Admin.Web.Controllers
             if (!await _appService.IsExistAsync(appId))
                 return HttpNotFound("AppId is not exist.");
 
-            var mapper = _configModel.CreateMapper();
-            var app = mapper.Map<AppViewModel>(await _appService.GetByIdAsync(appId));
+            var app = Mapper.Map<AppViewModel>(await _appService.GetByIdAsync(appId));
 
             return View(app);
 

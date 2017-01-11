@@ -42,6 +42,7 @@ namespace Jeton.Api.Initializer
 
             //DelegationHandlers
             GlobalConfiguration.Configuration.MessageHandlers.Add(new LogHandler(container.Resolve<ILogService>()));
+            GlobalConfiguration.Configuration.MessageHandlers.Add(new AppKeyHandler(container.Resolve<IAppService>()));
 
             config.DependencyResolver = new UnityResolver(container);
 

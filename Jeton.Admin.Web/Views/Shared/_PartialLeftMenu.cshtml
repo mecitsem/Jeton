@@ -28,7 +28,20 @@
                 <a href="@Url.Action("Index","Token")"><i class="fa fa-key fa-fw"></i> Tokens</a>
             </li>
             <li>
-                <a href="@Url.Action("Index","User")"><i class="fa fa-users fa-fw"></i> Users</a>
+                <a href="@Url.Action("Index", "User")"><i class="fa fa-users fa-fw"></i> Users</a>
+            </li>
+            <li>
+                <a href="#"><i class="fa fa-gear fa-fw"></i> Logs<span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a href="@Url.Action("Index", "Log")">View All Logs</a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Daily", "Log")">Daily Logs</a>
+                    </li>
+
+                </ul>
+                <!-- /.nav-second-level -->
             </li>
             <li>
                 <a href="#"><i class="fa fa-wrench fa-fw"></i> Tools<span class="fa arrow"></span></a>
@@ -42,6 +55,7 @@
                 </ul>
                 <!-- /.nav-second-level -->
             </li>
+
             <li>
                 <a href="#"><i class="fa fa-gear fa-fw"></i> Settings<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">

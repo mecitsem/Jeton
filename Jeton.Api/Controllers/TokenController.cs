@@ -1,16 +1,12 @@
-﻿using Jeton.Core.Common;
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.ModelBinding;
-using Jeton.Api.Extensions;
 using Jeton.Api.Models;
 using Jeton.Api.DTOs;
 using Jeton.Api.Filters;
 using Jeton.Core.Interfaces.Services;
-using NLog;
 
 namespace Jeton.Api.Controllers
 {
@@ -51,45 +47,17 @@ namespace Jeton.Api.Controllers
 
                     return BadRequest("AppId is null or not Guid format");
                 }
-
-
-                //Request Header
-
-
-                //Check AccessKey
-                if (!Request.HeaderKeyIsExist(Constants.AccessKey))
-                    return BadRequest("AccessKey is required. Please add your header.");
-
-                var accessKey = Request.GetHeaderValue(Constants.AccessKey);
-
-                //Check AccessKey Value
-                if (string.IsNullOrWhiteSpace(accessKey))
-                    return BadRequest("AccessKey is null or empty. Please add your AccessKey.");
-
-
                 #endregion
 
-                #region Check App
-
-                //Check App is Exist
-                if (!await _appService.IsExistAsync(_appId))
-                    return BadRequest("AppId is invalid. Please register your app");
-
-
+                #region GetApp
 
                 //Get APP
                 var app = await _appService.GetByIdAsync(_appId);
 
-                //Check app is active
-                if (!await _appService.IsActiveAsync(app))
-                    return NotFound();
-
-                //Check Access Key
-                if (!app.AccessKey.Equals(accessKey))
-                    return Unauthorized();
 
                 if (!app.IsRoot)
                     return BadRequest("This app can not generate token because this app is not a root app.");
+
 
                 #endregion
 
@@ -131,46 +99,24 @@ namespace Jeton.Api.Controllers
             IHttpActionResult response;
             try
             {
+                Guid _appId;
+
                 #region CHECK Parameters
 
                 //Check AppId
-                Guid _appId;
+
                 if (string.IsNullOrEmpty(appId) || !Guid.TryParse(appId, out _appId) || _appId.Equals(default(Guid)))
                     return BadRequest("AppId is null or not Guid format");
 
                 //Request Header
 
-
-                //Check AccessKey
-                if (!Request.HeaderKeyIsExist(Constants.AccessKey))
-                    return BadRequest("AccessKey is required. Please add your header.");
-
-                var accessKey = Request.GetHeaderValue(Constants.AccessKey);
-
-                //Check AccessKey Value
-                if (string.IsNullOrWhiteSpace(accessKey))
-                    return BadRequest("AccessKey is null or empty. Please add your AccessKey.");
-
                 #endregion
 
 
-                #region Check App
-
-                //Check App is Exist
-                if (!await _appService.IsExistAsync(_appId))
-                    return BadRequest("AppId is invalid. Please register your app.");
-
+                #region Get App
 
                 //Get APP
                 var app = await _appService.GetByIdAsync(_appId);
-
-                //Check app is active
-                if (!await _appService.IsActiveAsync(app))
-                    return NotFound();
-
-                //Check Access Key
-                if (!app.AccessKey.Equals(accessKey))
-                    return Unauthorized();
 
                 #endregion
 

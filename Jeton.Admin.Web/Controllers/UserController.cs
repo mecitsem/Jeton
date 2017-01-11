@@ -11,7 +11,6 @@ namespace Jeton.Admin.Web.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _userService;
-        private readonly MapperConfiguration _config = new MapperConfiguration(cfg => cfg.CreateMap<User, UserModel>());
 
         public UserController(IUserService userService)
         {
@@ -21,8 +20,8 @@ namespace Jeton.Admin.Web.Controllers
         // GET: User
         public async Task<ActionResult> Index()
         {
-            var mapper = _config.CreateMapper();
-            var userList =(await _userService.GetAllAsync()).Select(a => mapper.Map<UserModel>(a)).ToList();
+           
+            var userList =(await _userService.GetAllAsync()).Select(Mapper.Map<UserModel>).ToList();
             return View(userList);
         }
     }
