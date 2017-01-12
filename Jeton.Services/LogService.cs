@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Jeton.Core.Common;
 using Jeton.Core.Entities;
 using Jeton.Core.Interfaces.Repositories;
 using Jeton.Core.Interfaces.Services;
@@ -12,7 +13,7 @@ namespace Jeton.Services
     public class LogService : BaseService<Log>, ILogService
     {
         private readonly ILogRepository _logRepository;
-
+     
         public LogService(ILogRepository repository) : base(repository)
         {
             _logRepository = repository;
@@ -40,30 +41,23 @@ namespace Jeton.Services
 
         public IEnumerable<Log> GetDailyLogs()
         {
-            var startDateTime = DateTime.UtcNow.AddDays(-1).AddMinutes(1);
-            var endDateTime = DateTime.UtcNow.AddDays(1).AddMinutes(-1);
-            return _logRepository.GetLogs(startDateTime, endDateTime);
+            return _logRepository.GetLogs(Constants.Now.BeginDateTime(), Constants.Now.EndDateTime());
         }
 
         public async Task<IEnumerable<Log>> GetDailyLogsAsync()
         {
-            var startDateTime = DateTime.UtcNow.AddDays(-1).AddMinutes(1);
-            var endDateTime = DateTime.UtcNow.AddDays(1).AddMinutes(-1);
-            return await _logRepository.GetLogsAsync(startDateTime, endDateTime);
+           
+            return await _logRepository.GetLogsAsync(Constants.Now.BeginDateTime(), Constants.Now.EndDateTime());
         }
 
         public long GetDailyLogsCount()
         {
-            var startDateTime = DateTime.UtcNow.AddDays(-1).AddMinutes(1);
-            var endDateTime = DateTime.UtcNow.AddDays(1).AddMinutes(-1);
-            return _logRepository.GetLogsCount(startDateTime, endDateTime);
+            return _logRepository.GetLogsCount(Constants.Now.BeginDateTime(), Constants.Now.EndDateTime());
         }
 
         public async Task<long> GetDailyLogsCountAsync()
         {
-            var startDateTime = DateTime.UtcNow.AddDays(-1).AddMinutes(1);
-            var endDateTime = DateTime.UtcNow.AddDays(1).AddMinutes(-1);
-            return await _logRepository.GetLogsCountAsync(startDateTime, endDateTime);
+            return await _logRepository.GetLogsCountAsync(Constants.Now.BeginDateTime(), Constants.Now.EndDateTime());
         }
     }
 }

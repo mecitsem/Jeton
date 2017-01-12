@@ -16,17 +16,6 @@ namespace Jeton.Admin.Web.Models
         public DateTime Modified { get; set; }
         public Guid UserId { get; set; }
         public Guid AppId { get; set; }
-        public int Status
-        {
-            get
-            {
-                if (Expire <= Constants.Now)
-                    return 0;
-
-                var time = Expire - Constants.Now;
-
-                return time.Minutes * 100 / Constants.TokenLiveDuration;
-            }
-        }
+        public int Status { get; set; }
     }
 }

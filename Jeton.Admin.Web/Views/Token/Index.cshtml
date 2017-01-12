@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Jeton.Admin.Web.Models.TokenModel>
+﻿@using Jeton.Core.Common
+@model IEnumerable<Jeton.Admin.Web.Models.TokenModel>
 @{
     ViewBag.Title = "Index";
 }
@@ -36,6 +37,24 @@
                     <tbody>
                         @foreach (var item in Model)
                         {
+
+
+                            if (ViewBag.TokenDuration != null)
+                            {
+
+                                if (item.Expire <= Constants.Now)
+                                {
+                                    item.Status = 0;
+                                }
+                                else
+                                {
+                                    var time = item.Expire - Constants.Now;
+
+                                    item.Status = time.Minutes * 100 / (int)ViewBag.TokenDuration;
+                                }
+
+                            }
+
 
                             <tr class="odd gradeX">
                                 <td>

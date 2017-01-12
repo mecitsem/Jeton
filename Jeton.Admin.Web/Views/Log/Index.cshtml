@@ -15,58 +15,70 @@
         <h1 class="page-header">
             Logs
         </h1>
+
     </div>
 </div>
-
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group input-group">
+            <input type="text" class="form-control" name="daterange" id="daterange" value=""/>
+            <span class="input-group-btn">
+                <button class="btn btn-info" type="button">
+                   GET
+                </button>
+            </span>
+        </div>
+    </div>
+</div>
 <!-- /.row -->
 <div class="row">
     <div class="col-lg-12">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                Daily Logs
+                Daily Logs 
             </div>
             <div class="panel-body">
                 <table id="logdatatable" class="table table-hover the-table table-striped table-responsive">
                     <thead>
-                        <tr>
-                            <th>
-                                Created
-                            </th>
-                            <th>
-                                Machine
-                            </th>
-                            <th>
-                                Request IP Address
-                            </th>
-                            <th>
-                                Request Method
-                            </th>
-                            <th>
-                                Status
-                            </th>
-                        </tr>
+                    <tr>
+                        <th>
+                            Created
+                        </th>
+                        <th>
+                            Machine
+                        </th>
+                        <th>
+                            Request IP Address
+                        </th>
+                        <th>
+                            Request Method
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                    </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr data-rowid="@item.Id" class="@Html.Raw(item.ResponseStatusCode != 200 ? "danger" : string.Empty)">
-                                <td>
-                                    @item.Created
-                                </td>
-                                <td>
-                                    @item.Machine
-                                </td>
-                                <td>
-                                    @item.RequestIpAddress
-                                </td>
-                                <td>
-                                    @item.RequestMethod
-                                </td>
-                                <td>
-                                    @item.ResponseStatusCode
-                                </td>
-                            </tr>
-                        }
+                    @foreach (var item in Model)
+                    {
+                        <tr data-rowid="@item.Id" class="@Html.Raw(item.ResponseStatusCode != 200 ? "danger" : string.Empty)">
+                            <td>
+                                @item.Created
+                            </td>
+                            <td>
+                                @item.Machine
+                            </td>
+                            <td>
+                                @item.RequestIpAddress
+                            </td>
+                            <td>
+                                @item.RequestMethod
+                            </td>
+                            <td>
+                                @item.ResponseStatusCode
+                            </td>
+                        </tr>
+                    }
                     </tbody>
                 </table>
             </div>
@@ -207,69 +219,77 @@
 
 
 @section Scripts{
-    <script src="@Url.Content("~/Scripts/jjsonviewer.js")"></script>
-    <script type="text/javascript">
 
-        var selected = [];
+        <script src="@Url.Content("~/Scripts/jjsonviewer.js")"></script>
+        <script type="text/javascript">
 
-        $(document).ready(function () {
-            $('#logdatatable').DataTable({
-                responsive: true,
-                "scrollY": "400px",
-                "scrollCollapse": true,
-                "paging": false
-            });
-            $('#logdatatable tbody tr').on('click', function (e) {
-                var id = $(this).data("rowid");
-                var index = $.inArray(id, selected);
+            var selected = [];
 
-                if (index === -1) {
-                    selected.push(id);
-                } else {
-                    selected.splice(index, 1);
-                }
+            $(document).ready(function () {
+                $('#logdatatable').DataTable({
+                    responsive: true,
+                    "scrollY": "400px",
+                    "scrollCollapse": true,
+                    "paging": false
+                });
+                $('#logdatatable tbody tr').on('click', function (e) {
+                    var id = $(this).data("rowid");
+                    var index = $.inArray(id, selected);
 
-                $(this).toggleClass(' success');
-                GetLogDetail(id);
-                $(this).toggleClass(' warning').fadeIn(2000);
-            });
-        });
+                    if (index === -1) {
+                        selected.push(id);
+                    } else {
+                        selected.splice(index, 1);
+                    }
 
+                    $(this).toggleClass(' success');
+                    GetLogDetail(id);
+                    $(this).toggleClass(' warning').fadeIn(2000);
+                });
 
-        function GetLogDetail(rowid) {
-            var logId = rowid;
-
-            $.getJSON("@Url.Action("GetLogDetail","Log")", { "id": logId }, function (data) {
-                if (data == null) return false;
-
-                //Request Info
-                $("#req_application").text(data.Application);
-                $("#req_machine").text(data.Machine);
-                $("#req_ipaddress").text(data.RequestIpAddress);
-                $("#req_contenttype").text(data.RequestContentType);
-                if (data.RequestContentBody !== "")
-                    $("#req_contentbody").jJsonViewer(data.RequestContentBody);
-                $("#req_uri").text(data.RequestUri);
-                $("#req_method").text(data.RequestMethod);
-                $("#req_routetemplate").text(data.RequestRouteTemplate);
-                if (data.RequestRouteData !== "")
-                    $("#req_routedata").jJsonViewer(data.RequestRouteData);
-                if (data.RequestHeaders !== "")
-                    $("#req_headers").jJsonViewer(data.RequestHeaders);
-                $("#req_timestamp").text(new Date(parseInt(data.RequestTimestamp.replace("/Date(", "").replace(")/", ""), 10)));
-                //Response Info
-                $("#res_contenttype").text(data.ResponseContentType);
-                if (data.ResponseContentBody !== "")
-                    $("#res_contentbody").jJsonViewer(data.ResponseContentBody);
-                $("#res_statuscode").text(data.ResponseStatusCode);
-                if (data.ResponseHeaders !== "")
-                    $("#res_responseheaders").jJsonViewer(data.ResponseHeaders);
-                $("#res_timestamp").text(new Date(data.ResponseTimestamp));
-
+              
 
 
             });
-        }
 
-    </script>
+
+            $('#daterange').daterangepicker();
+
+
+            function GetLogDetail(rowid) {
+                var logId = rowid;
+
+                $.getJSON("@Url.Action("GetLogDetail","Log")", { "id": logId }, function (data) {
+                    if (data == null) return false;
+
+                    //Request Info
+                    $("#req_application").text(data.Application);
+                    $("#req_machine").text(data.Machine);
+                    $("#req_ipaddress").text(data.RequestIpAddress);
+                    $("#req_contenttype").text(data.RequestContentType);
+                    if (data.RequestContentBody !== "")
+                        $("#req_contentbody").jJsonViewer(data.RequestContentBody);
+                    $("#req_uri").text(data.RequestUri);
+                    $("#req_method").text(data.RequestMethod);
+                    $("#req_routetemplate").text(data.RequestRouteTemplate);
+                    if (data.RequestRouteData !== "")
+                        $("#req_routedata").jJsonViewer(data.RequestRouteData);
+                    if (data.RequestHeaders !== "")
+                        $("#req_headers").jJsonViewer(data.RequestHeaders);
+                    $("#req_timestamp").text(new Date(parseInt(data.RequestTimestamp.replace("/Date(", "").replace(")/", ""), 10)));
+                    //Response Info
+                    $("#res_contenttype").text(data.ResponseContentType);
+                    if (data.ResponseContentBody !== "")
+                        $("#res_contentbody").jJsonViewer(data.ResponseContentBody);
+                    $("#res_statuscode").text(data.ResponseStatusCode);
+                    if (data.ResponseHeaders !== "")
+                        $("#res_responseheaders").jJsonViewer(data.ResponseHeaders);
+                    $("#res_timestamp").text(new Date(data.ResponseTimestamp));
+
+
+
+                });
+            }
+
+        </script>
 }

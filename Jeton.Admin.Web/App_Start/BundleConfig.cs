@@ -21,6 +21,7 @@ namespace Jeton.Admin.Web
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js",
+                      "~/Scripts/bootstrap.daterangepicker.js",
                       "~/Scripts/respond.js"));
 
             //bundles.Add(new ScriptBundle("~/Content/bootstrapper").Include(
@@ -32,7 +33,8 @@ namespace Jeton.Admin.Web
             //    ));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css"
+                      "~/Content/bootstrap.css",
+                      "~/Content/bootstrap.daterangepicker.css"
                       ));
 
             //bundles.Add(new StyleBundle("~/Content/jetoncss").Include(
