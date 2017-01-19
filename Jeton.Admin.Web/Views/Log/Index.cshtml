@@ -5,6 +5,14 @@
     <link href="@Url.Content("~/Content/jjsonviewer.css")" rel="stylesheet" />
     <style type="text/css">
         .close { float: left !important; font-size: inherit !important; font-weight: inherit !important; line-height: inherit !important; -ms-opacity: 1 !important; opacity: 1 !important; }
+        .modal { text-align: center; }
+
+        @@media screen and (min-width: 768px) {
+            .modal:before { display: inline-block; vertical-align: middle; content: " "; height: 100%; }
+        }
+
+        .modal-dialog { display: inline-block; text-align: left; vertical-align: middle; }
+        .progress { height: 40px; }
     </style>
 }
 <div class="row">
@@ -69,9 +77,9 @@
 </div>
 <div class="row">
     <div class="col-lg-12">
-        <div id="log_detail_panel" class="panel">
+        <div class="panel">
             <div class="panel-heading">
-                Log Detail
+                Log Detail <span id="log_id"></span>
             </div>
             <div class="panel-body">
                 <div class="row">
@@ -197,42 +205,51 @@
     </div>
 </div>
 
+<div class="modal" id="loadingModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped active" role="progressbar"
+                 aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                <h4>Loading...</h4>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
 
 @section Scripts{
 
     <script src="@Url.Content("~/Scripts/jjsonviewer.js")"></script>
     <script type="text/javascript">
-        var _dateFormat = "DD.MM.YYYY";
+        var _dateFormat = "DD.MM.YYYY hh:mm:ss";
         var selected = [];
         var startDate = moment();
         var endDate = moment();
         var table;
         $(document).ready(function () {
 
-            $('#logdatatable tbody tr').on('click', function (e) {
-                var id = $(this).data("rowid");
-                var index = $.inArray(id, selected);
 
-                if (index === -1) {
-                    selected.push(id);
-                } else {
-                    selected.splice(index, 1);
-                }
-
-                $(this).toggleClass(' success');
-                GetLogDetail(id);
-                $(this).toggleClass(' warning').fadeIn(2000);
-            });
 
             $("#btnGetLogs").click(function () {
-                console.log(startDate.format(_dateFormat) + " - " + endDate.format(_dateFormat));
+                //console.log(startDate.format(_dateFormat) + " - " + endDate.format(_dateFormat));
                 GetLogs(startDate.format(_dateFormat), endDate.format(_dateFormat));
             });
 
             //Init Default Dates
             GetLogs(startDate.format(_dateFormat), endDate.format(_dateFormat));
 
-
+            $('#logs_body').on('click', 'tr', function () {
+                if ($(this).hasClass('danger')) {
+                    $(this).removeClass('danger');
+                }
+                else {
+                    table.$('tr.danger').removeClass('danger');
+                    $(this).addClass('danger');
+                }
+            });
 
         });
 
@@ -264,41 +281,58 @@
 
         function GetLogDetail(rowid) {
             var logId = rowid;
-
+            $('#loadingModal').modal('toggle');
             $.getJSON("@Url.Action("GetLogDetail","Log")", { "id": logId }, function (data) {
                 if (data == null) return false;
+                try {
+                    //Request Info
+                    $("#log_id").text(data.Id);
+                    $("#req_application").text(data.Application);
+                    $("#req_machine").text(data.Machine);
+                    $("#req_ipaddress").text(data.RequestIpAddress);
+                    $("#req_contenttype").text(data.RequestContentType);
+                    if (data.RequestContentBody !== "")
+                        $("#req_contentbody").jJsonViewer(data.RequestContentBody);
+                    $("#req_uri").text(data.RequestUri);
+                    $("#req_method").text(data.RequestMethod);
+                    $("#req_routetemplate").text(data.RequestRouteTemplate);
+                    if (data.RequestRouteData !== "")
+                        $("#req_routedata").jJsonViewer(data.RequestRouteData);
+                    if (data.RequestHeaders !== "")
+                        $("#req_headers").jJsonViewer(data.RequestHeaders);
+                    $("#req_timestamp").text(ToJavaScriptDate(data.RequestTimestamp) + "(UTC)");
+                    //Response Info
+                    $("#res_contenttype").text(data.ResponseContentType);
+                    if (data.ResponseContentBody !== "")
+                        $("#res_contentbody").jJsonViewer(data.ResponseContentBody);
+                    $("#res_statuscode").text(data.ResponseStatusCode);
+                    if (data.ResponseHeaders !== "")
+                        $("#res_responseheaders").jJsonViewer(data.ResponseHeaders);
+                    $("#res_timestamp").text(ToJavaScriptDate(data.ResponseTimestamp) + "(UTC)");
+                } catch (e) {
 
-                //Request Info
-                $("#req_application").text(data.Application);
-                $("#req_machine").text(data.Machine);
-                $("#req_ipaddress").text(data.RequestIpAddress);
-                $("#req_contenttype").text(data.RequestContentType);
-                if (data.RequestContentBody !== "")
-                    $("#req_contentbody").jJsonViewer(data.RequestContentBody);
-                $("#req_uri").text(data.RequestUri);
-                $("#req_method").text(data.RequestMethod);
-                $("#req_routetemplate").text(data.RequestRouteTemplate);
-                if (data.RequestRouteData !== "")
-                    $("#req_routedata").jJsonViewer(data.RequestRouteData);
-                if (data.RequestHeaders !== "")
-                    $("#req_headers").jJsonViewer(data.RequestHeaders);
-                $("#req_timestamp").text(new Date(parseInt(data.RequestTimestamp.replace("/Date(", "").replace(")/", ""), 10)));
-                //Response Info
-                $("#res_contenttype").text(data.ResponseContentType);
-                if (data.ResponseContentBody !== "")
-                    $("#res_contentbody").jJsonViewer(data.ResponseContentBody);
-                $("#res_statuscode").text(data.ResponseStatusCode);
-                if (data.ResponseHeaders !== "")
-                    $("#res_responseheaders").jJsonViewer(data.ResponseHeaders);
-                $("#res_timestamp").text(moment.tz(data.ResponseTimestamp).format());
+                }
 
 
 
+
+            }).done(function () {
+                $('#loadingModal').modal('hide');
             });
         }
 
 
+        function ToJavaScriptDate(value) {
+            var pattern = /Date\(([^)]+)\)/;
+            var results = pattern.exec(value);
+            var dt = new Date(parseFloat(results[1]));
+            return moment(dt).format(_dateFormat);
+//dt.getDate() + "." + (dt.getMonth() + 1) + "." + dt.getFullYear() + " " + dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getMilliseconds();
+        }
+
         function GetLogs(startDate, endDate) {
+
+            $('#loadingModal').modal('toggle');
 
             if (startDate === "")
                 alert("Start date is empty");
@@ -309,32 +343,36 @@
             $.getJSON("@Url.Action("GetLogs","Log")", { "startDateTime": startDate, "endDateTime": endDate },
                 function (logs) {
                     var tr;
-                    table = $('#logdatatable').DataTable({
-                        "responsive": true,
-                        "scrollY": "400px",
-                        "scrollCollapse": true
-                    });
+                    table = $('#logdatatable')
+                        .DataTable({
+                            "responsive": true,
+                            "paging": true,
+                            "destroy": true,
+                            "scrollY": "400px",
+                            "scrollCollapse": true
+                        });
 
+                    table.clear();
+                    var rowId;
                     for (var i = 0; i < logs.length; i++) {
-                        table.row.add([
+                        rowId = logs[i].Id;
+                        var index = table.row.add([
                             logs[i].Id,
-                            logs[i].Created,
+                            ToJavaScriptDate(logs[i].Created) + "(UTC)",
                             logs[i].Machine,
                             logs[i].RequestIpAddress,
                             logs[i].RequestMethod,
                             logs[i].ResponseStatusCode,
-                        ]).draw(false);
+                        ]).draw().index();
+
+                        var $tr = table.rows(i).nodes().to$();
+                        $tr.attr("data-rowid", rowId);
+                        $tr.click(function (e) {
+                            GetLogDetail(rowId);
+                        });
                     }
-
-                    //if ($.fn.dataTable.isDataTable('#logdatatable')) {
-                    //    table = $('#logdatatable').DataTable();
-                    //}
-                    //else {
-                    //    table = $('#logdatatable').DataTable({
-                    //        paging: false
-                    //    });
-                    //}
-
+                }).done(function () {
+                    $('#loadingModal').modal('hide');
                 });
 
 
