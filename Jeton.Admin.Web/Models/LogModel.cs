@@ -8,6 +8,7 @@ namespace Jeton.Admin.Web.Models
     public class LogModel
     {
         public Guid Id { get; set; }
+        public string Application { get; set; }
         public DateTime Created { get; set; }
         public string Machine { get; set; }
         public string RequestIpAddress { get; set; }

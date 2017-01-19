@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
 using Jeton.Admin.Web.Models;
+using Jeton.Core.Common;
 using Jeton.Core.Entities;
 using Jeton.Core.Interfaces.Services;
 
@@ -21,10 +22,9 @@ namespace Jeton.Admin.Web.Controllers
         }
 
         // GET: Log
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            var logs = (await _logService.GetDailyLogsAsync()).Select(Mapper.Map<LogModel>).ToList();
-            return View(logs);
+            return View();
         }
 
         public async Task<ActionResult> Daily()
@@ -33,6 +33,24 @@ namespace Jeton.Admin.Web.Controllers
             return View(logs);
         }
 
+
+        [HttpGet]
+        public async Task<JsonResult> GetLogs(string startDateTime, string endDateTime)
+        {
+            IList<LogModel> logs = null;
+            try
+            {
+                DateTime start, end;
+
+                if (DateTime.TryParse(startDateTime, out start) && DateTime.TryParse(endDateTime, out end))
+                    logs = (await _logService.GetLogsAsync(start.BeginDateTime(), end.EndDateTime())).Select(Mapper.Map<LogModel>).ToList();
+            }
+            catch
+            {
+                // ignored
+            }
+            return Json(logs, JsonRequestBehavior.AllowGet);
+        }
 
 
         [HttpGet]
@@ -47,7 +65,7 @@ namespace Jeton.Admin.Web.Controllers
             }
             catch (Exception)
             {
-                
+
                 throw;
             }
 
