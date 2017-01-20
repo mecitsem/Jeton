@@ -396,7 +396,6 @@
     <Content Include="Views\App\Create.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\Tools\Index.cshtml" />
-    <Content Include="Views\Tools\TokenValidate.cshtml" />
     <Content Include="Views\Settings\Index.cshtml" />
     <Content Include="Views\Settings\Create.cshtml" />
     <Content Include="Views\Settings\Detail.cshtml" />
@@ -407,7 +406,6 @@
     <Content Include="Views\Shared\_PartialAppActivityChart.cshtml" />
     <Content Include="Views\Shared\_PartialAppStatusChart.cshtml" />
     <Content Include="Views\Log\Index.cshtml" />
-    <Content Include="Views\Log\Daily.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

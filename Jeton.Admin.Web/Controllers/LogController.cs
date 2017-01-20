@@ -27,13 +27,6 @@ namespace Jeton.Admin.Web.Controllers
             return View();
         }
 
-        public async Task<ActionResult> Daily()
-        {
-            var logs = (await _logService.GetDailyLogsAsync()).Select(Mapper.Map<LogModel>).ToList();
-            return View(logs);
-        }
-
-
         [HttpGet]
         public async Task<JsonResult> GetLogs(string startDateTime, string endDateTime)
         {

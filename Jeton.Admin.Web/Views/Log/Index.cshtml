@@ -46,26 +46,23 @@
             <div class="panel-body">
                 <table id="logdatatable" class="table table-hover table-striped table-responsive">
                     <thead>
-                        <tr>
-                            <th>
-                                ID
-                            </th>
-                            <th>
-                                Created
-                            </th>
-                            <th>
-                                Machine
-                            </th>
-                            <th>
-                                Request IP Address
-                            </th>
-                            <th>
-                                Request Method
-                            </th>
-                            <th>
-                                Status
-                            </th>
-                        </tr>
+                    <tr>
+                        <th>
+                            Created
+                        </th>
+                        <th>
+                            Machine
+                        </th>
+                        <th>
+                            Request IP Address
+                        </th>
+                        <th>
+                            Request Method
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                    </tr>
                     </thead>
                     <tbody id="logs_body"></tbody>
                 </table>
@@ -77,9 +74,9 @@
 </div>
 <div class="row">
     <div class="col-lg-12">
-        <div class="panel">
+        <div class="panel panel-default">
             <div class="panel-heading">
-                Log Detail <span id="log_id"></span>
+                Log Detail - ID {<span id="log_id"></span>}
             </div>
             <div class="panel-body">
                 <div class="row">
@@ -357,7 +354,6 @@
                     for (var i = 0; i < logs.length; i++) {
                         rowId = logs[i].Id;
                         var index = table.row.add([
-                            logs[i].Id,
                             ToJavaScriptDate(logs[i].Created) + "(UTC)",
                             logs[i].Machine,
                             logs[i].RequestIpAddress,

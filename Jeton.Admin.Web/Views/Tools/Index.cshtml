@@ -1,7 +1,106 @@
-﻿
-@{
-    ViewBag.Title = "Index";
-}
+﻿@using Jeton.Admin.Web.Models
+@using Jeton.Admin.Web.ViewModel
 
-<h2>Index</h2>
+@{
+    ViewBag.Title = "Tools";
+}
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            @ViewBag.Title
+        </h1>
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                Token Tools
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#generate_token" data-toggle="tab" aria-expanded="true">Generate Token</a>
+                    </li>
+                    <li class="">
+                        <a href="#verify_token" data-toggle="tab" aria-expanded="false">Verify Token</a>
+                    </li>
+                    <li class="">
+                        <a href="#messages" data-toggle="tab" aria-expanded="false">Decode Token</a>
+                    </li>
+                    <li class="">
+                        <a href="#settings" data-toggle="tab" aria-expanded="false">Settings</a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane fade active in" id="generate_token">
+                        <br/>
+                        <div>
+                            <div class="form-group">
+                                <label>Select Root App</label>
+                                <select id="select_root_app" class="form-control">
+                                    @if (ViewBag.RootApps != null)
+                                    {
+                                        foreach (var app in (List<AppModel>)ViewBag.RootApps)
+                                        {
+                                           <option value="@app.Id">@app.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>User Name</label>
+                                <input id="user_name" class="form-control" placeholder="Enter text">
+                            </div>
+                            <div class="form-group">
+                                <label>User NameId</label>
+                                <input id="user_name_id" class="form-control" placeholder="Enter text">
+                            </div>
+                         
+                            <div class="form-group">
+                                <label>Result</label>
+                                <textarea class="form-control" rows="3" readonly=""></textarea>
+                            </div>
+                      
+                            <button type="submit" class="btn btn-success">SEND</button>
+                            <button type="reset" class="btn btn-default">RESET</button>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="verify_token">
+                        <br />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <textarea class="form-control" rows="25" ></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="well" style="height: 500px">
+                                    <h4>Normal Well</h4>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tincidunt est vitae ultrices accumsan. Aliquam ornare lacus adipiscing, posuere lectus et, fringilla augue.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="messages">
+                        <h4>Messages Tab</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    </div>
+                    <div class="tab-pane fade" id="settings">
+                        <h4>Settings Tab</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-6 -->
+</div>
 
