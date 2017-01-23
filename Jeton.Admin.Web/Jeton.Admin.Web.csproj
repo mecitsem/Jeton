@@ -190,7 +190,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AppModel.cs" />
-    <Compile Include="Models\JsonModel.cs" />
+    <Compile Include="Models\JsonResponseModel.cs" />
     <Compile Include="Models\LogModel.cs" />
     <Compile Include="Models\SettingModel.cs" />
     <Compile Include="Models\TokenModel.cs" />

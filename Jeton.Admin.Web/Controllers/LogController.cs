@@ -64,5 +64,7 @@ namespace Jeton.Admin.Web.Controllers
 
             return Json(log, JsonRequestBehavior.AllowGet);
         }
+
+       
     }
 }

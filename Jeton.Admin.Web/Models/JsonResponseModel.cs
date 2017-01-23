@@ -5,10 +5,10 @@ using System.Web;
 
 namespace Jeton.Admin.Web.Models
 {
-    public class JsonModel
+    public class JsonResponseModel
     {
         public bool Result { get; set; }
         public string Error { get; set; }
-        public object Data { get; set; }
+        public object Content { get; set; }
     }
 }

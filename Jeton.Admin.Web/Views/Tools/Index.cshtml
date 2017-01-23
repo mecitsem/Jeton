@@ -43,6 +43,10 @@
                     <li class="">
                         <a href="#decode_token" data-toggle="tab" aria-expanded="false">Decode Token</a>
                     </li>
+                    <li class="">
+                        <a href="#check_token" data-toggle="tab" aria-expanded="false">Check Token</a>
+                    </li>
+
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content">
@@ -51,16 +55,16 @@
                         <div class="row">
                             <div class="col-md-5">
                                 <div class="form-group">
-                                    <textarea id="txt_verify_token" class="form-control" rows="25"></textarea>
+                                    <textarea id="txt_verify_token" class="form-control" rows="25" placeholder="Please paste token"></textarea>
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <input id="btn_verify" type="button" class="btn btn-success btn-lg btn-block" style="margin-top: 240px" value="Verify"/>
                             </div>
                             <div class="col-md-5">
-                                <div id="veriy_token_result" class="well" style="height: 500px">
-                                   
-                                </div>
+                                <h1>
+                                    <div id="veriy_token_result" class="alert alert-info" style="height: 500px;text-align: center"></div>
+                                </h1>
                             </div>
                         </div>
                     </div>
@@ -82,7 +86,26 @@
                             </div>
                         </div>
                     </div>
+                    <div class="tab-pane fade" id="check_token">
+                        <br />
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <textarea id="txt_check_token" class="form-control" rows="25" placeholder="Please paste token"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <input id="btn_check" type="button" class="btn btn-info btn-lg btn-block" style="margin-top: 240px" value="Check" />
+                            </div>
+                            <div class="col-md-5">
+                                <h1 class="text-center">
+                                    <div id="check_token_result" class="alert" style="height: 500px;text-align: center">
 
+                                    </div>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- /.panel-body -->
@@ -95,48 +118,83 @@
 @section Scripts{
     <script src="@Url.Content("~/Scripts/jjsonviewer.js")"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document)
+            .ready(function() {
 
-            $("#btn_verify").click(function () {
-                var token = $("#txt_verify_token").val();
+                $("#btn_verify")
+                    .click(function() {
+                        var token = $("#txt_verify_token").val();
 
-                VerifyToken(token);
+                        VerifyToken(token);
+                    });
+
+                $("#btn_decode")
+                    .click(function() {
+                        var token = $("#txt_decode_token").val();
+
+                        DecodeToken(token);
+                    });
+
+                $("#btn_check")
+                    .click(function() {
+                        var token = $("#txt_check_token").val();
+
+                        CheckToken(token);
+                    });
             });
-
-            $("#btn_decode").click(function() {
-                var token = $("#txt_decode_token").val();
-
-                DecodeToken(token);
-            });
-
-        });
 
 
         function VerifyToken(token) {
             if (token === "")
                 return false;
 
-            $.getJSON("@Url.Action("VerifyToken","Tools")" + "?tokenKey=" + token,
+            $.getJSON("@Url.Action("VerifyToken", "Tools")" + "?tokenKey=" + token,
                 function (d) {
-                    if(d.Result)
-                        $("#veriy_token_result").html("<h1>Verified</h1>");
-                    else {
+                    $("#veriy_token_result").removeClass("alert-info alert-success alert-danger");
+                    if (d.Result) {
+                        $("#veriy_token_result").text(d.Content);
+                        $("#veriy_token_result").addClass("alert-success");
+                    } else {
                         $("#veriy_token_result").text(d.Error);
+                        $("#veriy_token_result").addClass("alert-danger");
                     }
                 });
-            
+
         }
 
         function DecodeToken(token) {
             if (token === "")
                 return false;
 
-            $.getJSON("@Url.Action("DecodeToken","Tools")" + "?tokenKey=" + token,
+            $.getJSON("@Url.Action("DecodeToken", "Tools")" + "?tokenKey=" + token,
                 function(d) {
                     if (d.Result)
-                        $("#decode_token_result").jJsonViewer(d.Data);
+                        $("#decode_token_result").jJsonViewer(d.Content);
                     else {
                         $("#decode_token_result").text(d.Error);
+                    }
+                });
+
+        }
+
+        function CheckToken(token) {
+            if (token === "")
+                return false;
+
+            $.getJSON("@Url.Action("CheckToken", "Tools")" + "?tokenKey=" + token,
+                function (d) {
+                    $("#check_token_result").removeClass("alert-info alert-success alert-danger");
+                    if (d.Result) {
+                        $("#check_token_result").text(d.Content ? "Expired" : "Live");
+                        if(d.Content)
+                            $("#check_token_result").addClass("alert-danger");
+                        else {
+                            $("#check_token_result").addClass("alert-success");
+                        }
+                    }
+                    else {
+                        $("#check_token_result").text(d.Error);
+                        $("#check_token_result").addClass("alert-danger");
                     }
                 });
 

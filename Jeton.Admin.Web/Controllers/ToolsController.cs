@@ -43,14 +43,13 @@ namespace Jeton.Admin.Web.Controllers
         [HttpGet]
         public async Task<JsonResult> VerifyToken(string tokenKey)
         {
-            var result = new JsonModel();
+            var result = new JsonResponseModel();
             try
             {
                 var serviceResult = await _tokenService.IsVerifiedAsync(tokenKey);
-                if (serviceResult == false)
-                    throw new ArgumentException("Token is invalid");
 
                 result.Result = true;
+                result.Content = serviceResult ? "Verified" : "Invalid";
             }
             catch (Exception ex)
             {
@@ -62,18 +61,18 @@ namespace Jeton.Admin.Web.Controllers
         [HttpGet]
         public async Task<JsonResult> DecodeToken(string tokenKey)
         {
-            var result = new JsonModel();
+            var result = new JsonResponseModel();
             try
             {
                 var token = await _tokenService.GetTokenByKeyAsync(tokenKey);
 
                 var serviceResult = await _tokenService.DecodeAsync(token);
-               
-                if(string.IsNullOrWhiteSpace(serviceResult))
+
+                if (string.IsNullOrWhiteSpace(serviceResult))
                     throw new ArgumentException("Invalid token");
 
                 result.Result = true;
-                result.Data = serviceResult;
+                result.Content = serviceResult;
             }
             catch (Exception ex)
             {
@@ -82,5 +81,25 @@ namespace Jeton.Admin.Web.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        public async Task<JsonResult> CheckToken(string tokenKey)
+        {
+            var result = new JsonResponseModel();
+            try
+            {
+                var token = await _tokenService.GetTokenByKeyAsync(tokenKey);
+
+                var serviceResult = await _tokenService.IsExpiredAsync(token);
+
+                result.Result = true;
+                result.Content = serviceResult;
+            }
+            catch (Exception ex)
+            {
+                result.Error = ex.Message;
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
     }
 }
