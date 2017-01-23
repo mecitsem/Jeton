@@ -65,9 +65,18 @@ namespace Jeton.Core.Managers
 
             //Create Token
             var token = JsonWebToken.Encode(extraheaders, payload, SecretKey, JwtHashAlgorithm.HS256); //JWT
-
+            
             return token;
         }
+
+        public string Decode(string token)
+        {
+            if(string.IsNullOrWhiteSpace(token))
+                throw new ArgumentNullException(nameof(token));
+
+            return JsonWebToken.Decode(token, SecretKey);
+        }
+
 
         public DateTime CalculateExpireDateTime(DateTime time)
         {

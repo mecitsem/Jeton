@@ -4,6 +4,21 @@
 @{
     ViewBag.Title = "Tools";
 }
+@section Styles{
+    <link href="@Url.Content("~/Content/jjsonviewer.css")" rel="stylesheet" />
+    <style type="text/css">
+        .close { float: left !important; font-size: inherit !important; font-weight: inherit !important; line-height: inherit !important; -ms-opacity: 1 !important; opacity: 1 !important; }
+        .modal { text-align: center; }
+
+        @@media screen and (min-width: 768px) {
+            .modal:before { display: inline-block; vertical-align: middle; content: " "; height: 100%; }
+        }
+
+        .modal-dialog { display: inline-block; text-align: left; vertical-align: middle; }
+        .progress { height: 40px; }
+    </style>
+}
+
 <div class="row">
     <div class="col-lg-12">
         <h1 class="page-header">
@@ -23,78 +38,51 @@
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs">
                     <li class="active">
-                        <a href="#generate_token" data-toggle="tab" aria-expanded="true">Generate Token</a>
-                    </li>
-                    <li class="">
                         <a href="#verify_token" data-toggle="tab" aria-expanded="false">Verify Token</a>
                     </li>
                     <li class="">
-                        <a href="#messages" data-toggle="tab" aria-expanded="false">Decode Token</a>
-                    </li>
-                    <li class="">
-                        <a href="#settings" data-toggle="tab" aria-expanded="false">Settings</a>
+                        <a href="#decode_token" data-toggle="tab" aria-expanded="false">Decode Token</a>
                     </li>
                 </ul>
-
                 <!-- Tab panes -->
                 <div class="tab-content">
-                    <div class="tab-pane fade active in" id="generate_token">
-                        <br/>
-                        <div>
-                            <div class="form-group">
-                                <label>Select Root App</label>
-                                <select id="select_root_app" class="form-control">
-                                    @if (ViewBag.RootApps != null)
-                                    {
-                                        foreach (var app in (List<AppModel>)ViewBag.RootApps)
-                                        {
-                                           <option value="@app.Id">@app.Name</option>
-                                        }
-                                    }
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>User Name</label>
-                                <input id="user_name" class="form-control" placeholder="Enter text">
-                            </div>
-                            <div class="form-group">
-                                <label>User NameId</label>
-                                <input id="user_name_id" class="form-control" placeholder="Enter text">
-                            </div>
-                         
-                            <div class="form-group">
-                                <label>Result</label>
-                                <textarea class="form-control" rows="3" readonly=""></textarea>
-                            </div>
-                      
-                            <button type="submit" class="btn btn-success">SEND</button>
-                            <button type="reset" class="btn btn-default">RESET</button>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="verify_token">
+                    <div class="tab-pane fade active in" id="verify_token">
                         <br />
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-5">
                                 <div class="form-group">
-                                    <textarea class="form-control" rows="25" ></textarea>
+                                    <textarea id="txt_verify_token" class="form-control" rows="25"></textarea>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="well" style="height: 500px">
-                                    <h4>Normal Well</h4>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tincidunt est vitae ultrices accumsan. Aliquam ornare lacus adipiscing, posuere lectus et, fringilla augue.</p>
+                            <div class="col-md-2">
+                                <input id="btn_verify" type="button" class="btn btn-success btn-lg btn-block" style="margin-top: 240px" value="Verify"/>
+                            </div>
+                            <div class="col-md-5">
+                                <div id="veriy_token_result" class="well" style="height: 500px">
+                                   
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="messages">
-                        <h4>Messages Tab</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <div class="tab-pane fade" id="decode_token">
+                        <br />
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <textarea id="txt_decode_token" class="form-control" rows="25" placeholder="Please paste token"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <input id="btn_decode" type="button" class="btn btn-primary btn-lg btn-block" style="margin-top: 240px" value="Decode" />
+                            </div>
+                            <div class="col-md-5">
+                                <div id="decode_token_result" class="well" style="height: 500px">
+                                   
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="tab-pane fade" id="settings">
-                        <h4>Settings Tab</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    </div>
+
                 </div>
             </div>
             <!-- /.panel-body -->
@@ -104,3 +92,55 @@
     <!-- /.col-lg-6 -->
 </div>
 
+@section Scripts{
+    <script src="@Url.Content("~/Scripts/jjsonviewer.js")"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            $("#btn_verify").click(function () {
+                var token = $("#txt_verify_token").val();
+
+                VerifyToken(token);
+            });
+
+            $("#btn_decode").click(function() {
+                var token = $("#txt_decode_token").val();
+
+                DecodeToken(token);
+            });
+
+        });
+
+
+        function VerifyToken(token) {
+            if (token === "")
+                return false;
+
+            $.getJSON("@Url.Action("VerifyToken","Tools")" + "?tokenKey=" + token,
+                function (d) {
+                    if(d.Result)
+                        $("#veriy_token_result").html("<h1>Verified</h1>");
+                    else {
+                        $("#veriy_token_result").text(d.Error);
+                    }
+                });
+            
+        }
+
+        function DecodeToken(token) {
+            if (token === "")
+                return false;
+
+            $.getJSON("@Url.Action("DecodeToken","Tools")" + "?tokenKey=" + token,
+                function(d) {
+                    if (d.Result)
+                        $("#decode_token_result").jJsonViewer(d.Data);
+                    else {
+                        $("#decode_token_result").text(d.Error);
+                    }
+                });
+
+        }
+
+    </script>
+}

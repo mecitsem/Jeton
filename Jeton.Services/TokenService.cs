@@ -422,6 +422,60 @@ namespace Jeton.Services
             return await _tokenRepository.TableNoTracking.AnyAsync(t => t.AppId.Equals(app.Id));
         }
 
+        public string Decode(Token token)
+        {
+            if (token == null)
+                throw new ArgumentNullException(nameof(token));
+
+            //Check App is Root
+            if (!IsExist(token?.TokenKey))
+                throw new ArgumentException("The token is not exist.");
+
+            //Check App is Root
+            if (!IsVerified(token))
+                throw new ArgumentException("The token is not verified.");
+
+            var secretKey = _settingRepository.GetSecretKey();
+            var tokenDuration = _settingRepository.GetTokenDuration();
+
+            if (string.IsNullOrWhiteSpace(secretKey))
+                throw new ArgumentNullException(nameof(secretKey));
+
+            var tokenManager = new TokenManager(secretKey)
+            {
+                TokenDuration = tokenDuration,
+            };
+
+            return tokenManager.Decode(token.TokenKey);
+        }
+
+        public async Task<string> DecodeAsync(Token token)
+        {
+            if (token == null)
+                throw new ArgumentNullException(nameof(token));
+
+            //Check App is Root
+            if (!IsExist(token?.TokenKey))
+                throw new ArgumentException("The token is not exist.");
+
+            //Check App is Root
+            if (!IsVerified(token))
+                throw new ArgumentException("The token is not verified.");
+
+            var secretKey = await _settingRepository.GetSecretKeyAsync();
+            var tokenDuration = await _settingRepository.GetTokenDurationAsync();
+
+            if (string.IsNullOrWhiteSpace(secretKey))
+                throw new ArgumentNullException(nameof(secretKey));
+
+            var tokenManager = new TokenManager(secretKey)
+            {
+                TokenDuration = tokenDuration,
+            };
+
+            return tokenManager.Decode(token.TokenKey);
+        }
+
         public int GetTokensCount()
         {
             return _tokenRepository.TableNoTracking.Count();

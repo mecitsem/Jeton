@@ -40,5 +40,47 @@ namespace Jeton.Admin.Web.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<JsonResult> VerifyToken(string tokenKey)
+        {
+            var result = new JsonModel();
+            try
+            {
+                var serviceResult = await _tokenService.IsVerifiedAsync(tokenKey);
+                if (serviceResult == false)
+                    throw new ArgumentException("Token is invalid");
+
+                result.Result = true;
+            }
+            catch (Exception ex)
+            {
+                result.Error = ex.Message;
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> DecodeToken(string tokenKey)
+        {
+            var result = new JsonModel();
+            try
+            {
+                var token = await _tokenService.GetTokenByKeyAsync(tokenKey);
+
+                var serviceResult = await _tokenService.DecodeAsync(token);
+               
+                if(string.IsNullOrWhiteSpace(serviceResult))
+                    throw new ArgumentException("Invalid token");
+
+                result.Result = true;
+                result.Data = serviceResult;
+            }
+            catch (Exception ex)
+            {
+                result.Error = ex.Message;
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

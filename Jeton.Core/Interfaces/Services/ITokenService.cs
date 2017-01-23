@@ -47,5 +47,7 @@ namespace Jeton.Core.Interfaces.Services
         bool IsExistByApp(App app);
         Task<bool> IsExistByAppAsync(App app);
 
+        string Decode(Token token);
+        Task<string> DecodeAsync(Token token);
     }
 }
