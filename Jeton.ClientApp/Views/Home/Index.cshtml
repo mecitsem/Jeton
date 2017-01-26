@@ -1,0 +1,50 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>Client Application</h1>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <span class="btn btn-lg btn-success">Authenticated</span>
+
+
+        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <ul class="nav navbar-nav navbar-right">
+                <li><a class="btn btn-danger" href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+            </ul>
+        }
+
+    }
+</div>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <table class="table table-responsive table-hover table-bordered">
+        <tr>
+            <th>UserName</th>
+            <td>@User.Identity.Name</td>
+        </tr>
+        <tr>
+            <th>UserNameId</th>
+            <td>@User.Identity.Name</td>
+        </tr>
+        <tr>
+            <th>Api Url</th>
+            <td>@ViewBag.ApiUrl</td>
+        </tr>
+        <tr>
+            <th>AppId</th>
+            <td>@ViewBag.AppId</td>
+        </tr>
+        <tr>
+            <th>AccessKey</th>
+            <td>@ViewBag.AccessKey</td>
+        </tr>
+    </table>
+
+
+}

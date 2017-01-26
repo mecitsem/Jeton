@@ -1,0 +1,73 @@
+﻿@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>Root Application</h1>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <span class="btn btn-lg btn-success">Authenticated</span>
+    }
+    else
+    {
+        <span class="btn btn-lg btn-danger">Please Login!</span>
+    }
+</div>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <table class="table table-responsive table-hover table-bordered">
+        <tr>
+            <th>UserName</th>
+            <td>@User.Identity.Name</td>
+        </tr>
+        <tr>
+            <th>UserNameId</th>
+            <td>@User.Identity.GetUserId()</td>
+        </tr>
+        <tr>
+            <th>Api Url</th>
+            <td>@ViewBag.ApiUrl</td>
+        </tr>
+        <tr>
+            <th>AppId</th>
+            <td>@ViewBag.AppId</td>
+        </tr>
+        <tr>
+            <th>AccessKey</th>
+            <td>@ViewBag.AccessKey</td>
+        </tr>
+        <tr>
+            <th>Token</th>
+            <td>
+                <div class="row">
+                    <div class="col-lg-10">
+                        <input class="form-control input-sm" style="width: 100%; max-width: 100% !important" type="text" placeholder="" readonly value="@ViewBag.Token">
+                    </div>
+                    <div class="col-lg-2">
+                        <a class="btn btn-primary btn-sm" onclick="copyToClipboard('@ViewBag.Token')" data-toggle="tooltip" data-placement="top" title="Copy to clipboard">Copy to clipboard</a>
+                    </div>
+                </div>
+
+            </td>
+        </tr>
+        @if (ViewBag.Error != null)
+        {
+            <tr>
+                <th>Error</th>
+                <td>@ViewBag.Error</td>
+            </tr>
+        }
+
+    </table>
+
+    if (ViewBag.Token != null)
+    {
+        <div class="row">
+            <div class="col-lg-offset-4 col-lg-4 col-lg-offset-4">
+                <a href="@Html.Raw(Url.Action("ClientRedirect", "Home") + "?redirectUrl=http://clientapp")" class="btn btn-lg btn-block btn-success">Open Client Application</a>
+            </div>
+        </div>
+    }
+}
