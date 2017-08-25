@@ -9,6 +9,6 @@ namespace Jeton.Api.Models
     public class TokenModel
     {
         [Required]
-        public string TokenKey { get; set; }
+        public string AccessToken { get; set; }
     }
 }

@@ -16,7 +16,7 @@ namespace Jeton.ClientApp.Controllers
     {
         public ActionResult Login()
         {
-            var tokenKey = Request.QueryString.GetValues("TokenKey")?.FirstOrDefault();
+            var tokenKey = Request.QueryString.GetValues("AccessToken")?.FirstOrDefault();
 
             return !string.IsNullOrWhiteSpace(tokenKey) ? JwtLogin() : View();
         }
@@ -29,13 +29,11 @@ namespace Jeton.ClientApp.Controllers
 
 
             var appId = ConfigHelper.GetAppSettingsValue("AppId");
-            var accessKey = ConfigHelper.GetAppSettingsValue("AccessKey");
+            var apiKey = ConfigHelper.GetAppSettingsValue("ApiKey");
             var apiUrl = ConfigHelper.GetAppSettingsValue("ApiUrl");
 
-            var jetonClient = new JetonClient(appId, accessKey, apiUrl);
+            var jetonClient = new JetonClient(appId, apiKey, apiUrl);
             var response = jetonClient.VerifyToken(new Token());
-
-
 
             var isAuth = SetAuthCookie(model, model.RememberMe);
 
@@ -50,10 +48,6 @@ namespace Jeton.ClientApp.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-
-
-
-
         }
 
 
@@ -61,21 +55,21 @@ namespace Jeton.ClientApp.Controllers
         public ActionResult JwtLogin()
         {
             var appId = ConfigHelper.GetAppSettingsValue("AppId");
-            var accessKey = ConfigHelper.GetAppSettingsValue("AccessKey");
+            var apiKey = ConfigHelper.GetAppSettingsValue("ApiKey");
             var apiUrl = ConfigHelper.GetAppSettingsValue("ApiUrl");
 
 
 
-            var tokenKey = Request.QueryString.GetValues("TokenKey")?.FirstOrDefault();
+            var accessToken = Request.QueryString.GetValues("AccessToken")?.FirstOrDefault();
             var returnUrl = Request.QueryString.GetValues("ReturnUrl")?.FirstOrDefault();
 
-            if (!string.IsNullOrEmpty(tokenKey))
+            if (!string.IsNullOrEmpty(accessToken))
             {
 
-                var jetonClient = new JetonClient(appId, accessKey, apiUrl);
+                var jetonClient = new JetonClient(appId, apiKey, apiUrl);
                 var response = jetonClient.VerifyToken(new Token()
                 {
-                    TokenKey = tokenKey
+                    AccessToken = accessToken
                 });
 
                 if (response.Status)

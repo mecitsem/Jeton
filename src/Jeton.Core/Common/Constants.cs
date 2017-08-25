@@ -5,7 +5,7 @@ namespace Jeton.Core.Common
     public class Constants
     {
         public const int TokenLiveDuration = 24;
-        public const string AccessKey = "AccessKey";
+        public const string AccessKey = "apiKey";
         public const string UserName = "UserName";
         public const string UserNameId = "UserNameId";
         public static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
@@ -13,8 +13,8 @@ namespace Jeton.Core.Common
         public static readonly string Application = "Jeton";
         public class Settings
         {
-            public const string SecretKey = "secret_key";
-            public const string TokenDuration = "token_duration";
+            public const string SecretKey = "secretKey";
+            public const string TokenDuration = "tokenDuration";
         }
 
 

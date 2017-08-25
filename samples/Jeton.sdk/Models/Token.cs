@@ -8,6 +8,6 @@ namespace Jeton.Sdk.Models
 {
     public class Token
     {
-        public string TokenKey { get; set; }
+        public string AccessToken { get; set; }
     }
 }

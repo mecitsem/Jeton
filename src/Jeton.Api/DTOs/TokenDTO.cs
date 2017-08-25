@@ -7,6 +7,6 @@ namespace Jeton.Api.DTOs
 {
     public class TokenDto
     {
-        public string TokenKey { get; set; }
+        public string AccessToken { get; set; }
     }
 }

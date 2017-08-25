@@ -69,20 +69,17 @@ namespace Jeton.Admin.Web.Controllers
         [HttpGet]
         public async Task<JsonResult> GetTokens()
         {
-            IEnumerable<TokenModel> tokens;
+            object data = null;
             try
             {
-            
                 var allTokens = await _tokenService.GetAllAsync();
-                tokens = allTokens.Select(Mapper.Map<TokenModel>).ToList();
-
+                data = allTokens.Select(Mapper.Map<TokenModel>).ToList();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                data = ex.Message;
             }
-            return Json(tokens, JsonRequestBehavior.AllowGet);
+            return Json(data, JsonRequestBehavior.AllowGet);
 
         }
 

@@ -12,13 +12,16 @@ namespace Jeton.Api.Controllers
 {
     public class TokenController : ApiController
     {
-    
+
         private readonly ITokenService _tokenService;
         private readonly IAppService _appService;
         private readonly IUserService _userService;
         private readonly ILogService _logService;
 
-        public TokenController(IAppService appService, ITokenService tokenService, IUserService userService,ILogService logService)
+        public TokenController(IAppService appService, 
+                               ITokenService tokenService, 
+                               IUserService userService, 
+                               ILogService logService)
         {
             _appService = appService;
             _tokenService = tokenService;
@@ -77,7 +80,7 @@ namespace Jeton.Api.Controllers
                 var token = await _tokenService.GenerateAsync(user, app);
                 var tokenDto = new TokenDto()
                 {
-                    TokenKey = token.TokenKey
+                    AccessToken = token.TokenKey
                 };
                 //Response
                 response = Ok(tokenDto);
@@ -120,10 +123,10 @@ namespace Jeton.Api.Controllers
 
                 #endregion
 
-                if (!await _tokenService.IsExistAsync(tokenModel.TokenKey))
+                if (!await _tokenService.IsExistAsync(tokenModel.AccessToken))
                     return BadRequest("TokenKey is not exist.");
 
-                var token = await _tokenService.GetTokenByKeyAsync(tokenModel.TokenKey);
+                var token = await _tokenService.GetTokenByKeyAsync(tokenModel.AccessToken);
 
                 //Verify
                 if (!await _tokenService.IsVerifiedAsync(token))

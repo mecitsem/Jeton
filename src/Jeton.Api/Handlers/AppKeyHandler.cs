@@ -21,64 +21,93 @@ namespace Jeton.Api.Handlers
             _appService = appService;
         }
 
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-          
+            var response = await base.SendAsync(request, cancellationToken);
+            var tsc = new TaskCompletionSource<HttpResponseMessage>();
+
             #region CHECK Parameters
 
             var context = ((HttpContextBase)request.Properties["MS_HttpContext"]);
 
-            var appId = context?.Request?.Url?.Segments.LastOrDefault();
-        
+            var isTokenRequest = context.Request.Url.AbsolutePath.StartsWith("api/token");
 
-            #endregion
+            var appId = isTokenRequest ? context?.Request?.Url?.Segments.LastOrDefault() : string.Empty;
 
-
-            return base.SendAsync(request, cancellationToken).ContinueWith(task =>
+            #region AppSecurity
+            if (isTokenRequest)
             {
-                var response = task.Result;
                 Guid _appId;
                 //Check AppId
                 if (string.IsNullOrEmpty(appId) || !Guid.TryParse(appId, out _appId) || _appId.Equals(default(Guid)))
                 {
-                    return request.CreateResponse(HttpStatusCode.BadRequest, "AppId is null or not Guid format");
+                    response = request.CreateResponse(HttpStatusCode.BadRequest, "AppId is null or not Guid format");
+                    tsc.SetResult(response);
+                    return await tsc.Task;
                 }
 
                 //Request Header
 
-                //Check AccessKey
+                //Check AccessKey => in swagger apiKey
                 if (!request.HeaderKeyIsExist(Constants.AccessKey))
-                    return request.CreateResponse(HttpStatusCode.BadRequest, "AccessKey is required. Please add your header.");
+                {
+                    response = request.CreateResponse(HttpStatusCode.BadRequest, "apiKey is required. Please add your header.");
+                    tsc.SetResult(response);
+                    return await tsc.Task;
+                }
+
 
                 var accessKey = request.GetHeaderValue(Constants.AccessKey);
 
                 //Check AccessKey Value
                 if (string.IsNullOrWhiteSpace(accessKey))
-                    return request.CreateResponse(HttpStatusCode.BadRequest, "AccessKey is null or empty. Please add your AccessKey.");
+                {
+                    response = request.CreateResponse(HttpStatusCode.BadRequest, "apiKey is null or empty. Please add your AccessKey.");
+                    tsc.SetResult(response);
+                    return await tsc.Task;
+                }
+
 
                 #region Check App
 
                 //Check App is Exist
                 if (!_appService.IsExistAsync(_appId).Result)
-                    return request.CreateResponse(HttpStatusCode.BadRequest, "AppId is invalid. Please register your app");
+                {
+                    response = request.CreateResponse(HttpStatusCode.BadRequest, "AppId is invalid. Please register your app");
+                    tsc.SetResult(response);
+                    return await tsc.Task;
+                }
+
 
                 //Get APP
                 var app = _appService.GetByIdAsync(_appId).Result;
 
                 //Check app is active
                 if (!_appService.IsActiveAsync(app).Result)
-                    return request.CreateResponse(HttpStatusCode.NotFound, "The app is not found");
+                {
+                    response = request.CreateResponse(HttpStatusCode.NotFound, "The app is not found");
+                    tsc.SetResult(response);
+                    return await tsc.Task;
+                }
 
                 //Check Access Key
                 if (!app.AccessKey.Equals(accessKey))
-                    return request.CreateResponse(HttpStatusCode.Unauthorized, "Unauthorized");
+                {
+                    response = request.CreateResponse(HttpStatusCode.Unauthorized, "Unauthorized");
+                    tsc.SetResult(response);
+                    return await tsc.Task;
+                }
 
 
                 #endregion
 
-                return response;
 
-            }, cancellationToken);
+            }
+            #endregion
+
+            return response;
+           
+            #endregion
         }
     }
 }

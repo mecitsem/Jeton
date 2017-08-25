@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Jeton.Sdk.Models;
 using Jeton.Sdk.ServiceModels;
 using Newtonsoft.Json;
-using RestSharp;
+using System.Net;
 
 namespace Jeton.Sdk
 {
@@ -15,10 +11,12 @@ namespace Jeton.Sdk
     /// </summary>
     public class JetonClient
     {
+
+
         /// <summary>
         /// 
         /// </summary>
-        public string AccessKey { get; set; }
+        public string ApiKey { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -34,9 +32,9 @@ namespace Jeton.Sdk
         /// <param name="appId">Registered Application ID</param>
         /// <param name="accessKey">Registered Application AccessKey</param>
         /// <param name="apiUrl">Jeton Api Url</param>
-        public JetonClient(string appId, string accessKey, string apiUrl)
+        public JetonClient(string appId, string apiKey, string apiUrl)
         {
-            AccessKey = accessKey;
+            ApiKey = apiKey;
 
             AppId = appId;
 
@@ -56,8 +54,8 @@ namespace Jeton.Sdk
             var result = new TokenResponse<Token>();
             try
             {
-                if (string.IsNullOrWhiteSpace(AccessKey))
-                    throw new ArgumentNullException(nameof(AccessKey));
+                if (string.IsNullOrWhiteSpace(ApiKey))
+                    throw new ArgumentNullException(nameof(ApiKey));
 
                 if (string.IsNullOrWhiteSpace(AppId))
                     throw new ArgumentNullException(nameof(AppId));
@@ -65,36 +63,23 @@ namespace Jeton.Sdk
                 if (user == null)
                     throw new ArgumentNullException(nameof(user));
 
-                var client = new RestClient { BaseUrl = new Uri(this.ApiUrl) };
-
-                var request = new RestRequest
+                Token token = null;
+                using (var client = new WebClient())
                 {
-                    Resource = $"/api/token/generate/{AppId}",
-                    Method = Method.POST
-                };
-
-                //Header
-                request.AddHeader("AccessKey", AccessKey);
-
-                //Body
-                request.RequestFormat = DataFormat.Json;
-                request.AddBody(user);
-
-                //Execute
-                var response = client.Execute(request);
-
-                //Deserialize response content
-                var token = JsonConvert.DeserializeObject<Token>(response.Content);
-
+                    client.BaseAddress = ApiUrl;
+                    client.Headers.Add("apiKey", ApiKey);
+                    client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                    var res = client.UploadString($"/api/token/generate/{AppId}", "POST", JsonConvert.SerializeObject(user));
+                    token = JsonConvert.DeserializeObject<Token>(res);
+                }
+               
+                result.Data = token ?? throw new ArgumentException("Something went wrong");
                 result.Status = true;
-                result.Error = string.Empty;
-                result.Data = token;
+
             }
             catch (Exception ex)
             {
-                result.Status = false;
                 result.Error = ex.Message;
-                result.Data = null;
             }
 
             return result;
@@ -110,8 +95,8 @@ namespace Jeton.Sdk
 
             try
             {
-                if (string.IsNullOrWhiteSpace(AccessKey))
-                    throw new ArgumentNullException(nameof(AccessKey));
+                if (string.IsNullOrWhiteSpace(ApiKey))
+                    throw new ArgumentNullException(nameof(ApiKey));
 
                 if (string.IsNullOrWhiteSpace(AppId))
                     throw new ArgumentNullException(nameof(AppId));
@@ -119,37 +104,22 @@ namespace Jeton.Sdk
                 if (token == null)
                     throw new ArgumentNullException(nameof(token));
 
-                var client = new RestClient { BaseUrl = new Uri(this.ApiUrl) };
-
-                var request = new RestRequest
+                User user = null;
+                
+                using (var client = new WebClient())
                 {
-                    Resource = $"/api/token/check/{AppId}",
-                    Method = Method.POST
-                };
-
-                //Header
-                request.AddHeader("AccessKey", AccessKey);
-
-                //Body
-                request.RequestFormat = DataFormat.Json;
-                request.AddBody(token);
-
-                //Execute
-                var response = client.Execute(request);
-
-                //Deserialize response content
-                var user = JsonConvert.DeserializeObject<User>(response.Content);
-
+                    client.BaseAddress = ApiUrl;
+                    client.Headers.Add("apiKey", ApiKey);
+                    client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                    var res = client.UploadString($"/api/token/check/{AppId}", JsonConvert.SerializeObject(token));
+                    token = JsonConvert.DeserializeObject<Token>(res);
+                }
+                result.Data = user ?? throw new ArgumentException("Something went wrong");
                 result.Status = true;
-                result.Error = string.Empty;
-                result.Data = user;
             }
             catch (Exception ex)
             {
-
-                result.Status = false;
                 result.Error = ex.Message;
-                result.Data = null;
             }
 
 

@@ -20,14 +20,14 @@ namespace Jeton.RootApp.Controllers
             {
 
                 var appId = ConfigHelper.GetAppSettingsValue("AppId");
-                var accessKey = ConfigHelper.GetAppSettingsValue("AccessKey");
+                var apiKey = ConfigHelper.GetAppSettingsValue("ApiKey");
                 var apiUrl = ConfigHelper.GetAppSettingsValue("ApiUrl");
 
                 ViewBag.AppId = appId;
-                ViewBag.AccessKey = accessKey;
+                ViewBag.AccessKey = apiKey;
                 ViewBag.ApiUrl = apiUrl;
 
-                var jetonClient = new JetonClient(appId, accessKey, apiUrl);
+                var jetonClient = new JetonClient(appId, apiKey, apiUrl);
                 var user = new User()
                 {
                     UserName = User.Identity.Name,
@@ -37,8 +37,8 @@ namespace Jeton.RootApp.Controllers
                 var response = jetonClient.GenerateToken(user);
                 if (response.Status)
                 {
-                    Session["Token"] = response.Data.TokenKey;
-                    ViewBag.Token = response.Data.TokenKey;
+                    Session["AccessToken"] = response.Data.AccessToken;
+                    ViewBag.Token = response.Data.AccessToken;
                 }
                 else
                 {
@@ -57,7 +57,7 @@ namespace Jeton.RootApp.Controllers
 
         public void ClientRedirect()
         {
-            var token = Session["Token"]?.ToString();
+            var token = Session["AccessToken"]?.ToString();
             var redirectUrl = Request.QueryString.GetValues("redirectUrl")?.FirstOrDefault();
             Uri uri;
             if (!string.IsNullOrWhiteSpace(token) && !string.IsNullOrWhiteSpace(redirectUrl) && Uri.TryCreate(redirectUrl, UriKind.Absolute, out uri))
@@ -65,7 +65,7 @@ namespace Jeton.RootApp.Controllers
 
                 var uriBuilder = new UriBuilder(uri);
                 var query = HttpUtility.ParseQueryString(uriBuilder.Query);
-                query["TokenKey"] = token;
+                query["AccessToken"] = token;
                 uriBuilder.Query = query.ToString();
                 redirectUrl = uriBuilder.ToString();
             }

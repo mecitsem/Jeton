@@ -11,7 +11,7 @@ namespace Jeton.RootApp.Helpers
     {
         public static string GetAppSettingsValue(string appSettingsKey)
         {
-            return ConfigurationManager.AppSettings[$"jwt:{appSettingsKey}"];
+            return ConfigurationManager.AppSettings[$"jeton:{appSettingsKey}"];
         }
     }
 }
