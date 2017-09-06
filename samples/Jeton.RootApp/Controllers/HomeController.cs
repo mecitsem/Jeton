@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Jeton.RootApp.Helpers;
 using Jeton.Sdk;
-using Jeton.Sdk.Models;
 using Microsoft.AspNet.Identity;
+using System.Threading.Tasks;
 
 namespace Jeton.RootApp.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             if (!User.Identity.IsAuthenticated) return View();
 
@@ -24,25 +23,30 @@ namespace Jeton.RootApp.Controllers
                 var apiUrl = ConfigHelper.GetAppSettingsValue("ApiUrl");
 
                 ViewBag.AppId = appId;
-                ViewBag.AccessKey = apiKey;
+                ViewBag.ApiKey = apiKey;
                 ViewBag.ApiUrl = apiUrl;
 
-                var jetonClient = new JetonClient(appId, apiKey, apiUrl);
-                var user = new User()
+                var client = new JetonClient()
+                {
+                    BaseUrl = apiUrl
+                };
+
+
+                var user = new JetonIdentity()
                 {
                     UserName = User.Identity.Name,
                     UserNameId = User.Identity.GetUserId()
                 };
 
-                var response = jetonClient.GenerateToken(user);
-                if (response.Status)
+                var token = await client.GenerateAsync(appId, user);
+                if (token != null)
                 {
-                    Session["AccessToken"] = response.Data.AccessToken;
-                    ViewBag.Token = response.Data.AccessToken;
+                    Session["AccessToken"] = token.AccessToken;
+                    ViewBag.Token = token.AccessToken;
                 }
                 else
                 {
-                    ViewBag.Error = response.Error;
+                    ViewBag.Error = "Token is null";
                 }
 
             }

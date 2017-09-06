@@ -1,129 +1,220 @@
 ﻿using System;
-using Jeton.Sdk.Models;
-using Jeton.Sdk.ServiceModels;
-using Newtonsoft.Json;
-using System.Net;
+using System.Net.Http;
+using System.Text;
 
 namespace Jeton.Sdk
 {
-    /// <summary>
-    /// You must use Newtonsoft.Json and RestSharp nuget packages  
-    /// </summary>
-    public class JetonClient
+
+
+    [System.CodeDom.Compiler.GeneratedCode("NSwag", "11.6.1.0")]
+    public partial class JetonClient : IJetonClient
     {
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string ApiKey { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public string AppId { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public string ApiUrl { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="appId">Registered Application ID</param>
-        /// <param name="accessKey">Registered Application AccessKey</param>
-        /// <param name="apiUrl">Jeton Api Url</param>
-        public JetonClient(string appId, string apiKey, string apiUrl)
+        private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
+        private string _baseUrl = "";
+        private string _apiKey;
+        public JetonClient()
         {
-            ApiKey = apiKey;
-
-            AppId = appId;
-
-            Uri uri;
-            if (!Uri.TryCreate(apiUrl, UriKind.Absolute, out uri))
-                throw new ArgumentException("ApiUrl is not correct format. Please check it.");
-
-            ApiUrl = apiUrl;
+            _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(() =>
+            {
+                var settings = new Newtonsoft.Json.JsonSerializerSettings();
+                UpdateJsonSerializerSettings(settings);
+                return settings;
+            });
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        public TokenResponse<Token> GenerateToken(User user)
+
+        public string BaseUrl
         {
-            var result = new TokenResponse<Token>();
+            get { return _baseUrl; }
+            set { _baseUrl = value; }
+        }
+        public string ApiKey {
+            get { return _apiKey; }
+            set { _apiKey = value; }
+        }
+        partial void UpdateJsonSerializerSettings(Newtonsoft.Json.JsonSerializerSettings settings);
+        partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, string url);
+        partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
+        partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
+
+        partial void PrepareRequest(HttpClient client, HttpRequestMessage request, string url)
+        {
+            client.DefaultRequestHeaders.Add("apiKey", _apiKey);
+        }
+        partial void PrepareRequest(HttpClient client, HttpRequestMessage request, StringBuilder urlBuilder)
+        {
+            client.DefaultRequestHeaders.Add("apiKey", _apiKey);
+        }
+        /// <returns>OK</returns>
+        /// <exception cref="JetonException">A server side error occurred.</exception>
+        public System.Threading.Tasks.Task<JetonToken> GenerateAsync(string appId, JetonIdentity identity)
+        {
+            return GenerateAsync(appId, identity, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="SwaggerException">A server side error occurred.</exception>
+        public async System.Threading.Tasks.Task<JetonToken> GenerateAsync(string appId, JetonIdentity identity, System.Threading.CancellationToken cancellationToken)
+        {
+            if (appId == null)
+                throw new System.ArgumentNullException("appId");
+
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl).Append("/api/token/generate/{appId}");
+            urlBuilder_.Replace("{appId}", System.Uri.EscapeDataString(System.Convert.ToString(appId, System.Globalization.CultureInfo.InvariantCulture)));
+
+            var client_ = new System.Net.Http.HttpClient();
             try
             {
-                if (string.IsNullOrWhiteSpace(ApiKey))
-                    throw new ArgumentNullException(nameof(ApiKey));
-
-                if (string.IsNullOrWhiteSpace(AppId))
-                    throw new ArgumentNullException(nameof(AppId));
-
-                if (user == null)
-                    throw new ArgumentNullException(nameof(user));
-
-                Token token = null;
-                using (var client = new WebClient())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    client.BaseAddress = ApiUrl;
-                    client.Headers.Add("apiKey", ApiKey);
-                    client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-                    var res = client.UploadString($"/api/token/generate/{AppId}", "POST", JsonConvert.SerializeObject(user));
-                    token = JsonConvert.DeserializeObject<Token>(res);
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(identity, _settings.Value));
+                    content_.Headers.ContentType.MediaType = "application/json";
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        foreach (var item_ in response_.Content.Headers)
+                            headers_[item_.Key] = item_.Value;
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "200")
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            var result_ = default(JetonToken);
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<JetonToken>(responseData_, _settings.Value);
+                                return result_;
+                            }
+                            catch (System.Exception exception)
+                            {
+                                throw new JetonException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                        }
+                        else
+                        if (status_ != "200" && status_ != "204")
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new JetonException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                        }
+
+                        return default(JetonToken);
+                    }
+                    finally
+                    {
+                        if (response_ != null)
+                            response_.Dispose();
+                    }
                 }
-               
-                result.Data = token ?? throw new ArgumentException("Something went wrong");
-                result.Status = true;
-
             }
-            catch (Exception ex)
+            finally
             {
-                result.Error = ex.Message;
+                if (client_ != null)
+                    client_.Dispose();
             }
-
-            return result;
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        public TokenResponse<User> VerifyToken(Token token)
-        {
-            var result = new TokenResponse<User>();
 
+        /// <returns>OK</returns>
+        /// <exception cref="JetonException">A server side error occurred.</exception>
+        public System.Threading.Tasks.Task<JetonIdentity> CheckAsync(string appId, JetonToken token)
+        {
+            return CheckAsync(appId, token, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="JetonException">A server side error occurred.</exception>
+        public async System.Threading.Tasks.Task<JetonIdentity> CheckAsync(string appId, JetonToken token, System.Threading.CancellationToken cancellationToken)
+        {
+            if (appId == null)
+                throw new System.ArgumentNullException("appId");
+
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl).Append("/api/token/check/{appId}");
+            urlBuilder_.Replace("{appId}", System.Uri.EscapeDataString(System.Convert.ToString(appId, System.Globalization.CultureInfo.InvariantCulture)));
+
+            var client_ = new System.Net.Http.HttpClient();
             try
             {
-                if (string.IsNullOrWhiteSpace(ApiKey))
-                    throw new ArgumentNullException(nameof(ApiKey));
-
-                if (string.IsNullOrWhiteSpace(AppId))
-                    throw new ArgumentNullException(nameof(AppId));
-
-                if (token == null)
-                    throw new ArgumentNullException(nameof(token));
-
-                User user = null;
-                
-                using (var client = new WebClient())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    client.BaseAddress = ApiUrl;
-                    client.Headers.Add("apiKey", ApiKey);
-                    client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-                    var res = client.UploadString($"/api/token/check/{AppId}", JsonConvert.SerializeObject(token));
-                    token = JsonConvert.DeserializeObject<Token>(res);
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(token, _settings.Value));
+                    content_.Headers.ContentType.MediaType = "application/json";
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        foreach (var item_ in response_.Content.Headers)
+                            headers_[item_.Key] = item_.Value;
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "200")
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            var result_ = default(JetonIdentity);
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<JetonIdentity>(responseData_, _settings.Value);
+                                return result_;
+                            }
+                            catch (System.Exception exception)
+                            {
+                                throw new JetonException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                        }
+                        else
+                        if (status_ != "200" && status_ != "204")
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new JetonException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                        }
+
+                        return default(JetonIdentity);
+                    }
+                    finally
+                    {
+                        if (response_ != null)
+                            response_.Dispose();
+                    }
                 }
-                result.Data = user ?? throw new ArgumentException("Something went wrong");
-                result.Status = true;
             }
-            catch (Exception ex)
+            finally
             {
-                result.Error = ex.Message;
+                if (client_ != null)
+                    client_.Dispose();
             }
-
-
-            return result;
         }
+
     }
+
+
+
+  
+
+
+
+
 }

@@ -49,7 +49,7 @@ namespace Jeton.Api.Handlers
                 //Request Header
 
                 //Check AccessKey => in swagger apiKey
-                if (!request.HeaderKeyIsExist(Constants.AccessKey))
+                if (!request.HeaderKeyIsExist(Constants.ApiKey))
                 {
                     response = request.CreateResponse(HttpStatusCode.BadRequest, "apiKey is required. Please add your header.");
                     tsc.SetResult(response);
@@ -57,10 +57,10 @@ namespace Jeton.Api.Handlers
                 }
 
 
-                var accessKey = request.GetHeaderValue(Constants.AccessKey);
+                var apiKey = request.GetHeaderValue(Constants.ApiKey);
 
                 //Check AccessKey Value
-                if (string.IsNullOrWhiteSpace(accessKey))
+                if (string.IsNullOrWhiteSpace(apiKey))
                 {
                     response = request.CreateResponse(HttpStatusCode.BadRequest, "apiKey is null or empty. Please add your AccessKey.");
                     tsc.SetResult(response);
@@ -91,7 +91,7 @@ namespace Jeton.Api.Handlers
                 }
 
                 //Check Access Key
-                if (!app.AccessKey.Equals(accessKey))
+                if (!app.AccessKey.Equals(apiKey))
                 {
                     response = request.CreateResponse(HttpStatusCode.Unauthorized, "Unauthorized");
                     tsc.SetResult(response);

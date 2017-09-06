@@ -1,43 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using Jeton.ClientApp.Helpers;
 using Jeton.ClientApp.Models;
 using Jeton.Sdk;
-using Jeton.Sdk.Models;
+using System.Threading.Tasks;
 
 namespace Jeton.ClientApp.Controllers
 {
     public class AccountController : Controller
     {
-        public ActionResult Login()
+        public async Task<ActionResult> Login()
         {
             var tokenKey = Request.QueryString.GetValues("AccessToken")?.FirstOrDefault();
 
-            return !string.IsNullOrWhiteSpace(tokenKey) ? JwtLogin() : View();
+            return !string.IsNullOrWhiteSpace(tokenKey) ? await JwtLogin() : View();
         }
 
         [HttpPost]
-        public ActionResult Login(LoginViewModel model, string returnUrl)
+        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if (!ModelState.IsValid)
-                return Login();
-
-
-            var appId = ConfigHelper.GetAppSettingsValue("AppId");
-            var apiKey = ConfigHelper.GetAppSettingsValue("ApiKey");
-            var apiUrl = ConfigHelper.GetAppSettingsValue("ApiUrl");
-
-            var jetonClient = new JetonClient(appId, apiKey, apiUrl);
-            var response = jetonClient.VerifyToken(new Token());
+                return await Login();
 
             var isAuth = SetAuthCookie(model, model.RememberMe);
 
-            if (!isAuth) return Login();
+            if (!isAuth) return await Login();
 
             if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
                 && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
@@ -52,7 +41,7 @@ namespace Jeton.ClientApp.Controllers
 
 
 
-        public ActionResult JwtLogin()
+        public async Task<ActionResult> JwtLogin()
         {
             var appId = ConfigHelper.GetAppSettingsValue("AppId");
             var apiKey = ConfigHelper.GetAppSettingsValue("ApiKey");
@@ -66,17 +55,22 @@ namespace Jeton.ClientApp.Controllers
             if (!string.IsNullOrEmpty(accessToken))
             {
 
-                var jetonClient = new JetonClient(appId, apiKey, apiUrl);
-                var response = jetonClient.VerifyToken(new Token()
+                var client = new JetonClient()
+                {
+                    ApiKey = apiKey,
+                    BaseUrl = apiUrl
+                };
+
+                var identity = await client.CheckAsync(appId, new JetonToken()
                 {
                     AccessToken = accessToken
                 });
 
-                if (response.Status)
+                if (identity != null)
                 {
                     var isAuth = SetAuthCookie(new LoginViewModel()
                     {
-                        Email = response.Data.UserName
+                        Email = identity.UserName
                     }, true);
 
                     return Redirect(returnUrl);

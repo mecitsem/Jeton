@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using Jeton.ClientApp.Helpers;
-using Jeton.Sdk;
-using Jeton.Sdk.Models;
-using Microsoft.Ajax.Utilities;
 
 namespace Jeton.ClientApp.Controllers
 {
@@ -18,11 +11,11 @@ namespace Jeton.ClientApp.Controllers
             try
             {
                 var appId = ConfigHelper.GetAppSettingsValue("AppId");
-                var accessKey = ConfigHelper.GetAppSettingsValue("AccessKey");
+                var apiKey = ConfigHelper.GetAppSettingsValue("ApiKey");
                 var apiUrl = ConfigHelper.GetAppSettingsValue("ApiUrl");
 
                 ViewBag.AppId = appId;
-                ViewBag.AccessKey = accessKey;
+                ViewBag.ApiKey = apiKey;
                 ViewBag.ApiUrl = apiUrl;
             }
             catch 
