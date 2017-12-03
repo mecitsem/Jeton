@@ -1,4 +1,4 @@
 # Jeton
 
-Token Base Auth. by QueryString
+Token Base Auth.
 
